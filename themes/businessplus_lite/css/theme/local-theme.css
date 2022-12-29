@@ -1,0 +1,7 @@
+.front-ads-bydate tbody tr td{
+	text-align: center;
+	width:14%;
+	}
+.front-ads-bydate tbody tr td img{
+	max-width:35%;
+	}
