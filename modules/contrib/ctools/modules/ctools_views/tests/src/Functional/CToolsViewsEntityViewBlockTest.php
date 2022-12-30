@@ -55,7 +55,7 @@ class CToolsViewsEntityViewBlockTest extends UITestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'classy';
+  protected $defaultTheme = 'starterkit_theme';
 
   /**
    * The node entities used by the test.
