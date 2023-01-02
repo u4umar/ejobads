@@ -2,12 +2,7 @@ name: 'Contrib database driver test'
 type: module
 description: 'Support database contrib driver testing.'
 package: Testing
-# version: VERSION
+version: VERSION
 dependencies:
   - drupal:mysql
   - drupal:pgsql
-
-# Information added by Drupal.org packaging script on 2022-10-06
-version: '9.4.8'
-project: 'drupal'
-datestamp: 1665072456

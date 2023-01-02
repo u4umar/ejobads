@@ -1,10 +1,10 @@
 name: 'Test theme libraries-extend'
 type: theme
 description: 'Test Theme with libraries-extend'
-# version: VERSION
-base theme: classy
+version: VERSION
+base theme: starterkit_theme
 libraries-extend:
-  classy/book-navigation:
+  starterkit_theme/book-navigation:
     - test_theme_libraries_extend/extend_one
     - test_theme_libraries_extend/extend_two
   core/drupal.dialog:
@@ -12,8 +12,3 @@ libraries-extend:
   test_theme/collapse:
     - not_a_string:
         expected: 'an exception'
-
-# Information added by Drupal.org packaging script on 2022-10-06
-version: '9.4.8'
-project: 'drupal'
-datestamp: 1665072456

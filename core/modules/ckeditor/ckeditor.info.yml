@@ -1,12 +1,9 @@
 name: CKEditor
 type: module
 description: "WYSIWYG editing for rich text fields using CKEditor."
+lifecycle: deprecated
+lifecycle_link: https://www.drupal.org/node/3223395#s-ckeditor
 package: Core
-# version: VERSION
+version: VERSION
 dependencies:
   - drupal:editor
-
-# Information added by Drupal.org packaging script on 2022-10-06
-version: '9.4.8'
-project: 'drupal'
-datestamp: 1665072456

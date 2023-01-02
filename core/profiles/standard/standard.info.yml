@@ -1,13 +1,13 @@
 name: Standard
 type: profile
 description: 'Install with commonly used features pre-configured.'
-# version: VERSION
+version: VERSION
 install:
   - node
   - history
   - block
   - breakpoint
-  - ckeditor
+  - ckeditor5
   - config
   - comment
   - contextual
@@ -31,7 +31,6 @@ install:
   - toolbar
   - field_ui
   - file
-  - rdf
   - views
   - views_ui
   - tour
@@ -39,8 +38,3 @@ install:
 themes:
   - olivero
   - claro
-
-# Information added by Drupal.org packaging script on 2022-10-06
-version: '9.4.8'
-project: 'drupal'
-datestamp: 1665072456
