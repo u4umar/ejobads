@@ -1,4 +1,0 @@
-services:
-  plugin.manager.adsensead:
-    class: Drupal\adsense\AdsenseAdManager
-    parent: default_plugin_manager

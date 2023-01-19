@@ -20,7 +20,8 @@
         "drupal/core-project-message": "^9.4",
         "drupal/core-recommended": "^9.4",
         "drupal/core-vendor-hardening": "^9.4",
-        "drupal/mobile_detect": "^3.0"
+        "drupal/mobile_detect": "^3.0",
+        "drupal/upgrade_status": "^3.18"
     },
     "conflict": {
         "drupal/drupal": "*"
