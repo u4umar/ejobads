@@ -158,3 +158,6 @@ Stack trace:
 #3 /home/rm520fzqbykb/public_html/ejobads.com/index.php(14): require_once('/home/rm520fzqb...')
 #4 {main}
   thrown in /home/rm520fzqbykb/public_html/ejobads.com/vendor/composer/autoload_real.php on line 82
+[19-Jan-2023 22:41:21 Asia/Karachi] Uncaught PHP Exception TypeError: "Drupal\Core\Render\Renderer::doTrustedCallback(): Argument #1 ($callback) must be of type callable, array given, called in /home/rm520fzqbykb/public_html/ejobads.com/core/lib/Drupal/Core/Render/Renderer.php on line 788" at /home/rm520fzqbykb/public_html/ejobads.com/core/lib/Drupal/Core/Security/DoTrustedCallbackTrait.php line 51
+[19-Jan-2023 22:42:45 Asia/Karachi] Uncaught PHP Exception TypeError: "Drupal\Core\Render\Renderer::doTrustedCallback(): Argument #1 ($callback) must be of type callable, array given, called in /home/rm520fzqbykb/public_html/ejobads.com/core/lib/Drupal/Core/Render/Renderer.php on line 788" at /home/rm520fzqbykb/public_html/ejobads.com/core/lib/Drupal/Core/Security/DoTrustedCallbackTrait.php line 51
+[19-Jan-2023 22:43:14 Asia/Karachi] Uncaught PHP Exception Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException: "You have requested a non-existent service "cache_context.mobile_detect_is_mobile"." at /home/rm520fzqbykb/public_html/ejobads.com/core/lib/Drupal/Component/DependencyInjection/Container.php line 157

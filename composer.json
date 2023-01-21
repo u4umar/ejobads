@@ -1,6 +1,6 @@
 {
     "name": "drupal/legacy-project",
-    "description": "Project template for Drupal 9 projects with composer following drupal/drupal layout",
+    "description": "Project template for Drupal projects with composer following drupal/drupal layout",
     "type": "project",
     "license": "GPL-2.0-or-later",
     "homepage": "https://www.drupal.org/project/drupal",
@@ -15,13 +15,19 @@
         }
     ],
     "require": {
-        "composer/installers": "^1.9",
-        "drupal/core-composer-scaffold": "^9.4",
-        "drupal/core-project-message": "^9.4",
-        "drupal/core-recommended": "^9.4",
-        "drupal/core-vendor-hardening": "^9.4",
+        "composer/installers": "^2.0",
+        "drupal/admin_toolbar": "^3.3",
+        "drupal/classy": "^1.0",
+        "drupal/core-composer-scaffold": "^10.0",
+        "drupal/core-project-message": "^10.0",
+        "drupal/core-recommended": "^10.0",
+        "drupal/core-vendor-hardening": "^10.0",
+        "drupal/ctools": "^4.0",
+        "drupal/edux": "^10.1",
         "drupal/mobile_detect": "^3.0",
-        "drupal/upgrade_status": "^3.18"
+        "drupal/stable": "^2.0",
+        "drupal/thex": "^9.2",
+        "drupal/upgrade_status": "^4.0@alpha"
     },
     "conflict": {
         "drupal/drupal": "*"
@@ -34,6 +40,7 @@
             "drupal/core-composer-scaffold": true,
             "drupal/core-project-message": true,
             "drupal/core-vendor-hardening": true,
+            "phpstan/extension-installer": true,
             "dealerdirect/phpcodesniffer-composer-installer": true
         },
         "sort-packages": true
@@ -85,7 +92,7 @@
                 "<bg=blue;fg=white>                                                         </>",
                 "",
                 "<bg=yellow;fg=black>Next steps</>:",
-                "  * Install the site: https://www.drupal.org/docs/8/install",
+                "  * Install the site: https://www.drupal.org/docs/installing-drupal",
                 "  * Read the user guide: https://www.drupal.org/docs/user_guide/en/index.html",
                 "  * Get support: https://www.drupal.org/support",
                 "  * Get involved with the Drupal community:",
