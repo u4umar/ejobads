@@ -1,6 +1,7 @@
-@media (min-width: 768px) {
   /* Header */
   .page-header {
     padding: 0 0 1rem 0 !important;
   }
+.header-container {
+    padding: 1rem 0 0 0 !important;
 }
