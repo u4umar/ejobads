@@ -3,6 +3,7 @@ global-styling:
   css:
     theme:
       css/style.css: {}
+      css/custom.css: {}
   js:
     js/edux.js: {}
   dependencies:
