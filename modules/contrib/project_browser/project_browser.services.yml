@@ -1,0 +1,39 @@
+services:
+  logger.channel.project_browser:
+    parent: logger.channel_base
+    arguments: ['project_browser']
+  plugin.manager.project_browser.source:
+    class: Drupal\project_browser\Plugin\ProjectBrowserSourceManager
+    parent: default_plugin_manager
+  project_browser.enabled_source:
+    class: Drupal\project_browser\EnabledSourceHandler
+    arguments: ['@logger.channel.project_browser', '@config.factory', '@plugin.manager.project_browser.source']
+  project_browser.update_fixture_subscriber:
+    class: Drupal\project_browser\EventSubscriber\UpdateFixtureSubscriber
+    arguments: ['@project_browser.fixture_helper']
+    tags:
+      - { name: 'event_subscriber' }
+  project_browser.fixture_helper:
+    class: Drupal\project_browser\ProjectBrowserFixtureHelper
+    arguments: ['@database', '@state', '@http_client']
+  project_browser.composer_validator.core_not_updated:
+    class: Drupal\project_browser\ComposerInstaller\Validator\CoreNotUpdatedValidator
+    arguments:
+      - '@string_translation'
+    tags:
+      - { name: 'event_subscriber' }
+  project_browser.composer_validator.package_not_installed_validator:
+    class: Drupal\project_browser\ComposerInstaller\Validator\PackageNotInstalledValidator
+    arguments:
+      - '@string_translation'
+    tags:
+      - { name: 'event_subscriber' }
+  cache.project_browser:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin }
+    factory: cache_factory:get
+    arguments: [project_browser]
+  project_browser.tempstore.shared:
+    class: Drupal\Core\TempStore\SharedTempStoreFactory
+    arguments: ['@keyvalue.expirable', '@lock', '@request_stack', '@current_user', 600]

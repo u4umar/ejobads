@@ -1,0 +1,9 @@
+name: 'Project Browser Test - Disable validators'
+type: module
+description: 'Provides a mechanism to disable specific readiness validators during functional tests'
+package: Testing
+
+# Information added by Drupal.org packaging script on 2022-11-23
+version: '1.0.0-beta2'
+project: 'project_browser'
+datestamp: 1669213605

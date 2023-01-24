@@ -1,0 +1,23 @@
+svelte:
+  js:
+    # @todo Add "defer" propecty to generated <script> tag.
+    sveltejs/public/build/bundle.js: {}
+  css:
+    theme:
+      sveltejs/public/build/bundle.css: {}
+      sveltejs/css/seven.css: {}
+      sveltejs/css/claro.css: {}
+  dependencies:
+    - core/drupalSettings
+    - core/drupal
+    - core/drupal.debounce
+    - core/drupal.dialog
+    - core/drupal.announce
+
+tabledrag:
+  js:
+    js/project_browser.admin.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/once

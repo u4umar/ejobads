@@ -1,0 +1,13 @@
+project_browser.admin_settings:
+  type: config_object
+  label: "Project Browser admin settings"
+  mapping:
+    enabled_sources:
+      type: sequence
+      label: 'Enabled for project data'
+      sequence:
+        type: string
+        label: 'Source'
+    allow_ui_install:
+      type: boolean
+      label: 'Allow installing packages from within the UI'

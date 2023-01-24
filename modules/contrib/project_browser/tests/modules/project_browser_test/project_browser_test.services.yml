@@ -1,0 +1,9 @@
+services:
+  project_browser_test.time:
+    class: Drupal\project_browser_test\Datetime\TestTime
+    decorates: datetime.time
+    arguments: ['@project_browser_test.time.inner','@request_stack']
+  project_browser_test.drupalorg_client_middleware:
+    class: Drupal\project_browser_test\DrupalOrgClientMiddleware
+    tags:
+      - { name: http_client_middleware }

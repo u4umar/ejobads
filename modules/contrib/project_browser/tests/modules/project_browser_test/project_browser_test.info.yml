@@ -1,0 +1,11 @@
+name: Project Browser test
+type: module
+description: 'Support module for testing Project Browser.'
+core_version_requirement: ^9 || ^10
+dependencies:
+  - project_browser:project_browser
+
+# Information added by Drupal.org packaging script on 2022-11-23
+version: '1.0.0-beta2'
+project: 'project_browser'
+datestamp: 1669213605

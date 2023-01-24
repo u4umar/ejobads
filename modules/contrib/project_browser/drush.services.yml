@@ -1,0 +1,6 @@
+services:
+  project_browser.commands:
+    class: Drupal\project_browser\Commands\UpdateFixtureCommands
+    tags:
+      - { name: drush.command }
+    arguments: ['@logger.factory', '@project_browser.enabled_source', '@event_dispatcher', '@project_browser.fixture_helper']

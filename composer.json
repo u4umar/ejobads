@@ -25,6 +25,7 @@
         "drupal/ctools": "^4.0",
         "drupal/edux": "^10.1",
         "drupal/mobile_detect": "^3.0",
+        "drupal/project_browser": "^1.0@beta",
         "drupal/stable": "^2.0",
         "drupal/thex": "^9.2",
         "drupal/upgrade_status": "^4.0@alpha"

@@ -1,0 +1,12 @@
+project_browser.configure:
+  title: Browse modules
+  description: 'Browse modules via the Project Browser'
+  parent: system.modules_list
+  route_name: project_browser.browse
+  weight: 20
+
+project_browser.settings:
+  title: Project Browser
+  description: 'Configure the Project Browser settings'
+  route_name: project_browser.settings
+  parent: system.admin_config_development

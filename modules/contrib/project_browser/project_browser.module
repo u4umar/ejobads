@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * @file
+ * Provides hook implementations for the Project Browser module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function project_browser_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.project_browser':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t("The Project Browser makes it easy for site builders to find modules and get instructions to add the project to your site. The browser lives inside the Drupal site itself (See \"Browse\" under the \"Extend\" section), which means you don't need to leave your site in order to look for modules.") . '</p>';
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function project_browser_theme() {
+  return [
+    'project_browser_main_app' => [
+      'variables' => [],
+    ],
+  ];
+}
+
+/**
+ * Inserts data into Project Browser module tables.
+ */
+function _project_browser_populate_from_fixture($truncate_first = TRUE) {
+  $module_path = \Drupal::moduleHandler()->getModule('project_browser')->getPath();
+  \Drupal::service('project_browser.fixture_helper')->populateFromFixture($module_path . '/fixtures/project_data.json', $module_path . '/fixtures/categories.json', $truncate_first);
+}

@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '64b0392c4d91003ab4e40a30de379971c16a0801',
+        'reference' => 'e5aa07e01d50e2b3441266cf7e51cec8c055a082',
         'name' => 'drupal/legacy-project',
         'dev' => true,
     ),
@@ -292,7 +292,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '64b0392c4d91003ab4e40a30de379971c16a0801',
+            'reference' => 'e5aa07e01d50e2b3441266cf7e51cec8c055a082',
             'dev_requirement' => false,
         ),
         'drupal/mobile_detect' => array(
@@ -302,6 +302,15 @@
             'install_path' => __DIR__ . '/../../modules/contrib/mobile_detect',
             'aliases' => array(),
             'reference' => '3.0.4',
+            'dev_requirement' => false,
+        ),
+        'drupal/project_browser' => array(
+            'pretty_version' => '1.0.0-beta2',
+            'version' => '1.0.0.0-beta2',
+            'type' => 'drupal-module',
+            'install_path' => __DIR__ . '/../../modules/contrib/project_browser',
+            'aliases' => array(),
+            'reference' => '1.0.0-beta2',
             'dev_requirement' => false,
         ),
         'drupal/stable' => array(

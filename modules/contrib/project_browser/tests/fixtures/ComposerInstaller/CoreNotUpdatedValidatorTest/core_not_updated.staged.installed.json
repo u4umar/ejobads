@@ -1,0 +1,15 @@
+{
+    "packages": [
+        {
+            "name": "drupal/core-recommended",
+            "version": "9.8.0",
+            "require": {
+                "drupal/core": "9.8.0"
+            }
+        },
+        {
+            "name": "drupal/core",
+            "version": "9.8.0"
+        }
+    ]
+}
