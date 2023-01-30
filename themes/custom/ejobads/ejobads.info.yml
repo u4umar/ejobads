@@ -1,0 +1,35 @@
+name: Ejobads
+type: theme
+base theme: edux
+description: 'Custom Theme for E-job Ads website using edux theme as base theme</a>'
+package: Techknack
+# version: 10.1.1
+core_version_requirement: ^9.5 || ^10
+libraries:
+  - ejobads/global-styling
+regions:
+  header_top_left: 'Header Top Left'
+  header_top_right: 'Header Top Right'
+  header: Header
+  primary_menu: 'Primary menu'
+  search_box: 'Search Box'
+  page_header: 'Page Header'
+  highlighted: Highlighted
+  content: Content
+  content_top: 'Content Top'
+  content_bottom: 'Content Bottom'
+  content_home_top: 'Homepage Content Top'
+  content_home_bottom: 'Homepage Content Bottom'
+  sidebar_first: 'Sidebar Left'
+  sidebar_second: 'Sidebar Right'
+  footer_top: 'Footer Top'
+  footer_one: 'Footer First Column'
+  footer_two: 'Footer Second Column'
+  footer_three: 'Footer Third Column'
+  footer_four: 'Footer Fourth Column'
+  footer_bottom_left: 'Footer Bottom Left'
+  footer_bottom_right: 'Footer Bottom Right'
+  footer_bottom_last: 'Footer Bottom Last'
+  hidden: Hidden Blocks
+
+# Information added by Drupal.org packaging script on 2023-01-22

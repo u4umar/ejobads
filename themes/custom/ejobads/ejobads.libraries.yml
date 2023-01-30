@@ -1,0 +1,9 @@
+global-styling:
+  version: VERSION
+  css:
+    theme:
+      css/custom.css: {}      
+  js:
+    js/edux.js: {}
+  dependencies:
+    - core/jquery
