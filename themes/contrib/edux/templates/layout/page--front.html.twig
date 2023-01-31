@@ -16,7 +16,7 @@
  </center> 
  {% if is_mobile() %}
     <li>Is Not Desktop</li>
-    {% endif %}
+    {% else %}
 <table width="100%" id="table" class="front-ads-bydate">
 <tbody>
 <tr>
@@ -285,6 +285,7 @@
 </tbody>
 </table>
 </center>
+{% endif %}
   
   {# EOF:main-content #}
     </div><!--/main-container -->
