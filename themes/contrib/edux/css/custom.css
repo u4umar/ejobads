@@ -7,4 +7,9 @@
 }
 .front-ads-bydate-desktop td{
 	width: 14%;
+	text-align:center;
+}
+.front-ads-bydate-mobile td{
+	width: 24%;
+	text-align:center;
 }
