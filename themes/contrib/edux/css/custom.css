@@ -5,3 +5,6 @@
 .header-container {
     padding: 1rem 0 0 0 !important;
 }
+.front-ads-bydate-desktop td{
+	width: 14%;
+}
