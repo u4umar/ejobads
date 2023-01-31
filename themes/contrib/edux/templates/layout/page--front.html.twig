@@ -14,8 +14,8 @@
   {% set day5back = date('-5days') %}
   {% set day6back = date('-6days') %}
  </center> 
- {% if not is_mobile() %}
-    <li><strong>Is Desktop</strong></li>
+ {% if is_mobile() %}
+    <li>Is Not Desktop</li>
     {% endif %}
 <table width="100%" id="table" class="front-ads-bydate">
 <tbody>
