@@ -15,7 +15,164 @@
   {% set day6back = date('-6days') %}
  </center> 
  {% if is_mobile() %}
-    <li>Is Not Desktop</li>
+    <table width="100%" id="table" class="front-ads-bydate">
+<tbody>
+<tr>
+<td style="border: #DBE1E6 1px solid;" class="Newspaper_border"><b><span style="color:#019875;"><br>Date - Day<br>&nbsp;</span></b></td>
+<td style="border: #DBE1E6 1px solid;" ><a href="/jang-newspaper-jobs-ads"><img alt="Daily Jang" src="/themes/businessplus_lite/images/papers-mini/jang-mini.jpg"></a></td>
+<td style="border: #DBE1E6 1px solid;" ><a href="/dawn-newspaper-jobs-ads"><img alt="Epress" src="/themes/businessplus_lite/images/papers-mini/dawn-mini.jpg"></a></td>
+</tr>
+
+<tr>
+ <td align="center" style="border: #DBE1E6 1px solid;">
+  <b><span style="color:#019875;">{{ today | date("d-m-Y") }}<br>{{ today | date("l") }}</span></b> 
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/jang-newspaper-jobs-ads-date/{{ today | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/jang-newspaper-admissions-ads-date/{{ today | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/jang-newspaper-tenders-ads-date/{{ today | date("Ymd") }}">Tenders</a>
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/dawn-newspaper-jobs-ads-date/{{ today | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/dawn-newspaper-admissions-ads-date/{{ today | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/dawn-newspaper-tenders-ads-date/{{ today | date("Ymd") }}">Tenders</a>
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/thenews-newspaper-jobs-ads-date/{{ today | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/thenews-newspaper-admissions-ads-date/{{ today | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/thenews-newspaper-tenders-ads-date/{{ today | date("Ymd") }}">Tenders</a>
+ </td>
+</tr>
+
+<tr>
+ <td align="center" style="border: #DBE1E6 1px solid;">
+  <b><span style="color:#019875;">{{ yesterday | date("d-m-Y") }}<br>{{ yesterday | date("l") }}</span></b> 
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/jang-newspaper-jobs-ads-date/{{ yesterday | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/jang-newspaper-admissions-ads-date/{{ yesterday | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/jang-newspaper-tenders-ads-date/{{ yesterday | date("Ymd") }}">Tenders</a>
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/dawn-newspaper-jobs-ads-date/{{ yesterday | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/dawn-newspaper-admissions-ads-date/{{ yesterday | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/dawn-newspaper-tenders-ads-date/{{ yesterday | date("Ymd") }}">Tenders</a>
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/thenews-newspaper-jobs-ads-date/{{ yesterday | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/thenews-newspaper-admissions-ads-date/{{ yesterday | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/thenews-newspaper-tenders-ads-date/{{ yesterday | date("Ymd") }}">Tenders</a>
+ </td>
+</tr>
+
+<tr>
+ <td align="center" style="border: #DBE1E6 1px solid;">
+  <b><span style="color:#019875;">{{ day2back | date("d-m-Y") }}<br>{{ day2back | date("l") }}</span></b> 
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/jang-newspaper-jobs-ads-date/{{ day2back | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/jang-newspaper-admissions-ads-date/{{ day2back | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/jang-newspaper-tenders-ads-date/{{ day2back | date("Ymd") }}">Tenders</a>
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/dawn-newspaper-jobs-ads-date/{{ day2back | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/dawn-newspaper-admissions-ads-date/{{ day2back | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/dawn-newspaper-tenders-ads-date/{{ day2back | date("Ymd") }}">Tenders</a>
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/thenews-newspaper-jobs-ads-date/{{ day2back | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/thenews-newspaper-admissions-ads-date/{{ day2back | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/thenews-newspaper-tenders-ads-date/{{ day2back | date("Ymd") }}">Tenders</a>
+ </td>
+</tr>
+
+<tr>
+ <td align="center" style="border: #DBE1E6 1px solid;">
+  <b><span style="color:#019875;">{{ day3back | date("d-m-Y") }}<br>{{ day3back | date("l") }}</span></b> 
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/jang-newspaper-jobs-ads-date/{{ day3back | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/jang-newspaper-admissions-ads-date/{{ day3back | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/jang-newspaper-tenders-ads-date/{{ day3back | date("Ymd") }}">Tenders</a>
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/dawn-newspaper-jobs-ads-date/{{ day3back | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/dawn-newspaper-admissions-ads-date/{{ day3back | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/dawn-newspaper-tenders-ads-date/{{ day3back | date("Ymd") }}">Tenders</a>
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/thenews-newspaper-jobs-ads-date/{{ day3back | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/thenews-newspaper-admissions-ads-date/{{ day3back | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/thenews-newspaper-tenders-ads-date/{{ day3back | date("Ymd") }}">Tenders</a>
+ </td>
+</tr>
+
+<tr>
+ <td align="center" style="border: #DBE1E6 1px solid;">
+  <b><span style="color:#019875;">{{ day4back | date("d-m-Y") }}<br>{{ day4back | date("l") }}</span></b> 
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/jang-newspaper-jobs-ads-date/{{ day4back | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/jang-newspaper-admissions-ads-date/{{ day4back | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/jang-newspaper-tenders-ads-date/{{ day4back | date("Ymd") }}">Tenders</a>
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/dawn-newspaper-jobs-ads-date/{{ day4back | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/dawn-newspaper-admissions-ads-date/{{ day4back | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/dawn-newspaper-tenders-ads-date/{{ day4back | date("Ymd") }}">Tenders</a>
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/thenews-newspaper-jobs-ads-date/{{ day4back | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/thenews-newspaper-admissions-ads-date/{{ day4back | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/thenews-newspaper-tenders-ads-date/{{ day4back | date("Ymd") }}">Tenders</a>
+ </td>
+</tr>
+
+<tr>
+ <td align="center" style="border: #DBE1E6 1px solid;">
+  <b><span style="color:#019875;">{{ day5back | date("d-m-Y") }}<br>{{ day5back | date("l") }}</span></b> 
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/jang-newspaper-jobs-ads-date/{{ day5back | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/jang-newspaper-admissions-ads-date/{{ day5back | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/jang-newspaper-tenders-ads-date/{{ day5back | date("Ymd") }}">Tenders</a>
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/dawn-newspaper-jobs-ads-date/{{ day5back | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/dawn-newspaper-admissions-ads-date/{{ day5back | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/dawn-newspaper-tenders-ads-date/{{ day5back | date("Ymd") }}">Tenders</a>
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/thenews-newspaper-jobs-ads-date/{{ day5back | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/thenews-newspaper-admissions-ads-date/{{ day5back | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/thenews-newspaper-tenders-ads-date/{{ day5back | date("Ymd") }}">Tenders</a>
+  <a class="tender-link" href="/thenews-newspaper-tenders-ads-date/{{ day5back | date("Ymd") }}">Tenders</a>
+ </td>
+</tr>
+
+<tr>
+ <td align="center" style="border: #DBE1E6 1px solid;">
+  <b><span style="color:#019875;">{{ day6back | date("d-m-Y") }}<br>{{ day6back | date("l") }}</span></b> 
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/jang-newspaper-jobs-ads-date/{{ day6back | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/jang-newspaper-admissions-ads-date/{{ day6back | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/jang-newspaper-tenders-ads-date/{{ day6back | date("Ymd") }}">Tenders</a>
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/dawn-newspaper-jobs-ads-date/{{ day6back | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/dawn-newspaper-admissions-ads-date/{{ day6back | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/dawn-newspaper-tenders-ads-date/{{ day6back | date("Ymd") }}">Tenders</a>
+ </td>
+ <td valign="top" class="Newspaper_border">
+  <a class="job-link" href="/thenews-newspaper-jobs-ads-date/{{ day6back | date("Ymd") }}">Jobs</a><br>
+  <a class="admission-link" href="/thenews-newspaper-admissions-ads-date/{{ day6back | date("Ymd") }}">Admissions</a><br>
+  <a class="tender-link" href="/thenews-newspaper-tenders-ads-date/{{ day6back | date("Ymd") }}">Tenders</a>
+ </td>
+</tr>
+
+</tbody>
+</table>
     {% else %}
 <table width="100%" id="table" class="front-ads-bydate">
 <tbody>
