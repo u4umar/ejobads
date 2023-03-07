@@ -24,3 +24,6 @@ export const FULL_MODULE_PATH =
   `${ORIGIN_URL}/${drupalSettings.project_browser.module_path}`;
 export const ALLOW_UI_INSTALL =
   drupalSettings.project_browser.ui_install;
+export const DARK_COLOR_SCHEME = matchMedia('(forced-colors: active)').matches && matchMedia('(prefers-color-scheme: dark)').matches;
+export const PM_VALIDATION_ERROR =
+  drupalSettings.project_browser.pm_validation;

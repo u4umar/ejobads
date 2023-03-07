@@ -47,13 +47,13 @@ class ProjectBrowserExamplePluginTest extends WebDriverTestBase {
 
     $this->getSession()->resizeWindow(1200, 1200);
     $this->drupalGet('admin/modules/browse');
-    $this->svelteInitHelper('css', '#project-browser .grid');
-    $this->assertEquals('Grid', $this->getElementText('#project-browser .toggle-buttons .grid-button'));
+    $this->svelteInitHelper('css', '#project-browser .project--grid');
+    $this->assertEquals('Grid', $this->getElementText('#project-browser .project-browser__toggle-buttons .project-browser__grid-button'));
     $assert_session->waitForElementVisible('css', '#project-browser .project');
     $this->assertTrue($assert_session->waitForText('Project 1'));
-    $assert_session->pageTextNotContains('No records available');
-    $this->svelteInitHelper('css', '.pb-categories input[type="checkbox"]');
-    $assert_session->elementsCount('css', '.pb-categories input[type="checkbox"]', 2);
+    $assert_session->pageTextNotContains('No modules found');
+    $this->svelteInitHelper('css', '.filter__checkbox');
+    $assert_session->elementsCount('css', '.filter__checkbox', 2);
   }
 
 }

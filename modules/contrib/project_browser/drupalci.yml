@@ -3,7 +3,7 @@
 build:
   assessment:
     validate_codebase: {}
-      # Project Browser code quality checking matches that of Drupal core: it is checked by container_command.commit_checks.
+    # Project Browser code quality checking matches that of Drupal core: it is checked by container_command.commit_checks.
     testing:
       # Run code quality checks.
       container_command.commit-checks:
@@ -29,12 +29,14 @@ build:
           - sed -i "s/core\/assets\/vendor/sveltejs\/public\/build/" modules/contrib/project_browser/commit-code-check.sh
           # Stop not requiring ES6 files for core's Nightwatch tests, instead don't for *our* Nightwatch tests.
           - sed -i "s/\^core\/tests\/Drupal\/Nightwatch/\^tests\/src\/Nightwatch/" modules/contrib/project_browser/commit-code-check.sh
-          - sed -i "s/.eslintrc.passing.json/DISABLED.eslintrc.passing.json/" modules/contrib/project_browser/commit-code-check.sh
+          # Remove check for changed .js files to avoid running core eslint. There is svelte specific
+          # linting run instead.
+          - sed -i "s/FILE =~.*\.js\$ ]]; then/FILE =~ \\.noopjs$ ]]; then/" modules/contrib/project_browser/commit-code-check.sh
           # Disable default JS compile checks, PB will be doing a hacky version
           - sed -i "s/COMPILE_CHECK=1/COMPILE_CHECK=0/" modules/contrib/project_browser/commit-code-check.sh
           - sed -i "s/core\/scripts\/js/\(js|scripts|modules|project_browser_plugin_starter_template\)/" modules/contrib/project_browser/commit-code-check.sh
           - sed -i "s/\^core\/scripts\/css/config.js\$/" modules/contrib/project_browser/commit-code-check.sh
-            # Run eslint on .svelte files.
+          # Run eslint on .svelte files.
           - sed -i '/.*FINAL_STATUS" == "1".*/i cd "$TOP_LEVEL\/sveltejs"' modules/contrib/project_browser/commit-code-check.sh
           - sed -i '/.*FINAL_STATUS" == "1".*/i yarn install' modules/contrib/project_browser/commit-code-check.sh
           - sed -i '/.*FINAL_STATUS" == "1".*/i yarn lint:svelte' modules/contrib/project_browser/commit-code-check.sh

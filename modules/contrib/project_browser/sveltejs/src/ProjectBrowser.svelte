@@ -15,9 +15,9 @@
     searchString,
     activeTab,
     categoryCheckedTrack,
-    uiCapabilities,
     sortCriteria,
     preferredView,
+    pageSize,
   } from './stores';
   import MediaQuery from './MediaQuery.svelte';
   import {
@@ -31,6 +31,7 @@
     SORT_OPTIONS,
     MODULE_STATUS,
     ALLOW_UI_INSTALL,
+    PM_VALIDATION_ERROR,
   } from './constants';
 
   const { Drupal } = window;
@@ -40,7 +41,6 @@
   let sources = [];
   let dataArray = [];
   const pageIndex = 0; // first row
-  const pageSize = 12;
 
   let loading = true;
   // eslint-disable-next-line import/no-mutable-exports,import/prefer-default-export
@@ -73,7 +73,7 @@
     loading = true;
     const searchParams = new URLSearchParams({
       page: _page,
-      limit: pageSize,
+      limit: $pageSize,
       sort: $sort,
       source: $activeTab,
     });
@@ -130,55 +130,6 @@
   }
 
   /**
-   * Queries an endpoint to get information regarding a site's ability to
-   * handle UI installs.
-   *
-   * @todo this probably does not need to be done client side. Moving this to
-   * logic that updates drupalSettings in BrowserController can potentially do
-   * this with less complexity. The one hurdle is adding the conditions for
-   * adding this in a manner that does not fail if Package Manager isn't
-   * installed.
-   *
-   * @return {Promise}
-   *   So this can be awaited.
-   */
-  function setUiCapabilites() {
-    return new Promise((accept, reject) => {
-      const url = `${ORIGIN_URL}/admin/modules/project_browser/install-readiness`;
-      fetch(url)
-        .then(async (response) => {
-          if (!response.ok) {
-            if (response.status === 404) {
-              return Promise.reject(Drupal.t(`unable to reach ${url}`));
-            }
-            const responseContent = await response.text();
-            try {
-              const responseAsJson = JSON.parse(responseContent);
-              return Promise.reject(responseAsJson);
-            } catch (error) {
-              return Promise.reject(responseContent);
-            }
-          }
-          return response.json();
-        })
-        .then((json) => {
-          uiCapabilities.set({
-            stage_available: json.stage_available,
-            pm_validation_error: json.pm_validation,
-          });
-          accept(true);
-        })
-        .catch((err) => {
-          uiCapabilities.set({
-            stage_available: false,
-            pm_validation_error: err,
-          });
-          reject(err);
-        });
-    });
-  }
-
-  /**
    * Load remote data when the Svelte component is mounted.
    */
   onMount(async () => {
@@ -199,14 +150,6 @@
       await filterRecommended();
     }
 
-    if (ALLOW_UI_INSTALL) {
-      try {
-        await setUiCapabilites();
-      } catch (e) {
-        // Errors already reported elsewhere;
-      }
-    }
-
     await load($page);
     const focus = document.getElementById(element);
     if (focus) {
@@ -217,6 +160,11 @@
 
   function onPageChange(event) {
     page.set(event.detail.page);
+    load($page);
+  }
+
+  function onPageSizeChange() {
+    page.set(0);
     load($page);
   }
 
@@ -299,7 +247,7 @@
 </script>
 
 <MediaQuery query="(min-width: 1200px)" let:matches>
-  <ProjectGrid {loading} {rows} {pageIndex} {pageSize} let:rows>
+  <ProjectGrid {loading} {rows} {pageIndex} {$pageSize} let:rows>
     <div slot="top">
       <Search
         on:search={onSearch}
@@ -309,62 +257,81 @@
         {searchText}
       />
       {#if matches}
-        <div class="toggle-buttons">
+        <div class="project-browser__toggle-buttons">
           <button
-            class:selected={toggleView === 'List'}
-            class="toggle list-button"
+            class:project-browser__selected-tab={toggleView === 'List'}
+            class="project-browser__toggle project-browser__list-button"
             value="List"
             on:click={(e) => {
               toggleView = 'List';
               onToggle(e.target.value);
             }}
           >
-            <img src="{FULL_MODULE_PATH}/images/list.svg" alt="" />
+            <img
+              class="project-browser__list-icon"
+              src="{FULL_MODULE_PATH}/images/list.svg"
+              alt=""
+            />
             {Drupal.t('List')}
           </button>
           <button
-            class:selected={toggleView === 'Grid'}
-            class="toggle grid-button"
+            class:project-browser__selected-tab={toggleView === 'Grid'}
+            class="project-browser__toggle project-browser__grid-button"
             value="Grid"
             on:click={(e) => {
               toggleView = 'Grid';
               onToggle(e.target.value);
             }}
           >
-            <img src="{FULL_MODULE_PATH}/images/grid-fill.svg" alt="" />
+            <img
+              class="project-browser__grid-icon"
+              src="{FULL_MODULE_PATH}/images/grid-fill.svg"
+              alt=""
+            />
             {Drupal.t('Grid')}
           </button>
         </div>
       {/if}
       {#if dataArray.length >= 2}
-        <div class="plugin-tabs">
-          {#each dataArray as dataValue}
-            <button
-              class:selected={$activeTab === dataValue.pluginId}
-              class="toggle plugin-tab"
-              value={dataValue.pluginId}
-              on:click={(e) => {
-                toggleRows(e.target.value);
-              }}
-            >
-              {dataValue.pluginLabel}
-              {dataValue.totalResults}
-              {Drupal.t('Results')}
-            </button>
-          {/each}
-        </div>
+        <nav aria-label={Drupal.t('Plugin tabs')}>
+          <div class="project-browser__plugin-tabs">
+            {#each dataArray as dataValue}
+              <button
+                class:project-browser__selected-tab={$activeTab ===
+                  dataValue.pluginId}
+                class="project-browser__toggle project-browser__plugin-tab"
+                value={dataValue.pluginId}
+                on:click={(e) => {
+                  toggleRows(e.target.value);
+                }}
+              >
+                {dataValue.pluginLabel}
+                {dataValue.totalResults}
+                {Drupal.t('Results')}
+              </button>
+            {/each}
+          </div>
+        </nav>
       {/if}
       <!-- If UI installs are enabled, but the site configuration does not them,
            display a message informing the user what must be changed for UI
            installs to work. -->
-      {#if $uiCapabilities.pm_validation_error && typeof $uiCapabilities.pm_validation_error === 'string' && MODULE_STATUS.package_manager && ALLOW_UI_INSTALL}
-        <div class="install-warning">
-          <p class="warning-header">
+      {#if PM_VALIDATION_ERROR && typeof PM_VALIDATION_ERROR === 'string' && MODULE_STATUS.package_manager && ALLOW_UI_INSTALL}
+        <div class="project-browser__install-warning">
+          <p class="project-browser__warning-header">
             <strong>{Drupal.t('Unable to download modules via the UI')}</strong>
           </p>
-          <p><em>{@html $uiCapabilities.pm_validation_error}</em></p>
+          <p class="project-browser__warning">
+            <em>{@html PM_VALIDATION_ERROR}</em>
+          </p>
         </div>
       {/if}
+      <Pagination
+        page={$page}
+        count={$rowsCount}
+        on:pageChange={onPageChange}
+        on:pageSizeChange={onPageSizeChange}
+      />
     </div>
 
     <div slot="left">
@@ -379,17 +346,16 @@
     <div slot="bottom">
       <Pagination
         page={$page}
-        {pageSize}
         count={$rowsCount}
-        serverSide={true}
         on:pageChange={onPageChange}
+        on:pageSizeChange={onPageSizeChange}
       />
     </div>
   </ProjectGrid>
 </MediaQuery>
 
 <style>
-  .toggle {
+  .project-browser__toggle {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -403,49 +369,68 @@
     border: none;
   }
 
-  .toggle img {
+  .project-browser__list-icon,
+  .project-browser__grid-icon {
     pointer-events: none;
   }
-  .toggle:first-child {
-    margin-left: auto;
+  .project-browser__toggle:first-child {
+    margin-inline-start: auto;
   }
-  .toggle-buttons {
+  .project-browser__toggle-buttons {
     display: flex;
-    margin-right: 25px;
+    margin-inline-end: 25px;
   }
-  .toggle.list-button {
-    margin-right: 5px;
+  .project-browser__toggle:focus {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 5px #26a769;
+  }
+  .project-browser__toggle.project-browser__list-button {
+    margin-inline-end: 5px;
     border-radius: 2px 0 0 2px;
     cursor: pointer;
   }
-  .toggle.grid-button {
+  .project-browser__toggle.project-browser__grid-button {
     border-radius: 0 2px 2px 0;
     cursor: pointer;
+    margin-inline-end: 5px;
   }
-  .selected {
+  .project-browser__selected-tab {
     background-color: #adaeb3;
   }
-  .plugin-tabs {
+  .project-browser__plugin-tabs {
     display: flex;
   }
-  .plugin-tab {
+  .project-browser__plugin-tab {
     margin-right: 5px;
+    margin-left: 5px;
     width: 33%;
     height: auto;
     min-height: 30px;
     cursor: pointer;
   }
-  .plugin-tabs .toggle {
-    margin-left: 0;
+  .project-browser__plugin-tabs .project-browser__toggle {
+    margin-inline-start: 0;
   }
-  .install-warning {
+  .project-browser__install-warning {
     border: 1px solid red;
     padding: 1em;
   }
-  .install-warning p {
+  .project-browser__warning {
     margin: 0.5em 0;
   }
-  .warning-header {
+  .project-browser__warning-header {
     color: red;
+  }
+  @media (forced-colors: active) {
+    .project-browser__toggle {
+      border: 1px solid;
+    }
+    @media (prefers-color-scheme: dark) {
+      .project-browser__list-icon {
+        filter: invert(1);
+      }
+      .project-browser__grid-icon {
+        filter: invert(1);
+      }
+    }
   }
 </style>

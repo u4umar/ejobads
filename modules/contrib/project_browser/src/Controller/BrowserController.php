@@ -7,6 +7,7 @@ use Drupal\Core\Extension\InfoParserException;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\project_browser\EnabledSourceHandler;
+use Drupal\project_browser\InstallReadiness;
 use Drupal\project_browser\Plugin\ProjectBrowserSourceBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -55,6 +56,13 @@ class BrowserController extends ControllerBase {
   protected $cacheBin;
 
   /**
+   * The install readiness service.
+   *
+   * @var \Drupal\project_browser\InstallReadiness
+   */
+  private $installReadiness;
+
+  /**
    * Build the project browser controller.
    *
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
@@ -65,13 +73,16 @@ class BrowserController extends ControllerBase {
    *   The request stack.
    * @param \Drupal\project_browser\EnabledSourceHandler $enabled_source
    *   The enabled source.
+   * @param \Drupal\project_browser\InstallReadiness|NULL install_readiness
+   *   The install readiness service.
    */
-  public function __construct(ModuleHandlerInterface $module_handler, ModuleExtensionList $module_list, RequestStack $request_stack, EnabledSourceHandler $enabled_source) {
+  public function __construct(ModuleHandlerInterface $module_handler, ModuleExtensionList $module_list, RequestStack $request_stack, EnabledSourceHandler $enabled_source, InstallReadiness|null $install_readiness) {
     $this->moduleHandler = $module_handler;
     $this->moduleList = $module_list;
     $this->requestStack = $request_stack;
     $this->enabledSource = $enabled_source;
     $this->cacheBin = $this->cache('project_browser');
+    $this->installReadiness = $install_readiness;
   }
 
   /**
@@ -83,6 +94,7 @@ class BrowserController extends ControllerBase {
       $container->get('extension.list.module'),
       $container->get('request_stack'),
       $container->get('project_browser.enabled_source'),
+      $container->has('project_browser.install_readiness') ? $container->get('project_browser.install_readiness') : NULL,
     );
   }
 
@@ -106,6 +118,7 @@ class BrowserController extends ControllerBase {
     $modules_status = $this->getModuleStatuses();
     $request = $this->requestStack->getCurrentRequest();
     $current_sources = $this->enabledSource->getCurrentSources();
+    $ui_install_enabled = (bool) $this->config('project_browser.admin_settings')->get('allow_ui_install') && (bool) $this->installReadiness;
 
     if (!empty($current_sources['drupalorg_mockapi']) && !$module_name) {
       $this->messenger()
@@ -142,7 +155,9 @@ class BrowserController extends ControllerBase {
             'development_options' => $current_source->getDevelopmentOptions(),
             'default_plugin_id' => $current_source->getPluginId(),
             'current_sources_keys' => $current_sources_keys,
-            'ui_install' => (bool) $this->config('project_browser.admin_settings')->get('allow_ui_install'),
+            'ui_install' => $ui_install_enabled,
+            'stage_available' => $ui_install_enabled ? $this->installReadiness->installerAvailable() : FALSE,
+            'pm_validation' => $ui_install_enabled ? $this->installReadiness->validatePackageManager() : TRUE,
           ],
         ],
       ],

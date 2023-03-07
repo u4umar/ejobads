@@ -4,7 +4,7 @@
 </script>
 
 <div
-  class="ajax-progress ajax-progress--fullscreen"
+  class="loading__ajax-progress ajax-progress--fullscreen"
   class:absolute={positionAbsolute}
 >
   <div class="ajax-progress__throbber ajax-progress__throbber--fullscreen">
@@ -13,7 +13,7 @@
 </div>
 
 <style>
-  .ajax-progress {
+  .loading__ajax-progress {
     display: inline-block;
   }
 
@@ -25,7 +25,7 @@
     box-sizing: border-box;
     width: 1.125rem;
     height: 1.125rem;
-    animation: claro-throbber 0.75s linear infinite;
+    animation: pb-throbber 0.75s linear infinite;
     border: 2px solid #003cc5;
     border-right: 2px dotted transparent;
     border-radius: 50%;
@@ -58,19 +58,7 @@
     border-right: 3px dotted transparent;
   }
 
-  @media screen and (-ms-high-contrast: active) {
-    /**
-     * Throbber animation is shaky on Edge RTL on high contrast for border width
-     * less than 4px.
-     */
-    @supports (-ms-ime-align: auto) {
-      [dir='rtl'] .ajax-progress__throbber {
-        border-width: 4px;
-      }
-    }
-  }
-
-  @keyframes claro-throbber {
+  @keyframes pb-throbber {
     0% {
       transform: rotateZ(0);
     }

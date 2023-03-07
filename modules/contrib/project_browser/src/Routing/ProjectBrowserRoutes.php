@@ -5,7 +5,6 @@ namespace Drupal\project_browser\Routing;
 use Drupal\project_browser\Controller\InstallerController;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\project_browser\Controller\InstallReadinessController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Route;
 
@@ -159,17 +158,6 @@ class ProjectBrowserRoutes implements ContainerInjectionInterface {
         '_custom_access' => InstallerController::class . '::access',
       ],
     );
-    $routes['project_browser.install.readiness'] = new Route(
-      '/admin/modules/project_browser/install-readiness',
-      [
-        '_controller' => InstallReadinessController::class . '::checkReadiness',
-        '_title' => 'UI Install Readiness',
-      ],
-      [
-        '_permission' => 'administer modules',
-      ],
-    );
-
     return $routes;
   }
 

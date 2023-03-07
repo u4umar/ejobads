@@ -21,8 +21,26 @@
   const showFallback = (ev) => {
     ev.target.src = fallbackImage;
   };
+
+  /**
+   * Props for the images used in the carousel.
+   *
+   * @param {string} src
+   *   The source attribute.
+   * @param {string} alt
+   *   The alt attribute, defaults to 'Placeholder' if undefined.
+   *
+   * @return {{src, alt: string, class: string}}
+   *   An object of element attributes
+   */
+  const defaultImgProps = (src, alt) => ({
+    src,
+    alt: typeof alt !== 'undefined' ? alt : Drupal.t('Placeholder'),
+    class: `${$$props.class} `,
+  });
 </script>
 
+<!-- svelte-ignore a11y-missing-attribute -->
 {#if normalizedSources.length}
   {#if normalizedSources[index].file.resource === 'image'}
     <img
@@ -34,38 +52,21 @@
   {:else if (normalizedSources[index].file.resource = 'file')}
     <!-- Keeping this block for compatibility with the mockapi. -->
     {#await fetchEntity(normalizedSources[index].file.uri)}
-      <img
-        src={fallbackImage}
-        alt={Drupal.t('Placeholder')}
-        class={$$props.class}
-      />
+      <img {...defaultImgProps(fallbackImage)} />
     {:then file}
-      <img
-        src={file.url}
-        alt=""
-        on:error={showFallback}
-        class={$$props.class}
-      />
+      <img {...defaultImgProps(file.url, '')} on:error={showFallback} alt="" />
     {:catch error}
-      <span style="color: red">{error.message}</span>
+      <span class="image_error" style="color: red">{error.message}</span>
     {/await}
   {:else}
-    <img
-      src={fallbackImage}
-      alt={Drupal.t('Placeholder')}
-      class={$$props.class}
-    />
+    <img {...defaultImgProps(fallbackImage)} />
   {/if}
 {:else}
-  <img
-    src={fallbackImage}
-    alt={Drupal.t('Placeholder')}
-    class={$$props.class}
-  />
+  <img {...defaultImgProps(fallbackImage)} />
 {/if}
 
 <style>
-  img {
+  :global(.image-carousel__slider-image, .project__logo) {
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -74,7 +75,7 @@
   }
   /* Small devices (portrait tablets and large phones, 600px and up) */
   @media only screen and (min-width: 600px) {
-    img {
+    :global(.image-carousel__slider-image, .project__logo) {
       display: block;
       width: auto;
       border-radius: 5px;

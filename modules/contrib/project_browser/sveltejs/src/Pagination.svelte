@@ -1,12 +1,19 @@
 <script>
+  import { createEventDispatcher } from 'svelte';
   import PagerItem from './PagerItem.svelte';
+  import { pageSize } from './stores';
+
+  const dispatch = createEventDispatcher();
+
+  function pageSizeChange() {
+    dispatch('pageSizeChange');
+  }
 
   const { Drupal } = window;
 
   export let buttons = [-4, -3, -2, -1, 0, 1, 2, 3, 4];
   export let count;
   export let page = 0;
-  export let pageSize;
 
   export let labels = {
     first: Drupal.t('First'),
@@ -15,17 +22,39 @@
     previous: Drupal.t('Previous'),
   };
 
-  $: pageCount = Math.ceil(count / pageSize) - 1;
+  $: pageCount = Math.ceil(count / $pageSize) - 1;
+  const options = [
+    { id: 12, value: 12 },
+    { id: 24, value: 24 },
+    { id: 36, value: 36 },
+    { id: 48, value: 48 },
+  ];
 </script>
 
 <!-- svelte-ignore a11y-no-redundant-roles -->
 {#if pageCount > 0}
   <nav
-    class="pager"
+    class="pagination__pager"
     aria-label={Drupal.t('Project Browser Pagination')}
     role="navigation"
   >
-    <ul class="pager__items js-pager__items">
+    <label for="num-projects">
+      {Drupal.t('Show projects')}
+    </label>
+    <select
+      class="pagination__num-projects"
+      id="num-projects"
+      name="num-projects"
+      bind:value={$pageSize}
+      on:change={() => {
+        pageSizeChange();
+      }}
+    >
+      {#each options as option}
+        <option value={option.id}>{option.value}</option>
+      {/each}
+    </select>
+    <ul class="pagination__pager-items pager__items js-pager__items">
       {#if page !== 0}
         <PagerItem
           on:pageChange
@@ -85,3 +114,19 @@
     </ul>
   </nav>
 {/if}
+
+<style>
+  .pagination__pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pagination__num-projects {
+    margin: 0 10px;
+  }
+  @media only screen and (max-width: 32rem) {
+    .pagination__pager {
+      flex-direction: column;
+    }
+  }
+</style>

@@ -60,19 +60,14 @@ class ProjectBrowserInstallerUiTest extends WebDriverTestBase {
     $assert_session = $this->assertSession();
     $this->drupalGet('admin/modules/browse');
     $this->svelteInitHelper('text', 'Cream cheese on a bagel');
-    $cream_cheese_module_selector = '#project-browser .box-2 ul > li:nth-child(1)';
+    $cream_cheese_module_selector = '#project-browser .project-browser__main ul > li:nth-child(1)';
     $download_button = $assert_session->waitForElementVisible('css', "$cream_cheese_module_selector button");
     $this->assertNotEmpty($download_button);
     $this->assertSame('Add and Install Cream cheese on a bagel', $download_button->getText());
     $download_button->click();
-    $popup = $assert_session->waitForElementVisible('css', '.project-browser-popup');
-    $this->assertNotEmpty($popup);
-    $this->assertStringContainsString('Project cream_cheese was installed successfully', $popup->getText());
-    $popup->find('css', 'button[title="Close"]')->click();
-    $assert_session->assertNoElementAfterWait('css', "$cream_cheese_module_selector button");
-    $installed_action = $assert_session->waitForElementVisible('css', "$cream_cheese_module_selector .action");
-    $this->assertNotEmpty($installed_action);
-    $this->assertSame('Cream cheese on a bagel is ✓ Installed', $installed_action->getText());
+    $installed_action = $assert_session->waitForElementVisible('css', "$cream_cheese_module_selector .project_status-indicator");
+    $assert_session->waitForText('✓ Cream cheese on a bagel is Installed');
+    $this->assertSame('✓ Cream cheese on a bagel is Installed', $installed_action->getText());
   }
 
   /**
@@ -88,7 +83,7 @@ class ProjectBrowserInstallerUiTest extends WebDriverTestBase {
 
     $this->drupalGet('admin/modules/browse');
     $this->svelteInitHelper('text', 'Pinky and the Brain');
-    $pinky_brain_selector = '#project-browser .box-2 ul > li:nth-child(2)';
+    $pinky_brain_selector = '#project-browser .project-browser__main ul > li:nth-child(2)';
     $action_button = $assert_session->waitForElementVisible('css', "$pinky_brain_selector button");
     $this->assertNotEmpty($action_button);
     $this->assertSame('Install Pinky and the Brain', $action_button->getText());
@@ -119,7 +114,7 @@ class ProjectBrowserInstallerUiTest extends WebDriverTestBase {
     $this->drupalGet('admin/modules/browse');
     $this->svelteInitHelper('text', 'Pinky and the Brain');
 
-    $cream_cheese_module_selector = '#project-browser .box-2 ul > li:nth-child(1)';
+    $cream_cheese_module_selector = '#project-browser .project-browser__main ul > li:nth-child(1)';
     $download_button = $assert_session->waitForElementVisible('css', "$cream_cheese_module_selector button");
     $this->assertNotEmpty($download_button);
     $this->assertSame('Add and Install Cream cheese on a bagel', $download_button->getText());
@@ -152,7 +147,7 @@ class ProjectBrowserInstallerUiTest extends WebDriverTestBase {
     $this->svelteInitHelper('text', 'Cream cheese on a bagel');
     // Try beginning another install while one is in progress, but not yet in
     // the applying stage.
-    $cream_cheese_module_selector = '#project-browser .box-2 ul > li:nth-child(1)';
+    $cream_cheese_module_selector = '#project-browser .project-browser__main ul > li:nth-child(1)';
     $cream_cheese_button = $page->find('css', "$cream_cheese_module_selector button");
     $cream_cheese_button->click();
 
@@ -164,7 +159,10 @@ class ProjectBrowserInstallerUiTest extends WebDriverTestBase {
     // Try beginning another install after breaking lock.
     $cream_cheese_button = $page->find('css', "$cream_cheese_module_selector button");
     $cream_cheese_button->click();
-    $this->assertTrue($assert_session->waitForText('Project cream_cheese was installed successfully'));
+    $installed_action = $assert_session->waitForElementVisible('css', "$cream_cheese_module_selector .project_status-indicator");
+    $assert_session->waitForText('✓ Cream cheese on a bagel is Installed');
+    $this->assertSame('✓ Cream cheese on a bagel is Installed', $installed_action->getText());
+
   }
 
   /**
@@ -184,7 +182,7 @@ class ProjectBrowserInstallerUiTest extends WebDriverTestBase {
     $this->svelteInitHelper('text', 'Cream cheese on a bagel');
     // Try beginning another install while one is in progress, but not yet in
     // the applying stage.
-    $cream_cheese_module_selector = '#project-browser .box-2 ul > li:nth-child(1)';
+    $cream_cheese_module_selector = '#project-browser .project-browser__main ul > li:nth-child(1)';
     $cream_cheese_button = $page->find('css', "$cream_cheese_module_selector button");
     $cream_cheese_button->click();
     $this->assertTrue($assert_session->waitForText('The install staging area was locked less than 1 minutes ago. This is recent enough that a legitimate installation may be in progress. Consider waiting before unlocking the installation staging area.'));
@@ -194,7 +192,10 @@ class ProjectBrowserInstallerUiTest extends WebDriverTestBase {
     // Try beginning another install after breaking lock.
     $cream_cheese_button = $page->find('css', "$cream_cheese_module_selector button");
     $cream_cheese_button->click();
-    $this->assertTrue($assert_session->waitForText('Project cream_cheese was installed successfully'));
+    $installed_action = $assert_session->waitForElementVisible('css', "$cream_cheese_module_selector .project_status-indicator");
+    $assert_session->waitForText('✓ Cream cheese on a bagel is Installed');
+    $this->assertSame('✓ Cream cheese on a bagel is Installed', $installed_action->getText());
+
   }
 
 }

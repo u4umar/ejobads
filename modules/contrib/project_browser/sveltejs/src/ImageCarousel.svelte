@@ -9,80 +9,88 @@
   const { Drupal } = window;
   let index = 0;
 
-  const enableDisableButton = () => {
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    prevBtn.disabled = index === 0;
-    nextBtn.disabled = index === sources.length - 1;
-  };
-  const next = () => {
-    index = (index + 1) % sources.length;
-    enableDisableButton();
-  };
-  const prev = () => {
-    index = (index + sources.length - 1) % sources.length;
-    enableDisableButton();
-  };
   const missingAltText = () => !!sources.filter((src) => !src.alt).length;
+
+  /**
+   * Props for a slide next/previous button.
+   *
+   * @param {string} dir
+   *   The direction of the button.
+   * @return {{disabled: boolean, class: string}}
+   *   The slide props.
+   */
+  const buttonProps = (dir) => ({
+    class: `image-carousel__slide-btn image-carousel__slide-btn--${dir}`,
+    disabled: dir === 'right' ? index === sources.length - 1 : index === 0,
+  });
+
+  /**
+   * Props for a slide next/previous button image.
+   *
+   * @param {string} dir
+   *   The direction of the button
+   * @return {{src: string, alt: *}}
+   *   The slide button Props
+   */
+  const imgProps = (dir) => ({
+    src: `${FULL_MODULE_PATH}/images/slide-icon.svg`,
+    alt: dir === 'right' ? Drupal.t('Slide right') : Drupal.t('Slide left'),
+  });
 </script>
 
-<div
-  class="carousel"
-  aria-hidden={missingAltText()}
-  on:load={enableDisableButton}
->
+<!-- svelte-ignore a11y-missing-attribute -->
+<div class="image-carousel__carousel" aria-hidden={missingAltText()}>
   {#if sources.length}
-    <button id="prev-btn" class="slide-btn" on:click={prev} disabled="false"
-      ><img
-        class="slide-btn"
-        src="{FULL_MODULE_PATH}/images/slide-icon.svg"
-        alt={Drupal.t('Slide left')}
-      /></button
+    <button
+      on:click={() => {
+        index = (index + sources.length - 1) % sources.length;
+      }}
+      {...buttonProps('left')}><img {...imgProps('left')} /></button
     >
   {/if}
-  <Image {sources} {index} class="slider-img" />
+  <Image {sources} {index} class="image-carousel__slider-image" />
   {#if sources.length}
-    <button id="next-btn" class="slide-btn slide-right" on:click={next}
-      ><img
-        class="slide-btn"
-        src="{FULL_MODULE_PATH}/images/slide-icon.svg"
-        alt={Drupal.t('Slide right')}
-      /></button
+    <button
+      on:click={() => {
+        index = (index + 1) % sources.length;
+      }}
+      {...buttonProps('right')}><img {...imgProps('right')} /></button
     >
   {/if}
 </div>
 
 <style>
-  .carousel {
+  .image-carousel__carousel {
     display: flex;
     align-items: center;
     width: 100%;
     height: 400px;
   }
-  :global(.slider-img) {
+  :global(.image-carousel__slider-image) {
     min-width: 650px;
     min-height: 400px;
     margin: 10px;
   }
-  .slide-btn {
+
+  .image-carousel__slide-btn--right {
+    transform: rotate(180deg);
+  }
+  .image-carousel__slide-btn {
+    margin: 0 10px;
+    cursor: pointer;
+  }
+  .image-carousel__slide-btn:disabled {
+    opacity: 0.5;
+    cursor: inherit;
+  }
+  .image-carousel__slide-btn > img {
     background: transparent;
     border: none;
     width: 50px;
     height: 59px;
   }
-  .slide-right {
-    transform: rotate(180deg);
-  }
-  button {
-    margin: 0 10px;
-    cursor: pointer;
-  }
-  .slide-btn:disabled {
-    opacity: 0.5;
-    cursor: inherit;
-  }
   @media only screen and (max-width: 600px) {
-    :global(.slider-img) {
+    :global(.image-carousel__slider-image) {
       min-width: 60%;
       min-height: 60%;
     }

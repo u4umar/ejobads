@@ -19,7 +19,6 @@ class ProjectBrowserServiceProvider extends ServiceProviderBase {
       $container->register('project_browser.installer')
         ->setClass(Installer::class)
         ->setArguments([
-          new Reference('config.factory'),
           new Reference('package_manager.path_locator'),
           new Reference('package_manager.beginner'),
           new Reference('package_manager.stager'),
@@ -30,6 +29,12 @@ class ProjectBrowserServiceProvider extends ServiceProviderBase {
           new Reference('datetime.time'),
           new Reference(PathFactoryInterface::class),
           new Reference('package_manager.failure_marker'),
+        ]);
+      $container->register('project_browser.install_readiness')
+        ->setClass(InstallReadiness::class)
+        ->setArguments([
+          new Reference('project_browser.installer'),
+          new Reference('event_dispatcher'),
         ]);
     }
   }

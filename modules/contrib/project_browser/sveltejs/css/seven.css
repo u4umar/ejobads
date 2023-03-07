@@ -106,7 +106,7 @@
 .project-browser-popup button {
   background: transparent;
   border: none;
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 .project-browser-popup button:hover {
   cursor: pointer;
@@ -118,8 +118,9 @@
   background-color: #282c34;
   border-radius: 6px;
   font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
-  padding: 1rem 0.25rem 1rem 1rem;
-  margin: 0.85rem 0;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-inline: 1rem 0.25rem;  margin: 0.85rem 0;
 }
 .project-browser-popup .copied-download,
 .copied-install {

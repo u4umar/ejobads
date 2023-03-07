@@ -78,9 +78,9 @@ trait ProjectBrowserUiTestTrait {
    * Opens the advanced filter element.
    */
   protected function openAdvancedFilter() {
-    $filter_icon_selector = $this->getSession()->getPage()->find('css', '.advanced-filter-btn');
+    $filter_icon_selector = $this->getSession()->getPage()->find('css', '.search__filter__toggle');
     $filter_icon_selector->click();
-    $this->assertSession()->waitForElementVisible('css', '.advanced-filter-btn[aria-expanded="true"]');
+    $this->assertSession()->waitForElementVisible('css', '.search__filter__toggle[aria-expanded="true"]');
   }
 
   /**

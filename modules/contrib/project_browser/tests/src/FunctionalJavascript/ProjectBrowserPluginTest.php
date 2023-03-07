@@ -47,11 +47,11 @@ class ProjectBrowserPluginTest extends WebDriverTestBase {
 
     $this->getSession()->resizeWindow(1200, 1200);
     $this->drupalGet('admin/modules/browse');
-    $this->svelteInitHelper('css', '#project-browser .grid');
-    $this->assertEquals('Grid', $this->getElementText('#project-browser .toggle-buttons .grid-button'));
+    $this->svelteInitHelper('css', '#project-browser .project--grid');
+    $this->assertEquals('Grid', $this->getElementText('#project-browser .project-browser__toggle-buttons .project-browser__grid-button'));
     $assert_session->waitForElementVisible('css', '#project-browser .project');
     $this->assertTrue($assert_session->waitForText('Results'));
-    $assert_session->pageTextNotContains('No records available');
+    $assert_session->pageTextNotContains('No modules found');
   }
 
   /**
@@ -61,8 +61,8 @@ class ProjectBrowserPluginTest extends WebDriverTestBase {
     $assert_session = $this->assertSession();
 
     $this->drupalGet('admin/modules/browse');
-    $this->svelteInitHelper('css', '.pb-categories input[type="checkbox"]');
-    $assert_session->elementsCount('css', '.pb-categories input[type="checkbox"]', 20);
+    $this->svelteInitHelper('css', '.filter__checkbox');
+    $assert_session->elementsCount('css', '.filter__checkbox', 20);
   }
 
   /**
@@ -79,11 +79,11 @@ class ProjectBrowserPluginTest extends WebDriverTestBase {
     // Immediately clear filters so there are enough visible to enable paging.
     $this->svelteInitHelper('test', 'Clear Filters');
     $this->svelteInitHelper('css', '.pager__item--next');
-    $assert_session->elementsCount('css', '.pager__item--next', 1);
+    $assert_session->elementsCount('css', '.pager__item--next', 2);
 
     $page->find('css', 'a[aria-label="Next page"]')->click();
     $this->assertNotNull($assert_session->waitForElement('css', '.pager__item--previous'));
-    $assert_session->elementsCount('css', '.pager__item--previous', 1);
+    $assert_session->elementsCount('css', '.pager__item--previous', 2);
   }
 
   /**
@@ -96,7 +96,7 @@ class ProjectBrowserPluginTest extends WebDriverTestBase {
     $this->svelteInitHelper('text', 'Results');
 
     // Make sure the second filter applied is the security covered filter.
-    $this->assertEquals('Covered by a security policy', $this->getElementText('p.filters-applied:last-of-type .filter-label'));
+    $this->assertEquals('Covered by a security policy', $this->getElementText('p.filter-applied:last-of-type .filter-applied__label'));
 
     $this->openAdvancedFilter();
     $security_radio_option_selector = '.filter-group:last-child input:checked ~ label';
@@ -106,7 +106,7 @@ class ProjectBrowserPluginTest extends WebDriverTestBase {
     $this->assertEquals('Maintained', $this->getElementText($maintenance_radio_option_selector));
 
     // Clear the security covered filter.
-    $this->clickWithWait("p.filters-applied:last-of-type > button");
+    $this->clickWithWait("p.filter-applied:last-of-type > button");
     $this->assertEquals('Show all', $this->getElementText($security_radio_option_selector));
 
     // Clear all filters.
@@ -133,13 +133,10 @@ class ProjectBrowserPluginTest extends WebDriverTestBase {
   /**
    * Tests the not-compatible flag.
    */
-  public function testNotCompatibleButton(): void {
-    $page = $this->getSession()->getPage();
-
+  public function testNotCompatibleText(): void {
     $this->drupalGet('admin/modules/browse');
-    $this->svelteInitHelper('css', '.button.is-disabled');
-
-    $this->assertEquals('Not compatible', $this->getElementText('.button.is-disabled'));
+    $this->svelteInitHelper('css', '.project_status-indicator');
+    $this->assertEquals($this->getElementText('.project_status-indicator .visually-hidden') . ' Not compatible', $this->getElementText('.project_status-indicator'));
   }
 
   /**
@@ -153,6 +150,7 @@ class ProjectBrowserPluginTest extends WebDriverTestBase {
     $assert_session->waitForElementVisible('css', '#project-browser .project');
     $this->assertTrue($assert_session->waitForText('Results'));
 
+    $assert_session->waitForElementVisible('css', '.project .project__title');
     $first_project_selector = $page->find('css', '.project .project__title');
     $first_project_selector->click();
     $this->assertTrue($assert_session->waitForText('sites report using this module'));

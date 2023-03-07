@@ -533,7 +533,6 @@ class InstallerController extends ControllerBase {
       'phase' => 'destroy',
       'status' => self::STAGE_STATUS_OK,
       'stage_id' => $stage_id,
-      'message' => $this->t('Project @project was downloaded successfully', ['@project' => $project_id]),
     ]);
   }
 
@@ -558,7 +557,6 @@ class InstallerController extends ControllerBase {
     $this->projectBrowserTempStore->delete('installing');
     return new JsonResponse([
       'status' => 0,
-      'message' => $this->t('Project @project was installed successfully', ['@project' => $project_id]),
     ]);
   }
 

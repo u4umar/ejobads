@@ -3,8 +3,9 @@
   import ActionButton from './Project/ActionButton.svelte';
   import Image from './Project/Image.svelte';
   import ImageCarousel from './ImageCarousel.svelte';
-  import { FULL_MODULE_PATH, ORIGIN_URL } from './constants';
+  import { ORIGIN_URL } from './constants';
   import { moduleCategoryFilter, page } from './stores';
+  import ProjectIcon from './Project/ProjectIcon.svelte';
 
   // eslint-disable-next-line import/no-mutable-exports,import/prefer-default-export
   export let project;
@@ -26,50 +27,56 @@
   });
 </script>
 
-<ol class="pb-breadcrumb">
-  <li class="pb-breadcrumb-item">
-    <a href="/admin/modules/browse"> ‹ {Drupal.t('Browse')}</a>
-  </li>
-  <li class="pb-breadcrumb-item">
-    ‹ {project.title}
-  </li>
-</ol>
+<a
+  class="module-page--back-to-browsing action-link"
+  href="{ORIGIN_URL}/admin/modules/browse"
+>
+  <span aria-hidden="true">&#9001&#xA0</span>
+  {Drupal.t('Back to Browsing')}
+</a>
 
-<div class="container">
-  <div class="box-1">
-    <Image sources={project.logo} class="project-logo" />
-    <div class="action-btn">
+<div class="module-page__wrapper">
+  <div class="module-page__sidebar">
+    <Image sources={project.logo} class="module-page__project-logo" />
+    <div class="module-page__action-button-wrapper">
       <ActionButton {project} />
     </div>
-    <div class="division" />
+    <div class="module-page__divider">&nbsp;</div>
     <h4>{Drupal.t('Details')}</h4>
-    <div class="project-data">
+    <div class="module-page__project-data">
       {#if project.module_categories.length}
-        <p id="categories">{Drupal.t('Categories:')}</p>
-        <ul class="category-list" aria-labelledby="categories">
+        <p class="module-page__categories-label" id="categories">
+          {Drupal.t('Categories:')}
+        </p>
+        <ul class="module-page__category-list" aria-labelledby="categories">
           {#each project.module_categories || [] as category}
-            <li on:click={filterByCategory(category.id)} class="category on">
+            <li
+              on:click={() => filterByCategory(category.id)}
+              class="module-page__category-list-item"
+            >
               {category.name}
             </li>
           {/each}
         </ul>
       {/if}
-      <div class="module-details">
+      <div class="module-page__module-details-grid">
         {#if project.is_compatible}
-          <img
-            class="icon"
-            src="{FULL_MODULE_PATH}/images/compatible-icon.svg"
-            alt={Drupal.t('Compatible')}
+          <ProjectIcon
+            type="compatible"
+            variant="module-details"
+            classes="module-page__module-details-grid__icon"
           />
-          <p>{Drupal.t('Compatible with your Drupal installation')}</p>
+          <p class="module-page__module-details-grid__description">
+            {Drupal.t('Compatible with your Drupal installation')}
+          </p>
         {/if}
         {#if project.project_usage_total !== -1}
-          <img
-            class="icon"
-            src="{FULL_MODULE_PATH}/images/project-usage-icon.svg"
-            alt={Drupal.t('Project Usage')}
+          <ProjectIcon
+            type="usage"
+            variant="module-details"
+            classes="module-page__module-details-grid__icon"
           />
-          <p>
+          <p class="module-page__module-details-grid__description">
             {project.project_usage_total
               .toString()
               .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{Drupal.t(
@@ -78,12 +85,12 @@
           </p>
         {/if}
         {#if project.is_covered}
-          <img
-            class="icon"
-            src="{FULL_MODULE_PATH}/images/blue-security-shield-icon.svg"
-            alt={Drupal.t('Security Advisory Coverage')}
+          <ProjectIcon
+            type="status"
+            variant="module-details"
+            classes="module-page__module-details-grid__icon"
           />
-          <p>
+          <p class="module-page__module-details-grid__description">
             {Drupal.t(
               'Stable releases for this project are covered by the security advisory policy',
             )}
@@ -92,65 +99,64 @@
       </div>
     </div>
   </div>
-  <div class="box-2">
-    <h2>{project.title}</h2>
-    <p>{Drupal.t('By ')}{project.author.name}</p>
+  <div class="module-page__main">
+    <h2 class="module-page__h2">{project.title}</h2>
+    <p class="module-page__author">
+      {Drupal.t('By ')}{project.author.name}
+    </p>
     {#if project.project_images.length}
-      <div class="images">
+      <div class="module-page__carousel-wrapper">
         <ImageCarousel sources={project.project_images} />
       </div>
     {/if}
-    <div id="description-wrapper">{@html project.body.value}</div>
+    <div class="module-page__project-description" id="description-wrapper">
+      {@html project.body.value}
+    </div>
   </div>
 </div>
 
 <style>
-  .container {
+  .module-page__wrapper {
     display: flex;
-    text-align: left;
+    text-align: start;
   }
-  .pb-breadcrumb {
-    list-style-type: none;
-  }
-  .pb-breadcrumb-item {
-    display: inline;
-  }
-  .box-1 {
+  .module-page__sidebar {
     flex: 1;
     padding: 40px;
     display: flex;
     flex-direction: column;
   }
-  .box-2 {
+  .module-page__main {
     flex: 4;
     padding: 40px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
   }
-  .action-btn {
+  .module-page__action-button-wrapper {
     margin: 20px;
   }
-  .division {
+  .module-page__divider {
     border: 1px solid #000000;
   }
-  #categories {
+  .module-page__categories-label {
     font-weight: bold;
   }
-  .module-details {
+  .module-page__module-details-grid {
     display: grid;
     grid-template-columns: 0.5fr 2fr;
     line-height: 20px;
+    margin-top: 10px;
   }
-  .icon {
-    width: 25px;
-    height: 25px;
-    margin: 10% 0 0 40%;
+
+  .module-page__module-details-grid > :global(*:nth-child(odd)) {
+    margin: 10% 20% 0 40%;
   }
-  p {
+
+  .module-page__module-details-grid > :global(*:nth-child(even)) {
     margin: 5px 15px;
   }
-  .category-list {
+  .module-page__category-list {
     margin: 0.25em 0 0.25em 0;
     padding: 0;
     display: inline-block;
@@ -158,12 +164,12 @@
     height: 20px;
     cursor: pointer;
   }
-  .category.on {
+  .module-page__category-list-item {
     list-style: none;
     display: inline-block;
     margin-top: 5px;
     margin-bottom: 2px;
-    margin-left: 7px;
+    margin-inline-start: 7px;
     padding: 2px 9px;
     border-radius: 25px;
     background-color: #e5e5e5;
@@ -171,17 +177,17 @@
     font-weight: 600;
     color: #4f4f4f;
   }
-  :global(.project-logo) {
+  :global(.module-page__project-logo) {
     min-height: 200px;
   }
-  .images {
+  .module-page__carousel-wrapper {
     margin: 20px 0;
   }
-  a {
+  .module-page--back-to-browsing {
     text-decoration: none;
   }
   @media only screen and (max-width: 600px) {
-    .container {
+    .module-page__wrapper {
       flex-direction: column;
     }
   }

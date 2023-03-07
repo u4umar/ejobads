@@ -66,22 +66,6 @@ const storedSearchString = JSON.parse(sessionStorage.getItem('searchString')) ||
 export const searchString = writable(storedSearchString);
 searchString.subscribe((val) => sessionStorage.setItem('searchString', JSON.stringify(val)));
 
-// Information regarding UI install capabilities. The default values are ones
-// that do not allow UI installs. This object must be updated via a
-// compatibility check.
-// - pm_validation_error can be true, false or a string describing the unmet
-//   conditions that must be changed before a site can support UI installs. This
-//   must be false for UI install functionality to be available.
-// - stage_available must be true for UI install functionality to be available.
-//   This property is available for use cases where the site is UI install
-//   compatible, but the stage is currently being used by another process. This
-//   process could be another module install in progress, or a process from
-//   another module such as Automatic Updates.
-export const uiCapabilities = writable({
-  pm_validation_error: true,
-  stage_available: false,
-});
-
 // Store for sort criteria.
 const storedSortCriteria = JSON.parse(sessionStorage.getItem('sortCriteria')) || SORT_OPTIONS[storedActiveTab];
 export const sortCriteria = writable(storedSortCriteria);
@@ -91,3 +75,8 @@ sortCriteria.subscribe((val) => sessionStorage.setItem('sortCriteria', JSON.stri
 const storedPreferredView = JSON.parse(sessionStorage.getItem('preferredView')) || 'Grid';
 export const preferredView = writable(storedPreferredView);
 preferredView.subscribe((val) => sessionStorage.setItem('preferredView', JSON.stringify(val)));
+
+// Store the selected page size.
+const storedPageSize = JSON.parse(sessionStorage.getItem('pageSize')) || 12;
+export const pageSize = writable(storedPageSize);
+pageSize.subscribe((val) => sessionStorage.setItem('pageSize', JSON.stringify(val)));

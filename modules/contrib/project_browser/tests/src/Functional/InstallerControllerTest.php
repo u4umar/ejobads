@@ -212,7 +212,7 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
    */
   private function doDestroy() {
     $this->drupalGet("/admin/modules/project_browser/install-destroy/drupal/awesome_module/$this->stageId");
-    $expected_output = sprintf('{"phase":"destroy","status":0,"stage_id":"%s","message":"Project awesome_module was downloaded successfully"}', $this->stageId);
+    $expected_output = sprintf('{"phase":"destroy","status":0,"stage_id":"%s"}', $this->stageId);
     $this->assertSame($expected_output, $this->getSession()->getPage()->getContent());
     $this->assertInstallNotInProgress('awesome_module');
   }
@@ -518,7 +518,7 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
     $this->assertFalse($views_ui_checkbox->isChecked());
 
     $content = $this->drupalGet('admin/modules/project_browser/activate-module/views_ui');
-    $this->assertSame('{"status":0,"message":"Project views_ui was installed successfully"}', $content);
+    $this->assertSame('{"status":0}', $content);
     $this->rebuildContainer();
     $this->drupalGet('admin/modules');
     $views_checkbox = $this->getSession()->getPage()->find('css', '#edit-modules-views-enable');

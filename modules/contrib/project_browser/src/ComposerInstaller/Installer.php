@@ -2,11 +2,22 @@
 
 namespace Drupal\project_browser\ComposerInstaller;
 
+use Drupal\Component\Datetime\TimeInterface;
+use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\TempStore\SharedTempStoreFactory;
 use Drupal\package_manager\Event\StageEvent;
 use Drupal\package_manager\Exception\ApplyFailedException;
 use Drupal\package_manager\Exception\StageValidationException;
+use Drupal\package_manager\FailureMarker;
+use Drupal\package_manager\PathLocator;
 use Drupal\package_manager\Stage;
+use Drupal\package_manager\UnusedConfigFactory;
 use Drupal\project_browser\Exception\InstallException;
+use PhpTuf\ComposerStager\Domain\Core\Beginner\BeginnerInterface;
+use PhpTuf\ComposerStager\Domain\Core\Committer\CommitterInterface;
+use PhpTuf\ComposerStager\Domain\Core\Stager\StagerInterface;
+use PhpTuf\ComposerStager\Infrastructure\Factory\Path\PathFactoryInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Defines a service to perform installs.
@@ -17,6 +28,20 @@ use Drupal\project_browser\Exception\InstallException;
  *   class.
  */
 final class Installer extends Stage {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(PathLocator $path_locator, BeginnerInterface $beginner, StagerInterface $stager, CommitterInterface $committer, FileSystemInterface $file_system, EventDispatcherInterface $event_dispatcher, SharedTempStoreFactory $temp_store_factory, TimeInterface $time, PathFactoryInterface $path_factory = NULL, FailureMarker $failure_marker = NULL) {
+    // 8.x-2.x
+    if (class_exists(UnusedConfigFactory::class)) {
+      parent::__construct(new UnusedConfigFactory(), $path_locator, $beginner, $stager, $committer, $file_system, $event_dispatcher, $temp_store_factory, $time, $path_factory, $failure_marker);
+    }
+    // Next major version.
+    else {
+      parent::__construct($path_locator, $beginner, $stager, $committer, $file_system, $event_dispatcher, $temp_store_factory, $time, $path_factory, $failure_marker);
+    }
+  }
 
   /**
    * {@inheritdoc}

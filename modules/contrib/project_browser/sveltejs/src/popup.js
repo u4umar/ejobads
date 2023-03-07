@@ -73,9 +73,9 @@ export const getCommandsPopupMessage = (project) =>  {
     },
   );
   const copied = Drupal.t('Copied!');
-  const downloadCopyButton = navigator.clipboard ? `<button id="download-btn"><img src="${FULL_MODULE_PATH}/images/copy-icon.svg" alt={Drupal.t('Copy the install command')}/></button>
+  const downloadCopyButton = navigator.clipboard ? `<button id="download-btn"><img src="${FULL_MODULE_PATH}/images/copy-icon.svg" alt="${Drupal.t('Copy the download command')}"/></button>
                 <div id="${project.project_machine_name}-copied-download" class="copied-download">${copied}</div>` : '';
-  const installCopyButton = navigator.clipboard ? `<button id="install-btn"><img src="${FULL_MODULE_PATH}/images/copy-icon.svg" alt={Drupal.t('Copy the install command')}/></button>
+  const installCopyButton = navigator.clipboard ? `<button id="install-btn"><img src="${FULL_MODULE_PATH}/images/copy-icon.svg" alt="${Drupal.t('Copy the install command')}"/></button>
                 <div id="${project.project_machine_name}-copied-install" class="copied-install">${copied}</div>` : '';
 
   const div = document.createElement('div');
@@ -109,8 +109,6 @@ export const getCommandsPopupMessage = (project) =>  {
 }
 
 export const openPopup = (getMessage, project) =>  {
-  console.log('getMe', getMessage);
-  console.log('pjrrr', project);
   const message =
     typeof getMessage === 'function' ? getMessage() : getMessage;
   const popupModal = Drupal.dialog(message, {

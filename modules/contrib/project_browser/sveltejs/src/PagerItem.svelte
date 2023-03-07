@@ -49,9 +49,9 @@
 
 <style>
   .pager__link--forward::after {
-    margin-left: 0.5rem;
+    margin-inline-start: 0.5rem;
   }
   .pager__link--backward::before {
-    margin-right: 0.5rem;
+    margin-inline-end: 0.5rem;
   }
 </style>

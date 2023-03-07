@@ -18,7 +18,7 @@
         "ext-simplexml": "*"
     },
     "require-dev": {
-        "drupal/automatic_updates": "^2.5"
+        "drupal/automatic_updates": "^2.6"
     },
     "config": {
         "optimize-autoloader": true,
@@ -35,10 +35,5 @@
             "@lint",
             "@cs"
         ]
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.x-dev"
-        }
     }
 }

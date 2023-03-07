@@ -9,12 +9,17 @@
 
 <div class="categories" data-label="Categories">
   {#if typeof moduleCategories !== 'undefined' && moduleCategories.length}
-    <ul class:grid={toggleView === 'Grid'}>
+    <ul
+      class:categories__list--grid={toggleView === 'Grid'}
+      class="categories__list"
+    >
       {#each moduleCategories || [] as category}
-        <li class="category">{category.name}</li>
+        <li class="categories__category">
+          {category.name}
+        </li>
       {/each}
       {#if extraCategories.length}
-        <li class="category category-extra">
+        <li class="categories__category categories__category--extra">
           {Drupal.t('+ @count more', { '@count': extraCategories.length })}
         </li>
       {/if}
@@ -28,14 +33,14 @@
     margin-top: 1em;
     position: center;
   }
-  .categories ul {
+  .categories__list {
     margin: 0.25em 0 0.25em 0;
     padding: 0;
     display: inline-block;
     width: 100%;
     height: 20px;
   }
-  .categories li {
+  .categories__category {
     list-style: none;
     display: inline-block;
     margin-top: 2px;
@@ -47,14 +52,19 @@
     font-weight: 600;
     color: #4f4f4f;
   }
-  .categories li:not(:first-child, .category-extra) {
-    margin-left: 4px;
+  .categories__category:not(:first-child, .categories__category--extra) {
+    margin-inline-start: 4px;
   }
-  .categories .category-extra {
+  .categories .categories__category--extra {
     background-color: transparent;
     border: 1px solid #bbb;
   }
-  .grid {
+  .categories__list--grid {
     text-align: center;
+  }
+  @media (forced-colors: active) {
+    .categories__category {
+      border: 1px solid;
+    }
   }
 </style>

@@ -1,10 +1,17 @@
 <script>
   import { onMount } from 'svelte';
-  import { MODULE_STATUS, ORIGIN_URL, ALLOW_UI_INSTALL } from '../constants';
-  import { uiCapabilities } from '../stores';
+  import {
+    MODULE_STATUS,
+    ORIGIN_URL,
+    ALLOW_UI_INSTALL,
+    PM_VALIDATION_ERROR,
+  } from '../constants';
   import Loading from '../Loading.svelte';
   import { openPopup, getCommandsPopupMessage } from '../popup';
   import AddInstallButton from './AddInstallButton.svelte';
+  import LoadingEllipsis from './LoadingEllipsis.svelte';
+  import ProjectButtonBase from './ProjectButtonBase.svelte';
+  import ProjectStatusIndicator from './ProjectStatusIndicator.svelte';
 
   // eslint-disable-next-line import/no-mutable-exports,import/prefer-default-export
   export let project;
@@ -164,31 +171,25 @@
     // should reflect that by adding a progress spinner and disabling actions.
     // The app will check periodically to see if the status has changed and
     // update the UI.
-    showStatus();
+    if (ALLOW_UI_INSTALL) {
+      showStatus();
+    }
   });
 </script>
 
-<div class="action">
+<div class="action-button__wrapper">
   {#if !project.is_compatible}
-    <span
-      ><button class="button is-disabled">{Drupal.t('Not compatible')}</button
-      ></span
-    >
+    <ProjectStatusIndicator {project} statusText={Drupal.t('Not compatible')} />
   {:else if projectInstalled}
-    <span tabindex="0" class="visually-hidden"
-      >{Drupal.t('@module is', { '@module': `${project.title}` })}</span
-    >
-
-    <span class="installed-status"
-      ><span class="installed-status-unicode" aria-hidden="true"
-        >&#10003&#x20</span
-      >{Drupal.t('Installed')}
-    </span>
+    <ProjectStatusIndicator {project} statusText={Drupal.t('Installed')}>
+      <span class="action-button__unicode" aria-hidden="true">&#10003&#x20</span
+      >
+    </ProjectStatusIndicator>
   {:else if projectDownloaded}
     <span>
       {#if ALLOW_UI_INSTALL}
         {#if loading}
-          <span class="loading-ellipsis">Installing</span>
+          <LoadingEllipsis />
           <Loading positionAbsolute={true} />
         {:else}
           <AddInstallButton
@@ -205,14 +206,13 @@
           href="{ORIGIN_URL}/admin/modules#module-{project.selector_id}"
           target="_blank"
           rel="noreferrer"
-          ><button class="button button--primary">{Drupal.t('Install')}</button
-          ></a
+          ><ProjectButtonBase>{Drupal.t('Install')}</ProjectButtonBase></a
         >
       {/if}
     </span>
   {:else}
     <span>
-      {#if !$uiCapabilities.pm_validation_error && ALLOW_UI_INSTALL}
+      {#if !PM_VALIDATION_ERROR && ALLOW_UI_INSTALL}
         {#if loading}
           <span class="loading-ellipsis">{loadingPhase}</span>
           <Loading positionAbsolute={true} />
@@ -226,82 +226,25 @@
           />
         {/if}
       {:else}
-        <button
-          on:click={() => openPopup(getCommandsPopupMessage(project), project)}
-          class="button button--primary"
+        <ProjectButtonBase
+          click={() => openPopup(getCommandsPopupMessage(project), project)}
           >{Drupal.t('View Commands')}
           <span class="visually-hidden"
             >{Drupal.t(' for ')} {project.title}</span
           >
-        </button>
+        </ProjectButtonBase>
       {/if}
     </span>
   {/if}
 </div>
 
 <style>
-  .action {
+  .action-button__wrapper {
     padding: 0.5em 0;
     margin-inline-start: auto;
   }
 
-  .action a {
-    text-decoration: none;
-  }
-  .installed-status-unicode {
+  .action-button__unicode {
     color: #228572;
-  }
-
-  .installed-status {
-    font-weight: bold;
-    color: black;
-  }
-
-  .button--primary,
-  .button.is-disabled {
-    color: #ffffff;
-    height: 24px;
-    font-size: 12.65px;
-    line-height: 19px;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    margin: 0;
-    justify-content: center;
-  }
-
-  /* Higher contrast because the button is conveying information that needs to be visible despite the button being disabled. */
-  .button.is-disabled {
-    background-color: #ebebed;
-    color: #706969;
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .loading-ellipsis {
-    position: relative;
-  }
-
-  .loading-ellipsis:after {
-    position: absolute;
-    overflow: hidden;
-    display: inline-block;
-    vertical-align: bottom;
-    -webkit-animation: ellipsis steps(4, end) 900ms infinite;
-    animation: ellipsis steps(4, end) 900ms infinite;
-    content: '\2026'; /* ascii code for the ellipsis character */
-    width: 0;
-  }
-
-  @keyframes ellipsis {
-    to {
-      width: 20px;
-    }
-  }
-
-  @-webkit-keyframes ellipsis {
-    to {
-      width: 20px;
-    }
   }
 </style>

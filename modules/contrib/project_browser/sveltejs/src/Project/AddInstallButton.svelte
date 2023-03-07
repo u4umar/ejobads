@@ -1,8 +1,7 @@
 <script>
   import { openPopup } from '../popup';
-  // eslint-disable-next-line import/prefer-default-export
-  import { uiCapabilities } from '../stores';
-  import { MODULE_STATUS, ORIGIN_URL } from '../constants';
+  import { MODULE_STATUS, ORIGIN_URL, PM_VALIDATION_ERROR } from '../constants';
+  import ProjectButtonBase from './ProjectButtonBase.svelte';
 
   export let project;
   export let loading;
@@ -79,9 +78,6 @@
       projectInstalled = true;
       loading = false;
     }
-    const div = document.createElement('div');
-    div.textContent = responseContent.message;
-    openPopup(div, project);
   }
 
   /**
@@ -118,12 +114,11 @@
           `${ORIGIN_URL}/admin/modules/project_browser/install-post_apply/${project.composer_namespace}/${stageId}`,
           `${ORIGIN_URL}/admin/modules/project_browser/install-destroy/${project.composer_namespace}/${stageId}`,
         ];
-        let message = '';
+
         // eslint-disable-next-line no-restricted-syntax,guard-for-in
         for (const step in installSteps) {
           // eslint-disable-next-line no-await-in-loop
           const stepResponse = await fetch(installSteps[step]);
-          message = stepResponse.message || '';
           if (!stepResponse.ok) {
             // eslint-disable-next-line no-await-in-loop
             const errorMessage = await stepResponse.text();
@@ -149,17 +144,6 @@
         // is complete to the UI.
         if (install === true) {
           installModule();
-        } else {
-          // This block means the request was only to download the module, not
-          // install it. Create a popup that reports the module as successfully
-          // downloaded.
-          const div = document.createElement('div');
-          div.textContent =
-            message ||
-            Drupal.t('Download of @project complete.', {
-              '@project': project.project_machine_name,
-            });
-          openPopup(div, project);
         }
       }
     }
@@ -169,32 +153,17 @@
   }
 </script>
 
-<button
-  on:click={() => {
+<ProjectButtonBase
+  click={() => {
     if (alreadyAdded) {
       installModule();
     } else {
       downloadModule(true);
     }
   }}
-  class="button button--primary"
-  disabled={$uiCapabilities.pm_validation_error}
-  >{alreadyAdded ? Drupal.t('Install') : Drupal.t('Add and Install')}<span
+  disabled={PM_VALIDATION_ERROR}
+>
+  {alreadyAdded ? Drupal.t('Install') : Drupal.t('Add and Install')}<span
     class="visually-hidden">{project.title}</span
   >
-</button>
-
-<style>
-  .button--primary {
-    margin: 0;
-    border-width: 0 !important;
-    box-shadow: none;
-    height: 24px;
-    font-size: 12.65px;
-    line-height: 19px;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    justify-content: center;
-  }
-</style>
+</ProjectButtonBase>
