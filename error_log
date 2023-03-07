@@ -606,3 +606,21 @@ Stack trace:
 #12 /home/rm520fzqbykb/public_html/ejobads.com/core/lib/Drupal/Core/DrupalKernel.php(679): Drupal\Core\DrupalKernel->boot()
 #13 /home/rm520fzqbykb/public_html/ejobads.com/index.php(19): Drupal\Core\DrupalKernel->handle()
 #14 {main}
+[07-Mar-2023 17:30:18 UTC] PHP Warning:  require(/home/rm520fzqbykb/public_html/ejobads.com/vendor/composer/../../core/includes/bootstrap.inc): Failed to open stream: No such file or directory in /home/rm520fzqbykb/public_html/ejobads.com/vendor/composer/autoload_real.php on line 82
+[07-Mar-2023 17:30:18 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/rm520fzqbykb/public_html/ejobads.com/vendor/composer/../../core/includes/bootstrap.inc' (include_path='/home/rm520fzqbykb/public_html/ejobads.com/vendor/pear/archive_tar:/home/rm520fzqbykb/public_html/ejobads.com/vendor/pear/console_getopt:/home/rm520fzqbykb/public_html/ejobads.com/vendor/pear/pear-core-minimal/src:/home/rm520fzqbykb/public_html/ejobads.com/vendor/pear/pear_exception:.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/rm520fzqbykb/public_html/ejobads.com/vendor/composer/autoload_real.php:82
+Stack trace:
+#0 /home/rm520fzqbykb/public_html/ejobads.com/vendor/composer/autoload_real.php(65): composerRequiredefd8e83b18a891fd46c31ed66182f21()
+#1 /home/rm520fzqbykb/public_html/ejobads.com/vendor/autoload.php(7): ComposerAutoloaderInitdefd8e83b18a891fd46c31ed66182f21::getLoader()
+#2 /home/rm520fzqbykb/public_html/ejobads.com/autoload.php(16): require('/home/rm520fzqb...')
+#3 /home/rm520fzqbykb/public_html/ejobads.com/index.php(14): require_once('/home/rm520fzqb...')
+#4 {main}
+  thrown in /home/rm520fzqbykb/public_html/ejobads.com/vendor/composer/autoload_real.php on line 82
+[07-Mar-2023 17:30:20 UTC] PHP Warning:  require(/home/rm520fzqbykb/public_html/ejobads.com/vendor/composer/../../core/includes/bootstrap.inc): Failed to open stream: No such file or directory in /home/rm520fzqbykb/public_html/ejobads.com/vendor/composer/autoload_real.php on line 82
+[07-Mar-2023 17:30:20 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/rm520fzqbykb/public_html/ejobads.com/vendor/composer/../../core/includes/bootstrap.inc' (include_path='/home/rm520fzqbykb/public_html/ejobads.com/vendor/pear/archive_tar:/home/rm520fzqbykb/public_html/ejobads.com/vendor/pear/console_getopt:/home/rm520fzqbykb/public_html/ejobads.com/vendor/pear/pear-core-minimal/src:/home/rm520fzqbykb/public_html/ejobads.com/vendor/pear/pear_exception:.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/rm520fzqbykb/public_html/ejobads.com/vendor/composer/autoload_real.php:82
+Stack trace:
+#0 /home/rm520fzqbykb/public_html/ejobads.com/vendor/composer/autoload_real.php(65): composerRequiredefd8e83b18a891fd46c31ed66182f21()
+#1 /home/rm520fzqbykb/public_html/ejobads.com/vendor/autoload.php(7): ComposerAutoloaderInitdefd8e83b18a891fd46c31ed66182f21::getLoader()
+#2 /home/rm520fzqbykb/public_html/ejobads.com/autoload.php(16): require('/home/rm520fzqb...')
+#3 /home/rm520fzqbykb/public_html/ejobads.com/index.php(14): require_once('/home/rm520fzqb...')
+#4 {main}
+  thrown in /home/rm520fzqbykb/public_html/ejobads.com/vendor/composer/autoload_real.php on line 82
