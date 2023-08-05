@@ -370,7 +370,7 @@ class DatabaseBackend implements CacheBackendInterface {
         $first_invalid_create_time = $this->connection->select($this->bin)
           ->fields($this->bin, ['created'])
           ->orderBy("{$this->bin}.created", 'DESC')
-          ->range($this->maxRows, $this->maxRows + 1)
+          ->range($this->maxRows, 1)
           ->execute()
           ->fetchField();
 
@@ -498,6 +498,7 @@ class DatabaseBackend implements CacheBackendInterface {
           'type' => 'int',
           'not null' => TRUE,
           'default' => 0,
+          'size' => 'big',
         ],
         'created' => [
           'description' => 'A timestamp with millisecond precision indicating when the cache entry was created.',

@@ -245,8 +245,7 @@ class FilterCombineTest extends ViewsKernelTestBase {
   }
 
   /**
-   * Tests that the combine field filter is not valid on displays that don't use
-   * fields.
+   * Tests that the "combine" filter is only valid on displays that use fields.
    */
   public function testNonFieldsRow() {
     $view = Views::getView('entity_test_fields');
@@ -286,7 +285,7 @@ class FilterCombineTest extends ViewsKernelTestBase {
   /**
    * Tests the Combine field filter using the 'equal' operator.
    *
-   * @covers::opEqual
+   * @covers ::opEqual
    */
   public function testFilterCombineEqual() {
     $view = Views::getView('test_view');
@@ -334,7 +333,7 @@ class FilterCombineTest extends ViewsKernelTestBase {
   /**
    * Tests the Combine field filter using the 'not equal' operator.
    *
-   * @covers::opEqual
+   * @covers ::opEqual
    */
   public function testFilterCombineNotEqual(): void {
     $view = Views::getView('test_view');
