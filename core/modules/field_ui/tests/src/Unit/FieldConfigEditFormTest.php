@@ -26,7 +26,8 @@ class FieldConfigEditFormTest extends UnitTestCase {
     parent::setUp();
 
     $entity_type_bundle_info = $this->createMock('\Drupal\Core\Entity\EntityTypeBundleInfoInterface');
-    $this->fieldConfigEditForm = new FieldConfigEditForm($entity_type_bundle_info);
+    $typed_data = $this->createMock('\Drupal\Core\TypedData\TypedDataManagerInterface');
+    $this->fieldConfigEditForm = new FieldConfigEditForm($entity_type_bundle_info, $typed_data);
   }
 
   /**
@@ -37,7 +38,6 @@ class FieldConfigEditFormTest extends UnitTestCase {
   public function testHasAnyRequired(array $element, bool $result) {
     $reflection = new \ReflectionClass('\Drupal\field_ui\Form\FieldConfigEditForm');
     $method = $reflection->getMethod('hasAnyRequired');
-    $method->setAccessible(TRUE);
     $this->assertEquals($result, $method->invoke($this->fieldConfigEditForm, $element));
   }
 
@@ -68,40 +68,6 @@ class FieldConfigEditFormTest extends UnitTestCase {
     yield 'multiple optional' => [
       [[['#required' => FALSE]], [['#required' => FALSE]]],
       FALSE,
-    ];
-  }
-
-  /**
-   * @covers ::hasAnyElementDefaultValue
-   *
-   * @dataProvider providerDefaultValue
-   */
-  public function testHasAnyElementDefaultValueRecursive(array $element, bool $result) {
-    $reflection = new \ReflectionClass('\Drupal\field_ui\Form\FieldConfigEditForm');
-    $method = $reflection->getMethod('hasAnyElementDefaultValue');
-    $method->setAccessible(TRUE);
-    $this->assertEquals($result, $method->invoke($this->fieldConfigEditForm, $element));
-  }
-
-  /**
-   * Provides test cases for detecting default values in a render array.
-   */
-  public function providerDefaultValue(): \Generator {
-    yield 'includes default value' => [
-      [['#default_value' => '🐈']],
-      TRUE,
-    ];
-    yield 'no default value' => [
-      [[]],
-      FALSE,
-    ];
-    yield 'includes default value deep' => [
-      [[[['#default_value' => '🐈']]]],
-      TRUE,
-    ];
-    yield 'includes default value and no default value' => [
-      [['#default_value' => '🐈'], []],
-      TRUE,
     ];
   }
 
