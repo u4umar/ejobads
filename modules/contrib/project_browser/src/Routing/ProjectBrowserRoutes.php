@@ -16,20 +16,9 @@ use Symfony\Component\Routing\Route;
  */
 class ProjectBrowserRoutes implements ContainerInjectionInterface {
 
-  /**
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
-   */
-  private ModuleHandlerInterface $moduleHandler;
-
-  /**
-   * Constructs a new ProjectBrowserRoutes object.
-   *
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
-   *   The module handler.
-   */
-  public function __construct(ModuleHandlerInterface $module_handler) {
-    $this->moduleHandler = $module_handler;
-  }
+  public function __construct(
+    private readonly ModuleHandlerInterface $moduleHandler,
+  ) {}
 
   /**
    * {@inheritdoc}

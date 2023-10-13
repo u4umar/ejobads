@@ -5,8 +5,7 @@ export const normalizeOptions = (value) => {
     Object.values(value).forEach((item) => {
       newValue[item.id] = item.name;
     });
-  }
-  else {
+  } else {
     Object.entries(value).forEach(([id, name]) => {
       newValue[id] = name;
     });
@@ -17,6 +16,6 @@ export const normalizeOptions = (value) => {
 
 export const shallowCompare = (obj1, obj2) =>
   Object.keys(obj1).length === Object.keys(obj2).length &&
-  Object.keys(obj1).every(key =>
-    obj2.hasOwnProperty(key) && obj1[key] === obj2[key]
-);
+  Object.keys(obj1).every(
+    (key) => obj2.hasOwnProperty(key) && obj1[key] === obj2[key],
+  );

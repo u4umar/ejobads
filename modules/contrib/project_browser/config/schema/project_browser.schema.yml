@@ -11,3 +11,6 @@ project_browser.admin_settings:
     allow_ui_install:
       type: boolean
       label: 'Allow installing packages from within the UI'
+    disable_add_new_module:
+      type: boolean
+      label: 'Disable Add new module menu item'

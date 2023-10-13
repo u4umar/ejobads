@@ -62,6 +62,8 @@ class MockDrupalDotOrgTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
+    parent::setUp();
+
     $this->logger = $this->createMock(LoggerInterface::class);
     $this->database = $this->createMock(Connection::class);
     $this->httpClient = $this->createMock(ClientInterface::class);

@@ -2,6 +2,9 @@
 
 namespace Drupal\Tests\project_browser\FunctionalJavascript;
 
+// cspell:ignore doomer eggman statusactive vetica quiznos statusmaintained coverageall
+
+use Drupal\Core\Extension\MissingDependencyException;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 
 /**
@@ -41,61 +44,6 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
       'administer modules',
       'administer site configuration',
     ]));
-  }
-
-  /**
-   * Asserts that a given list of project titles are visible on the page.
-   *
-   * @param array $project_titles
-   *   An array of expected titles.
-   * @param bool $reload
-   *   When TRUE, reload the page if the assertion fails and try again.
-   *   This should typically be kept to the default value of FALSE. It only
-   *   needs to be set to TRUE for calls that intermittently fail on DrupalCI.
-   */
-  protected function assertProjectsVisible(array $project_titles, bool $reload = FALSE): void {
-    $count = count($project_titles);
-
-    // Create a JavaScript string that checks the titles of the visible
-    // projects. This is done with JavaScript to avoid issues with PHP
-    // referencing an element that was rerendered and thus unavailable.
-    $script = "document.querySelectorAll('#project-browser .project h3 a').length === $count";
-    foreach ($project_titles as $key => $value) {
-      $script .= " && document.querySelectorAll('#project-browser .project h3 a')[$key].textContent === '$value'";
-    }
-
-    // It can take a while for all items to render. Wait for the condition to be
-    // true before asserting it.
-    $this->getSession()->wait(10000, $script);
-
-    if ($reload) {
-      try {
-        $this->assertTrue($this->getSession()->evaluateScript($script), 'Ran:' . $script . 'Svelte did not initialize. Markup: ' . $this->getSession()->evaluateScript('document.querySelector("#project-browser").innerHTML'));
-      }
-      catch (\Exception $e) {
-        $this->getSession()->reload();
-        $this->getSession()->wait(10000, $script);
-      }
-    }
-
-    $this->assertTrue($this->getSession()->evaluateScript($script), 'Ran:' . $script . 'Svelte did not initialize. Markup: ' . $this->getSession()->evaluateScript('document.querySelector("#project-browser").innerHTML'));
-  }
-
-  /**
-   * Asserts that a given list of pager items are present on the page.
-   *
-   * @param array $pager_items
-   *   An array of expected pager item labels.
-   */
-  protected function assertPagerItems(array $pager_items): void {
-    $page = $this->getSession()->getPage();
-    $assert_session = $this->assertSession();
-
-    $assert_session->waitForElementVisible('css', '#project-browser .project');
-    $items = array_map(function ($element) {
-      return $element->getText();
-    }, $page->findAll('css', '#project-browser .pager__item'));
-    $this->assertSame($pager_items, $items);
   }
 
   /**
@@ -151,8 +99,8 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
     $this->svelteInitHelper('text', 'E-commerce');
 
     // Click 'E-commerce' category on module page.
-    $this->clickWithWait('#project-browser li:nth-child(2)');
-    $module_category_e_commerce_filter_selector = 'p.filter-applied:nth-child(4)';
+    $this->clickWithWait('li.module-page__category-list-item:nth-child(2)');
+    $module_category_e_commerce_filter_selector = 'p.filter-applied:nth-child(3)';
     $this->assertEquals('E-commerce', $this->getElementText("$module_category_e_commerce_filter_selector .filter-applied__label"));
     $this->assertTrue($assert_session->waitForText('6 Results'));
   }
@@ -170,7 +118,7 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
     // Click 'E-commerce' checkbox.
     $this->clickWithWait('#104');
 
-    $module_category_e_commerce_filter_selector = 'p.filter-applied:nth-child(4)';
+    $module_category_e_commerce_filter_selector = 'p.filter-applied:nth-child(3)';
     // Make sure the 'E-commerce' module category filter is applied.
     $this->assertEquals('E-commerce', $this->getElementText("$module_category_e_commerce_filter_selector .filter-applied__label"));
 
@@ -198,7 +146,7 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
     $this->clickWithWait('#55');
 
     // Make sure the 'Media' module category filter is applied.
-    $this->assertEquals('Media', $this->getElementText('p.filter-applied:nth-child(3) .filter-applied__label'));
+    $this->assertEquals('Media', $this->getElementText('p.filter-applied:nth-child(2) .filter-applied__label'));
     // Assert that only media and administration module categories are shown.
     $this->assertProjectsVisible([
       'Jazz',
@@ -257,6 +205,8 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
     $this->assertEquals('Copy the download command', $download_command->getAttribute('alt'));
     $install_command = $page->find('css', '#install-btn img');
     $this->assertEquals('Copy the install command', $install_command->getAttribute('alt'));
+    $install_command = $page->find('css', '#install-drush-btn img');
+    $this->assertEquals('Copy the install Drush command', $install_command->getAttribute('alt'));
   }
 
   /**
@@ -298,7 +248,7 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
       'Dancing Queen',
       'Kangaroo',
     ]);
-    $this->assertPagerItems(['1', '2', '3', 'Next', 'Last', '1', '2', '3', 'Next', 'Last']);
+    $this->assertPagerItems(['1', '2', '3', 'Next', 'Last']);
     $assert_session->elementExists('css', '.pager__item--active > .is-active[aria-label="Page 1"]');
 
     $this->clickWithWait('[aria-label="Next page"]');
@@ -316,13 +266,13 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
       'Unwritten&:/',
       'Doomer',
     ]);
-    $this->assertPagerItems(['First', 'Previous', '1', '2', '3', 'Next', 'Last', 'First', 'Previous', '1', '2', '3', 'Next', 'Last']);
+    $this->assertPagerItems(['First', 'Previous', '1', '2', '3', 'Next', 'Last']);
 
     $this->clickWithWait('[aria-label="Next page"]');
     $this->assertProjectsVisible([
       'Astronaut Simulator',
     ]);
-    $this->assertPagerItems(['First', 'Previous', '1', '2', '3', 'First', 'Previous', '1', '2', '3']);
+    $this->assertPagerItems(['First', 'Previous', '1', '2', '3']);
 
     // Ensure that when the number of projects is even divisible by the number
     // shown on a page, the pager has the correct number of items.
@@ -336,11 +286,11 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
 
     // Click 'E-commerce' checkbox.
     $this->clickWithWait('#104', '24 Results');
-    $this->assertPagerItems(['1', '2', 'Next', 'Last', '1', '2', 'Next', 'Last']);
+    $this->assertPagerItems(['1', '2', 'Next', 'Last']);
 
     $this->clickWithWait('[aria-label="Next page"]');
 
-    $this->assertPagerItems(['First', 'Previous', '1', '2', 'First', 'Previous', '1', '2']);
+    $this->assertPagerItems(['First', 'Previous', '1', '2']);
   }
 
   /**
@@ -353,9 +303,9 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
     $this->drupalGet('admin/modules/browse');
     $this->svelteInitHelper('css', '.project.project--grid');
     $this->pressWithWait('Clear filters');
-    $assert_session->waitForText('Show projects');
+    $assert_session->waitForText('Modules per page');
     $assert_session->elementsCount('css', '#project-browser .project.project--grid', 12);
-    $assert_session->waitForText('Show projects');
+    $assert_session->waitForText('Modules per page');
     $page->selectFieldOption('num-projects', 24);
     $assert_session->waitForElementVisible('css', '#project-browser .project.project--grid');
     $assert_session->elementsCount('css', '#project-browser .project.project--grid', 24);
@@ -384,7 +334,7 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
       'Astronaut Simulator',
     ]);
 
-    $second_filter_selector = 'p.filter-applied:nth-child(3)';
+    $second_filter_selector = 'p.filter-applied:nth-child(2)';
     // Make sure the second filter applied is the security covered filter.
     $this->assertEquals('Covered by a security policy', $this->getElementText("$second_filter_selector .filter-applied__label"));
 
@@ -417,7 +367,7 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
     $this->clickWithWait('#developmentStatusactive');
 
     // Make sure the correct filter was applied.
-    $this->assertEquals('Active', $this->getElementText('p.filter-applied:nth-child(2) .filter-applied__label'));
+    $this->assertEquals('Active', $this->getElementText('p.filter-applied:nth-child(1) .filter-applied__label'));
 
     $this->assertProjectsVisible([
       'Jazz',
@@ -456,7 +406,7 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
 
     // Click the Actively maintained filter.
     $this->clickWithWait('#maintenanceStatusmaintained');
-    $this->assertEquals('Maintained', $this->getElementText('p.filter-applied:nth-child(2) .filter-applied__label'));
+    $this->assertEquals('Maintained', $this->getElementText('p.filter-applied:nth-child(1) .filter-applied__label'));
 
     $this->assertProjectsVisible([
       'Jazz',
@@ -484,10 +434,10 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
     $this->svelteInitHelper('text', 'Clear Filters');
     $this->pressWithWait('Clear filters');
     $assert_session->elementsCount('css', '#pb-sort option', 4);
-    $this->assertEquals('Active installs', $this->getElementText('#pb-sort option:nth-child(1)'));
+    $this->assertEquals('Most Popular', $this->getElementText('#pb-sort option:nth-child(1)'));
     $this->assertEquals('A-Z', $this->getElementText('#pb-sort option:nth-child(2)'));
     $this->assertEquals('Z-A', $this->getElementText('#pb-sort option:nth-child(3)'));
-    $this->assertEquals('Recently created', $this->getElementText('#pb-sort option:nth-child(4)'));
+    $this->assertEquals('Newest First', $this->getElementText('#pb-sort option:nth-child(4)'));
 
     // Select 'A-Z' sorting order.
     $this->sortBy('a_z');
@@ -545,7 +495,7 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
       'Kangaroo',
     ]);
 
-    // Select 'Recently created' option.
+    // Select 'Newest First' option.
     $this->sortBy('created');
 
     // Assert that the projects are listed in descending order of their date of
@@ -609,19 +559,13 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
     ]);
 
     $this->inputSearchField('', TRUE);
-    $this->inputSearchField('/');
+    $this->inputSearchField('&:');
     $this->assertProjectsVisible([
       'Unwritten&:/',
     ]);
 
     $this->inputSearchField('', TRUE);
-    $this->inputSearchField(':');
-    $this->assertProjectsVisible([
-      'Unwritten&:/',
-    ]);
-
-    $this->inputSearchField('', TRUE);
-    $this->inputSearchField(';');
+    $this->inputSearchField('$?');
     $this->assertProjectsVisible([
       'Vitamin&C;$?',
     ]);
@@ -693,6 +637,7 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
     ]);
     $this->getSession()->reload();
     // Should still be on second results page.
+    $this->svelteInitHelper('css', '#project-browser .project');
     $this->assertProjectsVisible([
       'Become a Banana',
       'Astronaut Simulator',
@@ -701,9 +646,9 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
     ]);
     $this->assertTrue($assert_session->waitForText('16 Results'));
 
-    $this->assertEquals('Active', $this->getElementText('p.filter-applied:nth-child(2) .filter-applied__label'));
-    $this->assertEquals('Commerce/Advertising', $this->getElementText('p.filter-applied:nth-child(3) .filter-applied__label'));
-    $this->assertEquals('Media', $this->getElementText('p.filter-applied:nth-child(4) .filter-applied__label'));
+    $this->assertEquals('Active', $this->getElementText('p.filter-applied:nth-child(1) .filter-applied__label'));
+    $this->assertEquals('Commerce/Advertising', $this->getElementText('p.filter-applied:nth-child(2) .filter-applied__label'));
+    $this->assertEquals('Media', $this->getElementText('p.filter-applied:nth-child(3) .filter-applied__label'));
 
     $this->clickWithWait('[aria-label="First page"]');
     $this->assertProjectsVisible([
@@ -721,9 +666,9 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
       'Cream cheese on a bagel',
     ]);
 
-    $this->assertEquals('Active', $this->getElementText('p.filter-applied:nth-child(2) .filter-applied__label'));
-    $this->assertEquals('Commerce/Advertising', $this->getElementText('p.filter-applied:nth-child(3) .filter-applied__label'));
-    $this->assertEquals('Media', $this->getElementText('p.filter-applied:nth-child(4) .filter-applied__label'));
+    $this->assertEquals('Active', $this->getElementText('p.filter-applied:nth-child(1) .filter-applied__label'));
+    $this->assertEquals('Commerce/Advertising', $this->getElementText('p.filter-applied:nth-child(2) .filter-applied__label'));
+    $this->assertEquals('Media', $this->getElementText('p.filter-applied:nth-child(3) .filter-applied__label'));
   }
 
   /**
@@ -738,9 +683,9 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
     $this->pressWithWait('Recommended filters');
 
     // Check that the actively maintained tag is present.
-    $this->assertEquals('Maintained', $this->getElementText('p.filter-applied:nth-child(2) .filter-applied__label'));
+    $this->assertEquals('Maintained', $this->getElementText('p.filter-applied:nth-child(1) .filter-applied__label'));
     // Make sure the second filter applied is the security covered filter.
-    $this->assertEquals('Covered by a security policy', $this->getElementText('p.filter-applied:nth-child(3) .filter-applied__label'));
+    $this->assertEquals('Covered by a security policy', $this->getElementText('p.filter-applied:nth-child(2) .filter-applied__label'));
     $this->assertTrue($assert_session->waitForText('9 Results'));
   }
 
@@ -762,7 +707,7 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
     $tab_count = $page->findAll('css', '.project-browser__plugin-tabs button');
     $this->assertCount(2, $tab_count);
     // Get result count for first tab.
-    $this->assertEquals('9 Results Sorted by Active installs', $this->getElementText('#output'));
+    $this->assertEquals('9 Results', $this->getElementText('.search-results'));
 
     // Apply filters in drupalorg_mockapi(first tab).
     $assert_session->waitForElement('css', '.views-exposed-form__item input[type="checkbox"]');
@@ -776,11 +721,9 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
     $this->clickWithWait('#67', '20 Results');
 
     // Filter by search text.
-    $this->inputSearchField('th');
-    $this->assertTrue($assert_session->waitForText('4 Results'));
+    $this->inputSearchField('Number');
+    $this->assertTrue($assert_session->waitForText('2 Results'));
     $this->assertProjectsVisible([
-      'Tooth Fairy',
-      'Pinky and the Brain',
       '9 Starts With a Higher Number',
       '1 Starts With a Number',
     ]);
@@ -790,38 +733,36 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
     $this->svelteInitHelper('css', '.filter__checkbox');
     $assert_session->elementsCount('css', '.filter__checkbox', 20);
     $assert_session->waitForElementVisible('css', '#project-browser .project');
-    $this->assertNotEquals('9 Results Sorted by Active installs', $this->getElementText('.search__results-count #output'));
+    $this->assertNotEquals('9 Results Sorted by Active installs', $this->getElementText('.search-results'));
     $assert_session->waitForElementVisible('css', '#project-browser .project');
-    $result_count_text = $page->find('css', '.search__results-count #output')->getText();
+    $result_count_text = $page->find('css', '.search-results')->getText();
     $this->assertNotEquals('9 Results Sorted by Active installs', $result_count_text);
     // Apply the second module category filter.
     $second_category_filter_selector = '#project-browser > div.project-browser__container > .project-browser__aside > div > form > section > details > fieldset > label:nth-child(3)';
     $this->clickWithWait("$second_category_filter_selector");
 
     // Save the filter applied in second tab.
-    $applied_filter = $this->getElementText('p.filter-applied:nth-child(2) .filter-applied__label');
+    $applied_filter = $this->getElementText('p.filter-applied:nth-child(1) .filter-applied__label');
     // Save the number of results.
     $results_before = count($page->findAll('css', '#project-browser .project.list'));
 
     // Switch back to first tab.
-    $page->pressButton('drupalorg_mockapi');
+    $this->pressWithWait('drupalorg_mockapi');
     // Assert that the filters persist.
-    $this->assertTrue($assert_session->waitForText('4 Results'));
-    $first_filter_element = $page->find('css', 'p.filter-applied:nth-child(2)');
+    $this->assertTrue($assert_session->waitForText('2 Results'));
+    $first_filter_element = $page->find('css', 'p.filter-applied:nth-child(1)');
     $this->assertEquals('E-commerce', $first_filter_element->find('css', '.filter-applied__label')->getText());
-    $second_filter_element = $page->find('css', 'p.filter-applied:nth-child(3)');
+    $second_filter_element = $page->find('css', 'p.filter-applied:nth-child(2)');
     $this->assertEquals('Media', $second_filter_element->find('css', '.filter-applied__label')->getText());
     $this->assertProjectsVisible([
-      'Tooth Fairy',
-      'Pinky and the Brain',
       '9 Starts With a Higher Number',
       '1 Starts With a Number',
     ]);
 
     // Again switch to second tab.
-    $page->pressButton('random_data');
+    $this->pressWithWait('random_data');
     // Assert that the filters persist.
-    $this->assertEquals($applied_filter, $this->getElementText('p.filter-applied:nth-child(2) .filter-applied__label'));
+    $this->assertEquals($applied_filter, $this->getElementText('p.filter-applied:nth-child(1) .filter-applied__label'));
 
     // Assert that the number of results is the same.
     $results_after = count($page->findAll('css', '#project-browser .project.list'));
@@ -972,7 +913,7 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
       'Kangaroo',
     ]);
 
-    $this->assertPagerItems(['1', '2', '3', 'Next', 'Last', '1', '2', '3', 'Next', 'Last']);
+    $this->assertPagerItems(['1', '2', '3', 'Next', 'Last']);
     $this->clickWithWait('[aria-label="Last page"]');
     $this->assertProjectsVisible([
       'Astronaut Simulator',
@@ -980,7 +921,7 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
 
     // Click 'Media' checkbox.
     $this->clickWithWait('#67');
-    $this->assertPagerItems(['1', '2', 'Next', 'Last', '1', '2', 'Next', 'Last']);
+    $this->assertPagerItems(['1', '2', 'Next', 'Last']);
     $assert_session->elementExists('css', '.pager__item--active > .is-active[aria-label="Page 1"]');
   }
 
@@ -1014,7 +955,14 @@ class ProjectBrowserUiTest extends WebDriverTestBase {
     $this->drupalGet('admin/config/development/project_browser');
     $ui_install_input = $this->getSession()->getPage()->find('css', '[data-drupal-selector="edit-allow-ui-install"]');
     $this->assertTrue($ui_install_input->getAttribute('disabled') === 'disabled');
-    $this->container->get('module_installer')->install(['package_manager'], TRUE);
+
+    // @todo Remove try/catch in https://www.drupal.org/i/3349193.
+    try {
+      $this->container->get('module_installer')->install(['package_manager'], TRUE);
+    }
+    catch (MissingDependencyException $e) {
+      $this->markTestSkipped($e->getMessage());
+    }
     $this->drupalGet('admin/config/development/project_browser');
     $ui_install_input = $this->getSession()->getPage()->find('css', '[data-drupal-selector="edit-allow-ui-install"]');
     $this->assertFalse($ui_install_input->hasAttribute('disabled'));

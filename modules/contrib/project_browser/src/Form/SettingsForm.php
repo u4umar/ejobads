@@ -2,11 +2,13 @@
 
 namespace Drupal\project_browser\Form;
 
+use Drupal\Component\Plugin\Discovery\CachedDiscoveryInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteBuilderInterface;
 use Drupal\project_browser\Plugin\ProjectBrowserSourceManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -15,44 +17,16 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class SettingsForm extends ConfigFormBase {
 
-  /**
-   * The Project Browser Source Manager.
-   *
-   * @var \Drupal\project_browser\Plugin\ProjectBrowserSourceManager
-   */
-  protected $manager;
-
-  /**
-   * ProjectBrowser cache bin.
-   *
-   * @var \Drupal\Core\Cache\CacheBackendInterface
-   */
-  protected $cacheBin;
-
-  /**
-   * The module handler.
-   *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
-   */
-  protected $moduleHandler;
-
-  /**
-   * Constructs a \Drupal\project_browser\Form\SettingsForm object.
-   *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   The factory for configuration objects.
-   * @param \Drupal\project_browser\Plugin\ProjectBrowserSourceManager $manager
-   *   The plugin manager.
-   * @param \Drupal\Core\Cache\CacheBackendInterface $project_browser_cache
-   *   The cache bin.
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
-   *   The module handler.
-   */
-  public function __construct(ConfigFactoryInterface $config_factory, ProjectBrowserSourceManager $manager, CacheBackendInterface $project_browser_cache, ModuleHandlerInterface $module_handler) {
+  public function __construct(
+    ConfigFactoryInterface $config_factory,
+    private readonly ProjectBrowserSourceManager $manager,
+    private readonly CacheBackendInterface $cacheBin,
+    private readonly ModuleHandlerInterface $moduleHandler,
+    private readonly RouteBuilderInterface $routeBuilder,
+    private readonly CachedDiscoveryInterface $contextualLinkManager,
+    private readonly CacheBackendInterface $renderCache,
+  ) {
     parent::__construct($config_factory);
-    $this->manager = $manager;
-    $this->cacheBin = $project_browser_cache;
-    $this->moduleHandler = $module_handler;
   }
 
   /**
@@ -63,7 +37,10 @@ class SettingsForm extends ConfigFormBase {
       $container->get('config.factory'),
       $container->get('plugin.manager.project_browser.source'),
       $container->get('cache.project_browser'),
-      $container->get('module_handler')
+      $container->get('module_handler'),
+      $container->get('router.builder'),
+      $container->get('plugin.manager.menu.contextual_link'),
+      $container->get('cache.render')
     );
   }
 
@@ -101,11 +78,8 @@ class SettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('project_browser.admin_settings');
 
-    // Confirm that package manager is installed and that it provides the
-    // CollectIgnoredPathsEvent, added in Package Manager 2.5. The event is
-    // required by the UI install feature, so we check for its presence in
-    // addition to the module being installed.
-    $package_manager_not_ready = !$this->moduleHandler->moduleExists('package_manager') || !class_exists('\Drupal\package_manager\Event\CollectIgnoredPathsEvent');
+    // Confirm that Package Manager is installed.
+    $package_manager_not_ready = !$this->moduleHandler->moduleExists('package_manager');
     $form['allow_ui_install'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Allow installing via UI (experimental)'),
@@ -114,10 +88,17 @@ class SettingsForm extends ConfigFormBase {
       '#disabled' => $package_manager_not_ready,
     ];
 
+    $form['disable_add_new_module'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Disable "Add new module" page'),
+      '#default_value' => $config->get('disable_add_new_module'),
+      '#description' => $this->t('Removes access to the Drupal page that allows .tar modules to be installed, which does now use composer, so is strongly discouraged when using Project Browser.'),
+    ];
+
     if ($package_manager_not_ready) {
-      $form['allow_ui_install_compatiblity'] = [
+      $form['allow_ui_install_compatibility'] = [
         '#type' => 'container',
-        '#markup' => $this->t('The ability to install modules via the Project Browser UI requires Package Manager version 2.5 or newer. Package Manager is provided as part of the Automatic Updates module.'),
+        '#markup' => $this->t('The ability to install modules via the Project Browser UI requires Package Manager version 2.5 or newer. Package Manager is provided as part of the <a href="https://www.drupal.org/project/automatic_updates" target="_blank" rel="noopener noreferrer">Automatic Updates</a> module.'),
       ];
     }
 
@@ -235,13 +216,23 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    $settings = $this->config('project_browser.admin_settings');
+    $disable_old = $settings->get('disable_add_new_module');
+    $disable_new = $form_state->getValue('disable_add_new_module');
     $all_plugins = $form_state->getValue('enabled_sources');
     $enabled_plugins = array_filter($all_plugins, fn($source) => $source['status'] === 'enabled');
-    $this->config('project_browser.admin_settings')
+    $settings
       ->set('enabled_sources', array_keys($enabled_plugins))
       ->set('allow_ui_install', $form_state->getValue('allow_ui_install'))
+      ->set('disable_add_new_module', $disable_new)
       ->save();
     $this->cacheBin->deleteAll();
+    if ($disable_old != $disable_new) {
+      // If disable add new module changed, clear route and menu caches.
+      $this->routeBuilder->rebuild();
+      $this->contextualLinkManager->clearCachedDefinitions();
+      $this->renderCache->invalidateAll();
+    }
     parent::submitForm($form, $form_state);
   }
 

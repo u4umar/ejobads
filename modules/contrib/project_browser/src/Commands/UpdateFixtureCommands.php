@@ -2,6 +2,8 @@
 
 namespace Drupal\project_browser\Commands;
 
+// cspell:ignore commandfile
+
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\project_browser\EnabledSourceHandler;
@@ -26,50 +28,13 @@ class UpdateFixtureCommands extends DrushCommands {
 
   use StringTranslationTrait;
 
-  /**
-   * Logger service.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelFactoryInterface
-   */
-  private $loggerChannelFactory;
-
-  /**
-   * The EnabledSourceHandler.
-   *
-   * @var \Drupal\project_browser\EnabledSourceHandler
-   */
-  protected $enabledSource;
-
-  /**
-   * The event dispatcher service.
-   *
-   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
-   */
-  protected $eventDispatcher;
-
-  /**
-   * @var \Drupal\project_browser\ProjectBrowserFixtureHelper
-   */
-  protected ProjectBrowserFixtureHelper $fixtureHelper;
-
-  /**
-   * Constructs a new UpdateFixtureCommands object.
-   *
-   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerChannelFactory
-   *   Logger service.
-   * @param \Drupal\project_browser\EnabledSourceHandler $enabled_source
-   *   The enabled source.
-   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
-   *   Event dispatcher service.
-   * @param \Drupal\project_browser\ProjectBrowserFixtureHelper $fixture_helper
-   *   The Project Browser fixture helper.
-   */
-  public function __construct(LoggerChannelFactoryInterface $loggerChannelFactory, EnabledSourceHandler $enabled_source, EventDispatcherInterface $event_dispatcher, ProjectBrowserFixtureHelper $fixture_helper) {
+  public function __construct(
+    private readonly LoggerChannelFactoryInterface $loggerChannelFactory,
+    private readonly EnabledSourceHandler $enabledSource,
+    private readonly EventDispatcherInterface $eventDispatcher,
+    private readonly ProjectBrowserFixtureHelper $fixtureHelper,
+  ) {
     parent::__construct();
-    $this->loggerChannelFactory = $loggerChannelFactory;
-    $this->enabledSource = $enabled_source;
-    $this->eventDispatcher = $event_dispatcher;
-    $this->fixtureHelper = $fixture_helper;
   }
 
   /**

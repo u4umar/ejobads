@@ -6,10 +6,10 @@ use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Extension\ModuleInstallerInterface;
+use Drupal\Core\TempStore\SharedTempStore;
 use Drupal\Core\TempStore\SharedTempStoreFactory;
 use Drupal\Core\Url;
 use Drupal\package_manager\Exception\StageException;
-use Drupal\package_manager\PathLocator;
 use Drupal\project_browser\ComposerInstaller\Installer;
 use Drupal\project_browser\EnabledSourceHandler;
 use Psr\Log\LoggerInterface;
@@ -50,81 +50,21 @@ class InstallerController extends ControllerBase {
   protected const STAGE_STATUS_OK = 0;
 
   /**
-   * The installer.
-   *
-   * @var \Drupal\project_browser\ComposerInstaller\Installer
-   */
-  private $installer;
-
-  /**
    * The Project Browser tempstore object.
    *
    * @var \Drupal\Core\TempStore\SharedTempStore
    */
-  protected $projectBrowserTempStore;
+  protected SharedTempStore $projectBrowserTempStore;
 
-  /**
-   * The shared tempstore object.
-   *
-   * @var \Drupal\Core\TempStore\SharedTempStore
-   */
-  protected $sharedTempStore;
-
-  /**
-   * The module installer.
-   *
-   * @var \Drupal\Core\Extension\ModuleInstallerInterface
-   */
-  protected $moduleInstaller;
-
-  /**
-   * The EnabledSourceHandler.
-   *
-   * @var \Drupal\project_browser\EnabledSourceHandler
-   */
-  protected $enabledSourceHandler;
-
-  /**
-   * The time service.
-   *
-   * @var \Drupal\Component\Datetime\TimeInterface
-   */
-  protected $time;
-
-  /**
-   * A logger instance.
-   *
-   * @var \Psr\Log\LoggerInterface
-   */
-  protected $logger;
-
-  /**
-   * Constructs an InstallerController object.
-   *
-   * @param \Drupal\project_browser\ComposerInstaller\Installer $installer
-   *   The installer.
-   * @param \Drupal\package_manager\PathLocator $path_locator
-   *   The path locator service.
-   * @param \Drupal\Core\TempStore\SharedTempStoreFactory $shared_temp_store_factory
-   *   The shared tempstore factory.
-   * @param \Drupal\Core\Extension\ModuleInstallerInterface $module_installer
-   *   The module installer.
-   * @param \Drupal\project_browser\EnabledSourceHandler $enabled_source
-   *   The enabled source.
-   * @param \Drupal\Component\Datetime\TimeInterface $time
-   *   The time service.
-   * @param \Psr\Log\LoggerInterface $logger
-   *   A logger instance.
-   */
-  public function __construct(Installer $installer, PathLocator $path_locator, SharedTempStoreFactory $shared_temp_store_factory, ModuleInstallerInterface $module_installer, EnabledSourceHandler $enabled_source, TimeInterface $time, LoggerInterface $logger) {
-    $this->installer = $installer;
-    $this->pathLocator = $path_locator;
+  public function __construct(
+    private readonly Installer $installer,
+    SharedTempStoreFactory $shared_temp_store_factory,
+    private readonly ModuleInstallerInterface $moduleInstaller,
+    private readonly EnabledSourceHandler $enabledSourceHandler,
+    private readonly TimeInterface $time,
+    private readonly LoggerInterface $logger,
+  ) {
     $this->projectBrowserTempStore = $shared_temp_store_factory->get('project_browser');
-    $this->sharedTempStore = $shared_temp_store_factory;
-    $this->moduleInstaller = $module_installer;
-    $this->enabledSourceHandler = $enabled_source;
-    $this->time = $time;
-    $this->logger = $logger;
   }
 
   /**
@@ -133,7 +73,6 @@ class InstallerController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('project_browser.installer'),
-      $container->get('package_manager.path_locator'),
       $container->get('project_browser.tempstore.shared'),
       $container->get('module_installer'),
       $container->get('project_browser.enabled_source'),

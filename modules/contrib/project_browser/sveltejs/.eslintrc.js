@@ -3,18 +3,13 @@ module.exports = {
     ecmaVersion: 2019,
     sourceType: 'module',
   },
-  extends: [
-    'airbnb-base',
-    'plugin:import/recommended',
-  ],
+  extends: ['airbnb-base', 'plugin:import/recommended'],
   root: true,
   env: {
     es6: true,
     browser: true,
   },
-  plugins: [
-    'svelte3',
-  ],
+  plugins: ['svelte3'],
   overrides: [
     {
       files: ['*.svelte'],
@@ -46,18 +41,24 @@ module.exports = {
     'import/no-mutable-exports': ['off'],
     'import/no-extraneous-dependencies': ['off'],
     'import/first': ['off'],
-    'no-plusplus': ['warn', {
-      allowForLoopAfterthoughts: true,
-    }],
+    'no-plusplus': [
+      'warn',
+      {
+        allowForLoopAfterthoughts: true,
+      },
+    ],
     'no-param-reassign': ['off'],
     'no-prototype-builtins': ['off'],
-    'valid-jsdoc': ['warn', {
-      prefer: {
-        returns: 'return',
-        property: 'prop',
+    'valid-jsdoc': [
+      'warn',
+      {
+        prefer: {
+          returns: 'return',
+          property: 'prop',
+        },
+        requireReturn: false,
       },
-      requireReturn: false,
-    }],
+    ],
     'no-unused-vars': ['warn'],
     'max-len': ['off'],
     // Rules to disable because Prettier is enforced. This would typically be
@@ -83,7 +84,7 @@ module.exports = {
     'generator-star': ['off'],
     'generator-star-spacing': ['off'],
     'implicit-arrow-linebreak': ['off'],
-    'indent': ['off'],
+    indent: ['off'],
     'jsx-quotes': ['off'],
     'key-spacing': ['off'],
     'keyword-spacing': ['off'],
@@ -113,7 +114,7 @@ module.exports = {
     'padded-blocks': ['off'],
     'quote-props': ['off'],
     'rest-spread-spacing': ['off'],
-    'semi': ['off'],
+    semi: ['off'],
     'semi-spacing': ['off'],
     'semi-style': ['off'],
     'space-after-function-name': ['off'],

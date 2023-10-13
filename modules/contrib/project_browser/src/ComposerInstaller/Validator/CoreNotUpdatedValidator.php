@@ -3,8 +3,9 @@
 namespace Drupal\project_browser\ComposerInstaller\Validator;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\Core\StringTranslation\TranslationInterface;
+use Drupal\package_manager\ComposerInspector;
 use Drupal\package_manager\Event\PreApplyEvent;
+use Drupal\package_manager\PathLocator;
 use Drupal\project_browser\ComposerInstaller\Installer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -21,12 +22,15 @@ final class CoreNotUpdatedValidator implements EventSubscriberInterface {
   /**
    * Constructs a CoreNotUpdatedValidator object.
    *
-   * @param \Drupal\Core\StringTranslation\TranslationInterface $translation
-   *   The translation service.
+   * @param \Drupal\package_manager\PathLocator $pathLocator
+   *   The path locator service.
+   * @param \Drupal\package_manager\ComposerInspector $composerInspector
+   *   The Composer inspector service.
    */
-  public function __construct(TranslationInterface $translation) {
-    $this->setStringTranslation($translation);
-  }
+  public function __construct(
+    private readonly PathLocator $pathLocator,
+    private readonly ComposerInspector $composerInspector,
+  ) {}
 
   /**
    * Validates Drupal core was not updated during project install.
@@ -35,16 +39,17 @@ final class CoreNotUpdatedValidator implements EventSubscriberInterface {
    *   The event object.
    */
   public function validateCoreNotUpdated(PreApplyEvent $event): void {
-    $stage = $event->getStage();
+    $stage = $event->stage;
     if (!$stage instanceof Installer) {
       return;
     }
+    $active_dir = $this->pathLocator->getProjectRoot();
+    $stage_dir = $stage->getStageDirectory();
+    $active_packages = $this->composerInspector->getInstalledPackagesList($active_dir);
+    $staged_packages = $this->composerInspector->getInstalledPackagesList($stage_dir);
+    $updated_packages = $staged_packages->getPackagesWithDifferentVersionsIn($active_packages);
 
-    $staged = $stage->getStageComposer();
-    $active = $stage->getActiveComposer();
-    $updated_packages = $staged->getPackagesWithDifferentVersionsIn($active);
-
-    if (array_key_exists('drupal/core', $updated_packages)) {
+    if (isset($updated_packages['drupal/core'])) {
       $event->addError([
         $this->t('Drupal core has been updated in the staging area, which is not allowed by Project Browser.'),
       ]);

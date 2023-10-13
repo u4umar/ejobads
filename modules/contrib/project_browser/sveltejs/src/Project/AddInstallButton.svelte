@@ -2,6 +2,7 @@
   import { openPopup } from '../popup';
   import { MODULE_STATUS, ORIGIN_URL, PM_VALIDATION_ERROR } from '../constants';
   import ProjectButtonBase from './ProjectButtonBase.svelte';
+  import { isPackageManagerRequired } from '../stores';
 
   export let project;
   export let loading;
@@ -84,7 +85,7 @@
    * Uses package manager to download a module using Composer.
    *
    * @param {boolean} install
-   *   If true, the module will be installed after it is downlaoded.
+   *   If true, the module will be installed after it is downloaded.
    */
   function downloadModule(install = false) {
     showStatus(true);
@@ -161,7 +162,7 @@
       downloadModule(true);
     }
   }}
-  disabled={PM_VALIDATION_ERROR}
+  disabled={PM_VALIDATION_ERROR && $isPackageManagerRequired}
 >
   {alreadyAdded ? Drupal.t('Install') : Drupal.t('Add and Install')}<span
     class="visually-hidden">{project.title}</span

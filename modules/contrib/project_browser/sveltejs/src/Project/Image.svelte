@@ -66,7 +66,7 @@
 {/if}
 
 <style>
-  :global(.image-carousel__slider-image, .project__logo) {
+  :global(.image-carousel__slider-image, .project__logo-image) {
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -75,11 +75,13 @@
   }
   /* Small devices (portrait tablets and large phones, 600px and up) */
   @media only screen and (min-width: 600px) {
-    :global(.image-carousel__slider-image, .project__logo) {
+    :global(.image-carousel__slider-image, .project__logo-image) {
       display: block;
       width: auto;
       border-radius: 5px;
       height: 100px;
+    }
+    :global(.image-carousel__slider, .project__logo) {
       margin-top: 20px;
     }
   }

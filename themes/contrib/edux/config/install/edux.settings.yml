@@ -123,14 +123,7 @@ button_radius: 8
 
 # Components
 font_src: 'local'
-breadcrumb_icon_style: '&#x27F6;'
 scrolltotop_on: 1
-scrolltotop_default: 1
-scrolltotop_icon_style: '&#x21e1;'
-scrolltotop_icon_size: 20
-scrolltotop_position: 'right'
-scrolltotop_bottom: 10
-scrolltotop_icon_radius: '50%'
 
 # Custom styling
 styling: 0

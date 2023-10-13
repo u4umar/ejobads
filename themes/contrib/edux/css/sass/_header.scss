@@ -18,6 +18,9 @@
 .header-top-block {
   text-align: center;
 }
+.header-top-block .block-title {
+  color: var(--primary);
+}
 /* Header
 ------------------------------- */
 .header {
@@ -43,11 +46,7 @@
   color: var(--primary);
 }
 /* Header -> Main menu */
-.mobile-menu {
-  border-top: 2px solid #ffffff;
-  border-bottom: 2px solid #ffffff;
-}
-.mobile-menu span {
+.mobile-menu span:nth-child(2) {
   background-color: #ffffff;
 }
 .menu-wrap {
@@ -92,6 +91,7 @@
   color: #ffffff;
 }
 .header-search-close {
+  color: #ffffff;
   border: 3px solid var(--primary);
 }
 /* Header -> Page header */

@@ -44,38 +44,14 @@ class DrupalCore extends ProjectBrowserSourceBase implements ContainerFactoryPlu
    */
   const MAINTAINED = 'maintained';
 
-  /**
-   * ProjectBrowser cache bin.
-   *
-   * @var \Drupal\Core\Cache\CacheBackendInterface
-   */
-  protected $cacheBin;
-
-  /**
-   * The module extension list.
-   *
-   * @var \Drupal\Core\Extension\ModuleExtensionList
-   */
-  protected $moduleExtensionList;
-
-  /**
-   * Constructs a DrupalCore source plugin.
-   *
-   * @param array $configuration
-   *   A configuration array containing information about the plugin instance.
-   * @param string $plugin_id
-   *   The plugin ID for the plugin instance.
-   * @param mixed $plugin_definition
-   *   The plugin implementation definition.
-   * @param \Drupal\Core\Cache\CacheBackendInterface $cache_bin
-   *   The cache bin.
-   * @param \Drupal\Core\Extension\ModuleExtensionList $extension_list_module
-   *   The object that provides a list of all extension modules.
-   */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, CacheBackendInterface $cache_bin, ModuleExtensionList $extension_list_module) {
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    private readonly CacheBackendInterface $cacheBin,
+    private readonly ModuleExtensionList $moduleExtensionList,
+  ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->cacheBin = $cache_bin;
-    $this->moduleExtensionList = $extension_list_module;
   }
 
   /**
@@ -164,7 +140,7 @@ class DrupalCore extends ProjectBrowserSourceBase implements ContainerFactoryPlu
     if (!empty($query['page']) && !empty($query['limit'])) {
       $projects = array_chunk($projects, $query['limit'])[$query['page']] ?? [];
     }
-    return new ProjectsResultsPage($project_count ?? 0, array_values($projects), (string) $this->getPluginDefinition()['label'], $this->getPluginId());
+    return new ProjectsResultsPage($project_count, array_values($projects), (string) $this->getPluginDefinition()['label'], $this->getPluginId(), FALSE);
   }
 
   /**

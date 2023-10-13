@@ -36,7 +36,7 @@
     {% endif %}
     {% for item in items %}
       <li{{ item.attributes.addClass('menu-book-item') }}>
-        <i class="ficon-file"></i> {{ link(item.title, item.url) }}
+        <i class="icon-file"></i> {{ link(item.title, item.url) }}
         {% if item.below %}
           {{ book_tree.book_links(item.below, attributes, menu_level + 1) }}
         {% endif %}

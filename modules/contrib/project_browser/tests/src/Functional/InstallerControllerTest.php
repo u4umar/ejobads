@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\project_browser\Functional;
 
+// cspell:ignore crashmore
+
 use Drupal\Component\Serialization\Json;
 use Drupal\package_manager\ValidationResult;
 use Drupal\package_manager_test_validation\EventSubscriber\TestSubscriber;
@@ -14,6 +16,8 @@ use Drupal\package_manager\Event\PostCreateEvent;
 use Drupal\package_manager\Event\PostRequireEvent;
 use Drupal\package_manager\Event\PostDestroyEvent;
 use Drupal\project_browser_test\Datetime\TestTime;
+use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\project_browser\Traits\PackageManagerFixtureUtilityTrait;
 
 /**
  * Tests the installer controller.
@@ -22,7 +26,9 @@ use Drupal\project_browser_test\Datetime\TestTime;
  *
  * @group project_browser
  */
-class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase {
+class InstallerControllerTest extends BrowserTestBase {
+
+  use PackageManagerFixtureUtilityTrait;
 
   /**
    * The shared tempstore object.
@@ -54,6 +60,11 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
     'system',
     'user',
   ];
+
+  /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
 
   protected function setUp(): void {
     parent::setUp();
@@ -107,6 +118,7 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
       'field_project_machine_name' => 'awesome_module',
     ]);
     $query->execute();
+    $this->initPackageManager();
     $this->sharedTempStore = $this->container->get('tempstore.shared');
     $this->installer = $this->container->get('project_browser.installer');
     $this->drupalLogin($this->drupalCreateUser(['administer modules']));
@@ -140,7 +152,7 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
   /**
    * Confirms a require will stop if package already present.
    *
-   * @covers::require
+   * @covers ::require
    */
   public function testInstallAlreadyPresentPackage() {
     $this->assertProjectBrowserTempStatus(NULL, NULL);
@@ -151,13 +163,13 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
     $this->stageId = $this->sharedTempStore->get('package_manager_stage')->get('lock')[0];
     $content = $this->drupalGet("/admin/modules/project_browser/install-require/drupal/core/$this->stageId");
     $this->assertSession()->statusCodeEquals(500);
-    $this->assertSame('{"message":"InstallException: The following package is already installed:\ndrupal\/core\n","phase":"require"}', $content);
+    $this->assertSame('{"message":"StageEventException: The following package is already installed: drupal\/core\n","phase":"require"}', $content);
   }
 
   /**
    * Calls the endpoint that begins installation.
    *
-   * @covers::begin
+   * @covers ::begin
    */
   private function doStart() {
     $this->assertProjectBrowserTempStatus(NULL, NULL);
@@ -172,7 +184,7 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
   /**
    * Calls the endpoint that continues to the require phase of installation.
    *
-   * @covers::require
+   * @covers ::require
    */
   private function doRequire() {
     $this->drupalGet("/admin/modules/project_browser/install-require/drupal/awesome_module/$this->stageId");
@@ -184,7 +196,7 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
   /**
    * Calls the endpoint that continues to the apply phase of installation.
    *
-   * @covers::apply
+   * @covers ::apply
    */
   private function doApply() {
     $this->drupalGet("/admin/modules/project_browser/install-apply/drupal/awesome_module/$this->stageId");
@@ -196,7 +208,7 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
   /**
    * Calls the endpoint that continues to the post apply phase of installation.
    *
-   * @covers::postApply
+   * @covers ::postApply
    */
   private function doPostApply() {
     $this->drupalGet("/admin/modules/project_browser/install-post_apply/drupal/awesome_module/$this->stageId");
@@ -208,7 +220,7 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
   /**
    * Calls the endpoint that continues to the destroy phase of installation.
    *
-   * @covers::destroy
+   * @covers ::destroy
    */
   private function doDestroy() {
     $this->drupalGet("/admin/modules/project_browser/install-destroy/drupal/awesome_module/$this->stageId");
@@ -231,7 +243,7 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
   /**
    * Tests an error during a pre create event.
    *
-   * @covers::create
+   * @covers ::create
    */
   public function testPreCreateError() {
     $message = t('This is a PreCreate error.');
@@ -239,39 +251,39 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
     TestSubscriber::setTestResult([$result], PreCreateEvent::class);
     $contents = $this->drupalGet('admin/modules/project_browser/install-begin/drupal/awesome_module');
     $this->assertSession()->statusCodeEquals(500);
-    $this->assertSame('{"message":"InstallException: This is a PreCreate error.\n","phase":"create"}', $contents);
+    $this->assertSame('{"message":"StageEventException: This is a PreCreate error.\n","phase":"create"}', $contents);
   }
 
   /**
    * Tests an exception during a pre create event.
    *
-   * @covers::create
+   * @covers ::create
    */
   public function testPreCreateException() {
     $error = new \Exception('PreCreate did not go well.');
     TestSubscriber::setException($error, PreCreateEvent::class);
     $contents = $this->drupalGet('admin/modules/project_browser/install-begin/drupal/awesome_module');
     $this->assertSession()->statusCodeEquals(500);
-    $this->assertSame('{"message":"StageException: PreCreate did not go well.","phase":"create"}', $contents);
+    $this->assertSame('{"message":"StageEventException: PreCreate did not go well.","phase":"create"}', $contents);
   }
 
   /**
    * Tests an exception during a post create event.
    *
-   * @covers::create
+   * @covers ::create
    */
   public function testPostCreateException() {
     $error = new \Exception('PostCreate did not go well.');
     TestSubscriber::setException($error, PostCreateEvent::class);
     $contents = $this->drupalGet('admin/modules/project_browser/install-begin/drupal/awesome_module');
     $this->assertSession()->statusCodeEquals(500);
-    $this->assertSame('{"message":"StageException: PostCreate did not go well.","phase":"create"}', $contents);
+    $this->assertSame('{"message":"StageEventException: PostCreate did not go well.","phase":"create"}', $contents);
   }
 
   /**
    * Tests an error during a pre require event.
    *
-   * @covers::require
+   * @covers ::require
    */
   public function testPreRequireError() {
     $message = t('This is a PreRequire error.');
@@ -280,13 +292,13 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
     TestSubscriber::setTestResult([$result], PreRequireEvent::class);
     $contents = $this->drupalGet("/admin/modules/project_browser/install-require/drupal/awesome_module/$this->stageId");
     $this->assertSession()->statusCodeEquals(500);
-    $this->assertSame('{"message":"InstallException: This is a PreRequire error.\n","phase":"require"}', $contents);
+    $this->assertSame('{"message":"StageEventException: This is a PreRequire error.\n","phase":"require"}', $contents);
   }
 
   /**
    * Tests an exception during a pre require event.
    *
-   * @covers::require
+   * @covers ::require
    */
   public function testPreRequireException() {
     $error = new \Exception('PreRequire did not go well.');
@@ -294,13 +306,13 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
     $this->doStart();
     $contents = $this->drupalGet("/admin/modules/project_browser/install-require/drupal/awesome_module/$this->stageId");
     $this->assertSession()->statusCodeEquals(500);
-    $this->assertSame('{"message":"StageException: PreRequire did not go well.","phase":"require"}', $contents);
+    $this->assertSame('{"message":"StageEventException: PreRequire did not go well.","phase":"require"}', $contents);
   }
 
   /**
    * Tests an exception during a post require event.
    *
-   * @covers::require
+   * @covers ::require
    */
   public function testPostRequireException() {
     $error = new \Exception('PostRequire did not go well.');
@@ -308,13 +320,13 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
     $this->doStart();
     $contents = $this->drupalGet("/admin/modules/project_browser/install-require/drupal/awesome_module/$this->stageId");
     $this->assertSession()->statusCodeEquals(500);
-    $this->assertSame('{"message":"StageException: PostRequire did not go well.","phase":"require"}', $contents);
+    $this->assertSame('{"message":"StageEventException: PostRequire did not go well.","phase":"require"}', $contents);
   }
 
   /**
    * Tests an error during a pre apply event.
    *
-   * @covers::apply
+   * @covers ::apply
    */
   public function testPreApplyError() {
     $message = t('This is a PreApply error.');
@@ -324,13 +336,13 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
     $this->doRequire();
     $contents = $this->drupalGet("/admin/modules/project_browser/install-apply/drupal/awesome_module/$this->stageId");
     $this->assertSession()->statusCodeEquals(500);
-    $this->assertSame('{"message":"InstallException: This is a PreApply error.\n","phase":"apply"}', $contents);
+    $this->assertSame('{"message":"StageEventException: This is a PreApply error.\n","phase":"apply"}', $contents);
   }
 
   /**
    * Tests an exception during a pre apply event.
    *
-   * @covers::apply
+   * @covers ::apply
    */
   public function testPreApplyException() {
     $error = new \Exception('PreApply did not go well.');
@@ -339,13 +351,13 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
     $this->doRequire();
     $contents = $this->drupalGet("/admin/modules/project_browser/install-apply/drupal/awesome_module/$this->stageId");
     $this->assertSession()->statusCodeEquals(500);
-    $this->assertSame('{"message":"StageException: PreApply did not go well.","phase":"apply"}', $contents);
+    $this->assertSame('{"message":"StageEventException: PreApply did not go well.","phase":"apply"}', $contents);
   }
 
   /**
    * Tests an exception during a post apply event.
    *
-   * @covers::apply
+   * @covers ::apply
    */
   public function testPostApplyException() {
     $error = new \Exception('PostApply did not go well.');
@@ -355,13 +367,13 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
     $this->doApply();
     $contents = $this->drupalGet("/admin/modules/project_browser/install-post_apply/drupal/awesome_module/$this->stageId");
     $this->assertSession()->statusCodeEquals(500);
-    $this->assertSame('{"message":"StageException: PostApply did not go well.","phase":"post apply"}', $contents);
+    $this->assertSame('{"message":"StageEventException: PostApply did not go well.","phase":"post apply"}', $contents);
   }
 
   /**
    * Tests an error during a pre destroy event.
    *
-   * @covers::destroy
+   * @covers ::destroy
    */
   public function testPreDestroyError() {
     $message = t('This is a PreDestroy error.');
@@ -373,13 +385,13 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
     $this->doPostApply();
     $contents = $this->drupalGet("/admin/modules/project_browser/install-destroy/drupal/awesome_module/$this->stageId");
     $this->assertSession()->statusCodeEquals(500);
-    $this->assertSame('{"message":"InstallException: This is a PreDestroy error.\n","phase":"destroy"}', $contents);
+    $this->assertSame('{"message":"StageEventException: This is a PreDestroy error.\n","phase":"destroy"}', $contents);
   }
 
   /**
    * Tests an exception during a pre destroy event.
    *
-   * @covers::destroy
+   * @covers ::destroy
    */
   public function testPreDestroyException() {
     $error = new \Exception('PreDestroy did not go well.');
@@ -390,13 +402,13 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
     $this->doPostApply();
     $contents = $this->drupalGet("/admin/modules/project_browser/install-destroy/drupal/awesome_module/$this->stageId");
     $this->assertSession()->statusCodeEquals(500);
-    $this->assertSame('{"message":"StageException: PreDestroy did not go well.","phase":"destroy"}', $contents);
+    $this->assertSame('{"message":"StageEventException: PreDestroy did not go well.","phase":"destroy"}', $contents);
   }
 
   /**
    * Tests an exception during a post destroy event.
    *
-   * @covers::destroy
+   * @covers ::destroy
    */
   public function testPostDestroyException() {
     $error = new \Exception('PostDestroy did not go well.');
@@ -407,13 +419,13 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
     $this->doPostApply();
     $contents = $this->drupalGet("/admin/modules/project_browser/install-destroy/drupal/awesome_module/$this->stageId");
     $this->assertSession()->statusCodeEquals(500);
-    $this->assertSame('{"message":"StageException: PostDestroy did not go well.","phase":"destroy"}', $contents);
+    $this->assertSame('{"message":"StageEventException: PostDestroy did not go well.","phase":"destroy"}', $contents);
   }
 
   /**
    * Confirms the various versions of the "install in progress" messages.
    *
-   * @covers::unlock
+   * @covers ::unlock
    */
   public function testInstallUnlockMessage() {
     $this->doStart();
@@ -459,7 +471,7 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
    *
    * The break lock link is not available once the stage is applying.
    *
-   * @covers::unlock
+   * @covers ::unlock
    */
   public function testCanBreakLock() {
     $this->doStart();
@@ -484,7 +496,7 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
   /**
    * Confirms stage can be unlocked despite a missing Project Browser lock.
    *
-   * @covers::unlock
+   * @covers ::unlock
    */
   public function testCanBreakStageWithMissingProjectBrowserLock() {
     $this->doStart();
@@ -508,7 +520,7 @@ class InstallerControllerTest extends ProjectBrowserInstallerFunctionalTestBase 
   /**
    * Confirm a module and its dependencies can be installed via the endpoint.
    *
-   * @covers::activateModule
+   * @covers ::activateModule
    */
   public function testCoreModuleActivate() {
     $this->drupalGet('admin/modules');

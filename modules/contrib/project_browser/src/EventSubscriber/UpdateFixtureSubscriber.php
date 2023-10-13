@@ -12,14 +12,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class UpdateFixtureSubscriber implements EventSubscriberInterface {
 
-  /**
-   * @var \Drupal\project_browser\ProjectBrowserFixtureHelper
-   */
-  protected ProjectBrowserFixtureHelper $fixtureHelper;
-
-  public function __construct(ProjectBrowserFixtureHelper $fixture_helper) {
-    $this->fixtureHelper = $fixture_helper;
-  }
+  public function __construct(
+    private readonly ProjectBrowserFixtureHelper $fixtureHelper,
+  ) {}
 
   /**
    * {@inheritdoc}

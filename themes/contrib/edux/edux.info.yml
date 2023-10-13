@@ -3,8 +3,8 @@ type: theme
 base theme: thex
 description: 'Theme For Educational Institutes by <a href="https://drupar.com/" target="_blank">Drupar.com</a>'
 package: Drupar
-# version: 10.1.1
-core_version_requirement: ^9.5 || ^10
+# version: 10.2.0
+core_version_requirement: ^9 || ^10
 libraries:
   - edux/global-styling
 regions:
@@ -32,7 +32,7 @@ regions:
   footer_bottom_last: 'Footer Bottom Last'
   hidden: Hidden Blocks
 
-# Information added by Drupal.org packaging script on 2023-01-22
-version: '10.1.1'
+# Information added by Drupal.org packaging script on 2023-09-05
+version: '10.2.0'
 project: 'edux'
-datestamp: 1674362580
+datestamp: 1693917349

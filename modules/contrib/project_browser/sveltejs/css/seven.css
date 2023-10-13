@@ -1,23 +1,23 @@
 #block-seven-content h3 a {
-    font-size: 17px;
+  font-size: 17px;
 }
 
 #block-seven-content .body {
-    font-size: 15px;
+  font-size: 15px;
 }
 
 #block-seven-content .download-icon {
-    height: 45%;
-    left: 15px;
-    top: 0.55em;
+  top: 0.55em;
+  left: 15px;
+  height: 45%;
 }
 
 #block-seven-content .categories {
-    font-size: 1em;
+  font-size: 1em;
 }
 
 #block-seven-content .button--primary {
-    height: 2.5em;
+  height: 2.5em;
 }
 
 /**
@@ -61,7 +61,7 @@
   width: 1.75rem; /* 28px */
   height: 1.75rem; /* 28px */
   margin: -0.875rem;
-  content: '';
+  content: "";
   border: 3px solid #003cc5;
   border-right: 3px dotted transparent;
 }
@@ -77,7 +77,7 @@
    * less than 4px.
    */
   @supports (-ms-ime-align: auto) {
-    [dir='rtl'] .ajax-progress__throbber {
+    [dir="rtl"] .ajax-progress__throbber {
       border-width: 4px;
     }
   }
@@ -94,45 +94,46 @@
 
 .project-browser-popup input {
   width: 90%;
+  color: #fff;
   border: none;
-  color: #ffffff;
   background-color: #292b32;
 }
 .project-browser-popup img {
-  width: 1.25em;
   display: block;
+  width: 1.25em;
   background: transparent;
 }
 .project-browser-popup button {
-  background: transparent;
-  border: none;
   margin-inline-start: auto;
+  border: none;
+  background: transparent;
 }
 .project-browser-popup button:hover {
   cursor: pointer;
 }
 .project-browser-popup #download-cmd,
 #install-cmd {
-  display: flex;
   position: relative;
-  background-color: #282c34;
-  border-radius: 6px;
-  font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
+  display: flex;
+  margin: 0.85rem 0;
   padding-top: 1rem;
   padding-bottom: 1rem;
-  padding-inline: 1rem 0.25rem;  margin: 0.85rem 0;
+  border-radius: 6px;
+  background-color: #282c34;
+  font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  padding-inline: 1rem 0.25rem;
 }
 .project-browser-popup .copied-download,
 .copied-install {
-  opacity: 0;
-  width: fit-content;
-  background: #ffffff;
-  z-index: 1;
   position: absolute;
-  margin-top: 30px;
+  z-index: 1;
   right: -18px;
-  font-size: 13px;
-  border-radius: 4px;
+  width: fit-content;
+  margin-top: 30px;
   padding: 0 4px 0;
+  opacity: 0;
   border: 0.5px solid black;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 13px;
 }

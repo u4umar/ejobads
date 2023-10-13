@@ -10,34 +10,13 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * Defines Installer service.
  */
 class InstallReadiness {
+
   use StatusCheckTrait;
 
-  /**
-   * The installer.
-   *
-   * @var \Drupal\project_browser\ComposerInstaller\Installer
-   */
-  private $installer;
-
-  /**
-   * The event dispatcher service.
-   *
-   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
-   */
-  protected $eventDispatcher;
-
-  /**
-   * InstallReadiness constructor.
-   *
-   * @param \Drupal\project_browser\ComposerInstaller\Installer $installer
-   *   The installer.
-   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
-   *   The event dispatcher.
-   */
-  public function __construct(Installer $installer, EventDispatcherInterface $event_dispatcher) {
-    $this->installer = $installer;
-    $this->eventDispatcher = $event_dispatcher;
-  }
+  public function __construct(
+    private readonly Installer $installer,
+    private readonly EventDispatcherInterface $eventDispatcher,
+  ) {}
 
   /**
    * Checks if the environment meets Package Manager install requirements.
@@ -47,17 +26,17 @@ class InstallReadiness {
    */
   public function validatePackageManager() {
     $text = '';
-    $results = $this->runStatusCheck($this->installer, $this->eventDispatcher, TRUE);
+    $results = $this->runStatusCheck($this->installer, $this->eventDispatcher);
     foreach ($results as $result) {
-      $messages = $result->getMessages();
-      $summary = $result->getSummary();
+      $messages = $result->messages;
+      $summary = $result->summary;
 
-      if ($summary && $summary !== $messages) {
+      if ($summary) {
         array_unshift($messages, $summary);
       }
       $text .= implode("\n", $messages) . "\n";
     }
-    return !empty($text) ? $text : FALSE;
+    return $text ?: FALSE;
   }
 
   /**

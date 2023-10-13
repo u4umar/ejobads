@@ -38,3 +38,13 @@ function _project_browser_populate_from_fixture($truncate_first = TRUE) {
   $module_path = \Drupal::moduleHandler()->getModule('project_browser')->getPath();
   \Drupal::service('project_browser.fixture_helper')->populateFromFixture($module_path . '/fixtures/project_data.json', $module_path . '/fixtures/categories.json', $truncate_first);
 }
+
+/**
+ * Implements hook_menu_links_discovered_alter().
+ */
+function project_browser_menu_links_discovered_alter(&$links) {
+  if (\Drupal::config('project_browser.admin_settings')->get('disable_add_new_module')) {
+    // Remove link from Admin toolbar module.
+    unset($links['admin_toolbar_tools.extra_links:update.module_install']);
+  }
+}

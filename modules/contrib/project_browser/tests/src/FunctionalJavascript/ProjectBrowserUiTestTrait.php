@@ -5,6 +5,44 @@ namespace Drupal\Tests\project_browser\FunctionalJavascript;
 trait ProjectBrowserUiTestTrait {
 
   /**
+   * Asserts that a given list of project titles are visible on the page.
+   *
+   * @param array $project_titles
+   *   An array of expected titles.
+   * @param bool $reload
+   *   When TRUE, reload the page if the assertion fails and try again.
+   *   This should typically be kept to the default value of FALSE. It only
+   *   needs to be set to TRUE for calls that intermittently fail on DrupalCI.
+   */
+  protected function assertProjectsVisible(array $project_titles, bool $reload = FALSE): void {
+    $count = count($project_titles);
+
+    // Create a JavaScript string that checks the titles of the visible
+    // projects. This is done with JavaScript to avoid issues with PHP
+    // referencing an element that was rerendered and thus unavailable.
+    $script = "document.querySelectorAll('#project-browser .project h3 a').length === $count";
+    foreach ($project_titles as $key => $value) {
+      $script .= " && document.querySelectorAll('#project-browser .project h3 a')[$key].textContent === '$value'";
+    }
+
+    // It can take a while for all items to render. Wait for the condition to be
+    // true before asserting it.
+    $this->getSession()->wait(10000, $script);
+
+    if ($reload) {
+      try {
+        $this->assertTrue($this->getSession()->evaluateScript($script), 'Ran:' . $script . 'Svelte did not initialize. Markup: ' . $this->getSession()->evaluateScript('document.querySelector("#project-browser").innerHTML'));
+      }
+      catch (\Exception $e) {
+        $this->getSession()->reload();
+        $this->getSession()->wait(10000, $script);
+      }
+    }
+
+    $this->assertTrue($this->getSession()->evaluateScript($script), 'Ran:' . $script . 'Svelte did not initialize. Markup: ' . $this->getSession()->evaluateScript('document.querySelector("#project-browser").innerHTML'));
+  }
+
+  /**
    * Searches for a term in the search field.
    *
    * @param string $value
@@ -160,6 +198,26 @@ trait ProjectBrowserUiTestTrait {
    */
   protected function getElementText($selector) {
     return trim($this->getSession()->evaluateScript("document.querySelector('$selector').textContent"));
+  }
+
+  /**
+   * Asserts that a given list of pager items are present on the page.
+   *
+   * @param array $pager_items
+   *   An array of expected pager item labels.
+   */
+  protected function assertPagerItems(array $pager_items): void {
+    $page = $this->getSession()->getPage();
+    $assert_session = $this->assertSession();
+
+    $assert_session->waitForElementVisible('css', '#project-browser .project');
+    $items = array_map(function ($element) {
+      return $element->getText();
+    }, $page->findAll('css', '#project-browser .pager__item'));
+
+    // There are two pagers, one on top and one at the bottom.
+    $items = array_unique($items);
+    $this->assertSame($pager_items, $items);
   }
 
 }

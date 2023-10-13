@@ -22,7 +22,7 @@
   Drupal.behaviors.projectBrowserPluginSourceDrag = {
     attach(context, settings) {
       // Only proceed if tableDrag is present and we are on the settings page.
-      if (!Drupal.tableDrag  || !Drupal.tableDrag.project_browser) {
+      if (!Drupal.tableDrag || !Drupal.tableDrag.project_browser) {
         return;
       }
 
@@ -103,43 +103,38 @@
       };
 
       // Add the behavior to each region select list.
-      $(once('source-status-select', 'select.source-status-select', context)).on(
-        'change',
-        function (event) {
-          // Make our new row and select field.
-          const row = $(this).closest('tr');
-          const select = $(this);
-          // Find the correct region and insert the row as the last in the
-          // region.
-          tableDrag.rowObject = new tableDrag.row(row[0]);
-          const regionMessage = table.find(
-            `.status-title-${select[0].value}`,
-          );
-          const regionItems = regionMessage.nextUntil(
-            '.status-title',
-          );
-          if (regionItems.length) {
-            regionItems.last().after(row);
-          }
-          // We found that regionMessage is the last row.
-          else {
-            regionMessage.after(row);
-          }
-          updateSourcePluginWeights(table, select[0].value);
-          // Update last placed source plugin indication.
-          updateLastPlaced(table, row);
-          // Show unsaved changes warning.
-          if (!tableDrag.changed) {
-            $(Drupal.theme('tableDragChangedWarning'))
-              .insertBefore(tableDrag.table)
-              .hide()
-              .fadeIn('slow');
-            tableDrag.changed = true;
-          }
-          // Remove focus from selectbox.
-          select.trigger('blur');
-        },
-      );
+      $(
+        once('source-status-select', 'select.source-status-select', context),
+      ).on('change', function (event) {
+        // Make our new row and select field.
+        const row = $(this).closest('tr');
+        const select = $(this);
+        // Find the correct region and insert the row as the last in the
+        // region.
+        tableDrag.rowObject = new tableDrag.row(row[0]);
+        const regionMessage = table.find(`.status-title-${select[0].value}`);
+        const regionItems = regionMessage.nextUntil('.status-title');
+        if (regionItems.length) {
+          regionItems.last().after(row);
+        }
+        // We found that regionMessage is the last row.
+        else {
+          regionMessage.after(row);
+        }
+        updateSourcePluginWeights(table, select[0].value);
+        // Update last placed source plugin indication.
+        updateLastPlaced(table, row);
+        // Show unsaved changes warning.
+        if (!tableDrag.changed) {
+          $(Drupal.theme('tableDragChangedWarning'))
+            .insertBefore(tableDrag.table)
+            .hide()
+            .fadeIn('slow');
+          tableDrag.changed = true;
+        }
+        // Remove focus from selectbox.
+        select.trigger('blur');
+      });
     },
   };
 })(jQuery, window, Drupal, once);

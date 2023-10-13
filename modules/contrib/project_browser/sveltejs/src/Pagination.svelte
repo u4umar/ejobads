@@ -39,7 +39,7 @@
     role="navigation"
   >
     <label for="num-projects">
-      {Drupal.t('Show projects')}
+      {Drupal.t('Modules per page')}
     </label>
     <select
       class="pagination__num-projects"

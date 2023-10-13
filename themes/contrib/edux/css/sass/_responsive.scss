@@ -76,6 +76,9 @@
     max-height: 80px;
   }
   /* Header -> Main menu */
+  .menu-wrap .menu-item-has-children:hover {
+    background-color: transparent;
+  }
   .menu-wrap ul.menu li {
     background: linear-gradient(to bottom, transparent 50%, var(--dark) 50%);
     background-size: 100% 200%;

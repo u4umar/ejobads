@@ -130,7 +130,7 @@ function project_browser_schema() {
 /**
  * Implements hook_install().
  *
- * Populates the project_browser_projects using a fixure with PHP serialized
+ * Populates the project_browser_projects using a fixture with PHP serialized
  * items.
  */
 function project_browser_install() {
@@ -230,5 +230,13 @@ function project_browser_update_9012() {
 }
 
 function project_browser_update_9013() {
+  _project_browser_populate_from_fixture();
+}
+
+function project_browser_update_9014() {
+  _project_browser_populate_from_fixture();
+}
+
+function project_browser_update_9015() {
   _project_browser_populate_from_fixture();
 }

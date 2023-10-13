@@ -2,6 +2,8 @@
 
 namespace Drupal\project_browser;
 
+// cspell:ignore acquia
+
 use GuzzleHttp\ClientInterface;
 use Composer\Semver\Semver;
 use Drupal\Component\Serialization\Json;
@@ -17,38 +19,11 @@ use GuzzleHttp\TransferStats;
  */
 class ProjectBrowserFixtureHelper {
 
-  /**
-   * @var \Drupal\Core\Database\Connection
-   */
-  private Connection $connection;
-
-  /**
-   * @var \Drupal\Core\State\StateInterface
-   */
-  private StateInterface $state;
-
-  /**
-   * The HTTP client.
-   *
-   * @var \GuzzleHttp\ClientInterface
-   */
-  protected ClientInterface $httpClient;
-
-  /**
-   * Constructs a new ProjectBrowserFixtureHelper.
-   *
-   * @param \Drupal\Core\Database\Connection $connection
-   *   The database connection.
-   * @param \Drupal\Core\State\StateInterface $state
-   *   The state key-value store.
-   * @param \GuzzleHttp\ClientInterface $http_client
-   *   The HTTP client.
-   */
-  public function __construct(Connection $connection, StateInterface $state, ClientInterface $http_client) {
-    $this->connection = $connection;
-    $this->state = $state;
-    $this->httpClient = $http_client;
-  }
+  public function __construct(
+    private readonly Connection $connection,
+    private readonly StateInterface $state,
+    private readonly ClientInterface $httpClient,
+  ) {}
 
   /**
    * Inserts data into Project Browser module tables.
@@ -318,6 +293,7 @@ class ProjectBrowserFixtureHelper {
     try {
       $response = $this->httpClient->request('GET', "https://www.drupal.org/api-d7/node.json", [
         'on_stats' => static function (TransferStats $stats) use (&$url) {
+          // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UnusedVariable
           $url = $stats->getEffectiveUri();
         },
         'query' => $query,
@@ -327,6 +303,7 @@ class ProjectBrowserFixtureHelper {
       // Try a second time because sometimes d.o times out the request.
       $response = $this->httpClient->request('GET', "https://www.drupal.org/api-d7/node.json", [
         'on_stats' => static function (TransferStats $stats) use (&$url) {
+          // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UnusedVariable
           $url = $stats->getEffectiveUri();
         },
         'query' => $query,
@@ -406,7 +383,7 @@ class ProjectBrowserFixtureHelper {
     }
 
     $xml = \simplexml_load_string($body);
-    return Json::decode(Json::encode($xml), TRUE);
+    return Json::decode(Json::encode($xml));
   }
 
   /**
@@ -444,7 +421,7 @@ class ProjectBrowserFixtureHelper {
       'sort' => 'changed',
       'direction' => 'DESC',
     ];
-    $eariest_possible_timestamp_reached = NULL;
+    $earliest_possible_timestamp_reached = NULL;
     $drupal_org_response = $this->getProjectsFromSource($query);
     $returned_projects = $drupal_org_response['list'];
 
@@ -470,7 +447,7 @@ class ProjectBrowserFixtureHelper {
         // know they aren't compatible because it is before
         // https://www.drupal.org/node/3119415.
         if ($project['changed'] < 1583985600) {
-          $eariest_possible_timestamp_reached = TRUE;
+          $earliest_possible_timestamp_reached = TRUE;
         }
       }
       $sandbox['current_page'] += 1;
@@ -523,7 +500,7 @@ class ProjectBrowserFixtureHelper {
       $projects_to_store = array_filter($projects_to_store);
       $sandbox['projects'] = array_merge($sandbox['projects'], $projects_to_store);
       $sandbox['progress'] += count($sandbox['projects']);
-      $sandbox['#finished'] = count($sandbox['projects']) >= $sandbox['max'] || $eariest_possible_timestamp_reached ? TRUE : (count($sandbox['projects']) / $sandbox['max']);
+      $sandbox['#finished'] = count($sandbox['projects']) >= $sandbox['max'] || $earliest_possible_timestamp_reached ? TRUE : (count($sandbox['projects']) / $sandbox['max']);
     }
     else {
       $sandbox['#finished'] = TRUE;
@@ -582,6 +559,7 @@ class ProjectBrowserFixtureHelper {
       $used_primary = [];
       $temp_array = Json::decode(file_get_contents($module_path . '/fixtures/categories.json'));
 
+      $all_categories = [];
       foreach ($category_values as $record) {
         if (in_array($record['tid'] . $record['pid'], $used_primary)) {
           continue;

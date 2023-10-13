@@ -2,7 +2,7 @@
   import Search from './Search/Search.svelte';
   import Filter from './Filter.svelte';
   import Loading from './Loading.svelte';
-  import { pageSize } from './stores';
+  import { pageSize, activeTab } from './stores';
 
   export { Search, Filter };
 </script>
@@ -45,20 +45,25 @@
 </script>
 
 <!--Aligns Category filter and Grid cards side by side-->
+<slot name="head" />
 <div class="project-browser__container">
   <aside class="project-browser__aside">
     <slot name="left" />
   </aside>
   <div class="project-browser__main">
-    <slot name="top" />
     <div class="projects-container">
-      <slot name="head" />
       {#if loading}
         <Loading />
       {:else if visibleRows.length === 0}
         <div>{@html labels.empty}</div>
       {:else}
-        <ul class="projects-list">
+        <ul
+          class="projects-list"
+          id={$activeTab}
+          role="tabpanel"
+          tabindex="0"
+          aria-labelledby={$activeTab}
+        >
           <slot rows={visibleRows} />
         </ul>
       {/if}

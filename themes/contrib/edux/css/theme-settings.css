@@ -4,13 +4,13 @@ label[for="edit-edux"] {
 }
 
 .settings-form-title {
-	background-color: #222;
-	background-image: url("../logo.svg");
-	background-size: auto 70%;
-	background-position: calc(50% - 100px) center;
+	background-color: #2a2e52;
+	background-image: url("../images/logo2.svg");
+	background-position: center;
 	background-repeat: no-repeat;
-	padding: 2rem 2rem 2rem 5rem;
-	color: #fff;
+	background-size: auto 90%;
+	padding: 50px;
+	color: #ffffff;
 	margin: 0 auto;
 }
 

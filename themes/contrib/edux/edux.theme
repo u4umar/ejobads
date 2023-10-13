@@ -157,12 +157,6 @@ function edux_preprocess_page(array &$variables) {
 	
 	// Components -> scroll to top
 	$variables['scrolltotop_on'] = theme_get_setting('scrolltotop_on', 'edux');
-	$variables['scrolltotop_default'] = theme_get_setting('scrolltotop_default', 'edux');
-	$variables['scrolltotop_icon_style'] = theme_get_setting('scrolltotop_icon_style', 'edux');
-	$variables['scrolltotop_icon_size'] = theme_get_setting('scrolltotop_icon_size', 'edux');
-	$variables['scrolltotop_position'] = theme_get_setting('scrolltotop_position', 'edux');
-	$variables['scrolltotop_bottom'] = theme_get_setting('scrolltotop_bottom', 'edux');
-	$variables['scrolltotop_icon_radius'] = theme_get_setting('scrolltotop_icon_radius', 'edux');
 	
 	// Comment
 	$variables['highlight_author_comment'] = theme_get_setting('highlight_author_comment', 'edux');
@@ -189,11 +183,4 @@ function edux_preprocess_node(array &$variables) {
  */
 function edux_preprocess_comment(array &$variables) {
 	$variables['comment_user_pic'] = theme_get_setting('comment_user_pic', 'edux');
-}
-
-/**
- * Breadcrumb preprocess.
- */
-function edux_preprocess_breadcrumb(&$variables) {
-	$variables['breadcrumb_icon_style'] = theme_get_setting('breadcrumb_icon_style', 'edux');
 }

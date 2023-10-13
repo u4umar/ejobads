@@ -128,7 +128,7 @@ abstract class ProjectBrowserSourceBase extends PluginBase implements ProjectBro
     return [
       'usage_total' => [
         'id' => 'usage_total',
-        'text' => $this->t('Active installs'),
+        'text' => $this->t('Most Popular'),
       ],
       'a_z' => [
         'id' => 'a_z',
@@ -140,11 +140,11 @@ abstract class ProjectBrowserSourceBase extends PluginBase implements ProjectBro
       ],
       'created' => [
         'id' => 'created',
-        'text' => $this->t('Recently created'),
+        'text' => $this->t('Newest First'),
       ],
       'best_match' => [
         'id' => 'best_match',
-        'text' => $this->t('Best match'),
+        'text' => $this->t('Most Relevant'),
       ],
     ];
   }

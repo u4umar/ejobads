@@ -16,18 +16,6 @@ services:
   project_browser.fixture_helper:
     class: Drupal\project_browser\ProjectBrowserFixtureHelper
     arguments: ['@database', '@state', '@http_client']
-  project_browser.composer_validator.core_not_updated:
-    class: Drupal\project_browser\ComposerInstaller\Validator\CoreNotUpdatedValidator
-    arguments:
-      - '@string_translation'
-    tags:
-      - { name: 'event_subscriber' }
-  project_browser.composer_validator.package_not_installed_validator:
-    class: Drupal\project_browser\ComposerInstaller\Validator\PackageNotInstalledValidator
-    arguments:
-      - '@string_translation'
-    tags:
-      - { name: 'event_subscriber' }
   cache.project_browser:
     class: Drupal\Core\Cache\CacheBackendInterface
     tags:
@@ -37,3 +25,8 @@ services:
   project_browser.tempstore.shared:
     class: Drupal\Core\TempStore\SharedTempStoreFactory
     arguments: ['@keyvalue.expirable', '@lock', '@request_stack', '@current_user', 600]
+  disable_add_new_module.route_subscriber:
+    class: Drupal\project_browser\EventSubscriber\DisableAddNewModuleRouteSubscriber
+    arguments: ['@config.factory']
+    tags:
+      - { name: event_subscriber }

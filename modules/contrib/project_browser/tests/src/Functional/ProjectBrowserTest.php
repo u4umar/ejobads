@@ -2,12 +2,14 @@
 
 namespace Drupal\Tests\project_browser\Functional;
 
+use Drupal\Tests\BrowserTestBase;
+
 /**
  * Functional tests for Project Browser.
  *
  * @group project_browser
  */
-class ProjectBrowserTest extends ProjectBrowserInstallerFunctionalTestBase {
+class ProjectBrowserTest extends BrowserTestBase {
 
   /**
    * {@inheritdoc}
@@ -17,6 +19,11 @@ class ProjectBrowserTest extends ProjectBrowserInstallerFunctionalTestBase {
     'system',
     'user',
   ];
+
+  /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
 
   /**
    * {@inheritdoc}

@@ -7,7 +7,6 @@
   import SearchSort from './SearchSort.svelte';
   import {
     filters,
-    rowsCount,
     filtersVocabularies,
     moduleCategoryFilter,
     moduleCategoryVocabularies,
@@ -25,12 +24,13 @@
     FULL_MODULE_PATH,
     DARK_COLOR_SCHEME,
   } from '../constants';
+  // cspell:ignore searchterm
 
   const { Drupal } = window;
-  const { announce } = Drupal;
   const dispatch = createEventDispatcher();
   const stateContext = getContext('state');
 
+  export let refreshLiveRegion;
   export const filter = (row, text) =>
     Object.values(row).filter(
       (item) =>
@@ -54,33 +54,6 @@
   }
   let sortText = sortMatch.text;
 
-  /**
-   * Refreshes the live region after a filter or search completes.
-   */
-  const refreshLiveRegion = () => {
-    if ($rowsCount) {
-      // Set announce() to an empty string. This ensures the result count will
-      // be announced after filtering even if the count is the same.
-      announce('');
-
-      // The announcement is delayed by 210 milliseconds, a wait that is
-      // slightly longer than the 200 millisecond debounce() built into
-      // announce(). This ensures that the above call to reset the aria live
-      // region to an empty string actually takes place instead of being
-      // debounced.
-      setTimeout(() => {
-        announce(
-          Drupal.t('@count Results, Sorted by @sortText', {
-            '@count': $rowsCount
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-            '@sortText': sortText,
-          }),
-        );
-      }, 210);
-    }
-  };
-
   const updateVocabularies = (vocabulary, value) => {
     const normalizedValue = normalizeOptions(value);
     const storedValue = JSON.parse(localStorage.getItem(`pb.${vocabulary}`));
@@ -96,7 +69,7 @@
     updateVocabularies('securityCoverage', SECURITY_OPTIONS);
   });
 
-  async function onSearch(event) {
+  export async function onSearch(event) {
     const state = stateContext.getState();
     const detail = {
       originalEvent: event,
@@ -218,14 +191,6 @@
   >
     <section aria-label={Drupal.t('Search results')}>
       <div class="search__results-count">
-        <span id="output">
-          {$rowsCount &&
-            $rowsCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-          {Drupal.t('Results')}
-          <span class="visually-hidden"
-            >{Drupal.t('Sorted by @sortText', { '@sortText': sortText })}</span
-          >
-        </span>
         {#each ['developmentStatus', 'maintenanceStatus', 'securityCoverage'] as filterType}
           {#if $filters[filterType]}
             <FilterApplied
@@ -288,9 +253,6 @@
     display: inherit;
     flex-wrap: wrap;
     padding: 0 0 1.5rem;
-    border: transparent;
-    border-radius: 2px;
-    background-color: #fff;
   }
 
   .search__search-bar .search__searchterm {
@@ -332,16 +294,6 @@
     position: relative;
     border: 3px solid #f3f4f9;
     z-index: 1;
-  }
-
-  #output {
-    display: inline-block;
-    font-family: sans-serif;
-    font-style: normal;
-    font-weight: 700;
-    font-size: 14px;
-    line-height: 21px;
-    margin-inline-start: 20px;
   }
 
   .search__grid-container {

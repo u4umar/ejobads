@@ -14,7 +14,7 @@
 
 <li class="project project--{toggleView.toLowerCase()}">
   <div class="project__logo">
-    <Image sources={project.logo} class="project__logo" />
+    <Image sources={project.logo} class="project__logo-image" />
   </div>
   <div class="project__main">
     <div class="project__middle">

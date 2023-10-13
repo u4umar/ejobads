@@ -5,7 +5,7 @@ core_version_requirement: ^9 || ^10
 dependencies:
   - project_browser:project_browser
 
-# Information added by Drupal.org packaging script on 2023-02-14
-version: '1.0.0-beta4'
+# Information added by Drupal.org packaging script on 2023-09-04
+version: '1.0.0-beta5'
 project: 'project_browser'
-datestamp: 1676399550
+datestamp: 1693847837

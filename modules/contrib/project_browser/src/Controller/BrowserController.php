@@ -2,10 +2,11 @@
 
 namespace Drupal\project_browser\Controller;
 
+// cspell:ignore ctools
+
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Extension\InfoParserException;
 use Drupal\Core\Extension\ModuleExtensionList;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\project_browser\EnabledSourceHandler;
 use Drupal\project_browser\InstallReadiness;
 use Drupal\project_browser\Plugin\ProjectBrowserSourceBase;
@@ -20,77 +21,18 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class BrowserController extends ControllerBase {
 
-  /**
-   * The module handler.
-   *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
-   */
-  protected $moduleHandler;
-
-  /**
-   * The module extension list.
-   *
-   * @var \Drupal\Core\Extension\ModuleExtensionList
-   */
-  protected $moduleList;
-
-  /**
-   * The request stack.
-   *
-   * @var \Symfony\Component\HttpFoundation\RequestStack
-   */
-  protected $requestStack;
-
-  /**
-   * The EnabledSourceHandler.
-   *
-   * @var \Drupal\project_browser\EnabledSourceHandler
-   */
-  protected $enabledSource;
-
-  /**
-   * ProjectBrowser cache bin.
-   *
-   * @var \Drupal\Core\Cache\CacheBackendInterface
-   */
-  protected $cacheBin;
-
-  /**
-   * The install readiness service.
-   *
-   * @var \Drupal\project_browser\InstallReadiness
-   */
-  private $installReadiness;
-
-  /**
-   * Build the project browser controller.
-   *
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
-   *   The module handler.
-   * @param \Drupal\Core\Extension\ModuleExtensionList $module_list
-   *   The module extension list.
-   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
-   *   The request stack.
-   * @param \Drupal\project_browser\EnabledSourceHandler $enabled_source
-   *   The enabled source.
-   * @param \Drupal\project_browser\InstallReadiness|NULL install_readiness
-   *   The install readiness service.
-   */
-  public function __construct(ModuleHandlerInterface $module_handler, ModuleExtensionList $module_list, RequestStack $request_stack, EnabledSourceHandler $enabled_source, InstallReadiness|null $install_readiness) {
-    $this->moduleHandler = $module_handler;
-    $this->moduleList = $module_list;
-    $this->requestStack = $request_stack;
-    $this->enabledSource = $enabled_source;
-    $this->cacheBin = $this->cache('project_browser');
-    $this->installReadiness = $install_readiness;
-  }
+  public function __construct(
+    private readonly ModuleExtensionList $moduleList,
+    private readonly RequestStack $requestStack,
+    private readonly EnabledSourceHandler $enabledSource,
+    private readonly InstallReadiness|NULL $installReadiness,
+  ) {}
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('module_handler'),
       $container->get('extension.list.module'),
       $container->get('request_stack'),
       $container->get('project_browser.enabled_source'),
@@ -130,9 +72,10 @@ class BrowserController extends ControllerBase {
     // To get common data from single source plugin.
     $current_source = reset($current_sources);
 
-    $sort_options = [];
+    $sort_options = $active_plugins = [];
     foreach ($current_sources as $source) {
       $sort_options[$source->getPluginId()] = array_values($source->getSortOptions());
+      $active_plugins[$source->getPluginId()] = $source->getPluginDefinition()['label'];
     }
 
     return [
@@ -143,10 +86,11 @@ class BrowserController extends ControllerBase {
         ],
         'drupalSettings' => [
           'project_browser' => [
+            'active_plugins' => $active_plugins,
             'modules' => $modules_status,
             'drupal_version' => \Drupal::VERSION,
             'drupal_core_compatibility' => \Drupal::CORE_COMPATIBILITY,
-            'module_path' => $this->moduleHandler->getModule('project_browser')->getPath(),
+            'module_path' => $this->moduleHandler()->getModule('project_browser')->getPath(),
             'origin_url' => $request->getSchemeAndHttpHost() . $request->getBaseUrl(),
             'special_ids' => $this->getSpecialIds(),
             'sort_options' => $sort_options,

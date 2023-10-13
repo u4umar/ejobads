@@ -1,3 +1,4 @@
 enabled_sources:
   - drupalorg_mockapi
 allow_ui_install: false
+disable_add_new_module: true

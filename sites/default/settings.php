@@ -714,10 +714,13 @@ $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.yml';
  *
  * For example:
  * @code
- * $settings['trusted_host_patterns'] = [
- *   '^www\.example\.com$',
- * ];
- * @endcode
+  
+ */
+  $settings['trusted_host_patterns'] = [
+    '^www\.ejobads\.com$',
+    '^ejobads\.com$',
+  ];
+ /** @endcode
  * will allow the site to only run from www.example.com.
  *
  * If you are running multisite, or if you are running your site from
@@ -727,6 +730,7 @@ $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.yml';
  *
  * For example:
  * @code
+ * /
  * $settings['trusted_host_patterns'] = [
  *   '^example\.com$',
  *   '^.+\.example\.com$',

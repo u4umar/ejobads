@@ -4,6 +4,7 @@
   import ProjectGrid, { Search, Filter } from './ProjectGrid.svelte';
   import Pagination from './Pagination.svelte';
   import Project from './Project/Project.svelte';
+  import Tabs from './Tabs.svelte';
   import {
     filters,
     rowsCount,
@@ -18,6 +19,7 @@
     sortCriteria,
     preferredView,
     pageSize,
+    isPackageManagerRequired,
   } from './stores';
   import MediaQuery from './MediaQuery.svelte';
   import {
@@ -32,9 +34,12 @@
     MODULE_STATUS,
     ALLOW_UI_INSTALL,
     PM_VALIDATION_ERROR,
+    ACTIVE_PLUGINS,
   } from './constants';
+  // cspell:ignore tabwise
 
   const { Drupal } = window;
+  const { announce } = Drupal;
 
   let data;
   let rows = [];
@@ -43,6 +48,7 @@
   const pageIndex = 0; // first row
 
   let loading = true;
+  let sortText = $sortCriteria.find((option) => option.id === $sort).text;
   // eslint-disable-next-line import/no-mutable-exports,import/prefer-default-export
   export let searchText;
   searchString.subscribe((value) => {
@@ -59,6 +65,7 @@
     element = value;
   });
   let filterComponent;
+  let searchComponent;
 
   /**
    * Load data from Drupal.org API.
@@ -108,6 +115,7 @@
       dataArray = Object.values(data);
       rows = data[$activeTab].list;
       $rowsCount = data[$activeTab].totalResults;
+      $isPackageManagerRequired = data[$activeTab].isPackageManagerRequired;
     } else {
       rows = [];
       $rowsCount = 0;
@@ -181,6 +189,7 @@
   }
   async function onSort(event) {
     sort.set(event.detail.sort);
+    sortText = $sortCriteria.find((option) => option.id === $sort).text;
     await load(0);
     page.set(0);
   }
@@ -198,11 +207,20 @@
     preferredView.set(val);
   }
 
-  async function toggleRows(val) {
+  async function toggleRows(event) {
+    searchComponent.onSearch(event);
+    const { target } = event.detail.event;
+    const parent = target.parentNode;
+    // Remove all current selected tabs
+    parent
+      .querySelectorAll('[aria-selected="true"]')
+      .forEach((t) => t.setAttribute('aria-selected', false));
+    // Set this tab as selected
+    target.setAttribute('aria-selected', true);
     filterComponent.setModuleCategoryVocabulary();
     $categoryCheckedTrack[$activeTab] = $moduleCategoryFilter;
     $moduleCategoryFilter = [];
-    $activeTab = val;
+    $activeTab = event.detail.pluginId;
     $moduleCategoryFilter =
       typeof $categoryCheckedTrack[$activeTab] !== 'undefined'
         ? $categoryCheckedTrack[$activeTab]
@@ -219,6 +237,34 @@
     page.set(0);
     await load(0);
   }
+
+  /**
+   * Refreshes the live region after a filter or search completes.
+   */
+  const refreshLiveRegion = () => {
+    if ($rowsCount) {
+      // Set announce() to an empty string. This ensures the result count will
+      // be announced after filtering even if the count is the same.
+      announce('');
+
+      // The announcement is delayed by 210 milliseconds, a wait that is
+      // slightly longer than the 200 millisecond debounce() built into
+      // announce(). This ensures that the above call to reset the aria live
+      // region to an empty string actually takes place instead of being
+      // debounced.
+      setTimeout(() => {
+        announce(
+          Drupal.t('@count Results for @active_tab, Sorted by @sortText', {
+            '@count': $rowsCount
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+            '@sortText': sortText,
+            '@active_tab': ACTIVE_PLUGINS[$activeTab],
+          }),
+        );
+      }, 210);
+    }
+  };
 
   document.onmouseover = function setInnerDocClickTrue() {
     window.innerDocClick = true;
@@ -248,75 +294,73 @@
 
 <MediaQuery query="(min-width: 1200px)" let:matches>
   <ProjectGrid {loading} {rows} {pageIndex} {$pageSize} let:rows>
-    <div slot="top">
+    <div slot="head">
+      <Tabs {dataArray} on:tabChange={toggleRows} />
       <Search
+        bind:this={searchComponent}
         on:search={onSearch}
         on:sort={onSort}
         on:advancedFilter={onAdvancedFilter}
         on:selectCategory={onSelectCategory}
         {searchText}
+        {refreshLiveRegion}
       />
-      {#if matches}
-        <div class="project-browser__toggle-buttons">
-          <button
-            class:project-browser__selected-tab={toggleView === 'List'}
-            class="project-browser__toggle project-browser__list-button"
-            value="List"
-            on:click={(e) => {
-              toggleView = 'List';
-              onToggle(e.target.value);
-            }}
-          >
-            <img
-              class="project-browser__list-icon"
-              src="{FULL_MODULE_PATH}/images/list.svg"
-              alt=""
-            />
-            {Drupal.t('List')}
-          </button>
-          <button
-            class:project-browser__selected-tab={toggleView === 'Grid'}
-            class="project-browser__toggle project-browser__grid-button"
-            value="Grid"
-            on:click={(e) => {
-              toggleView = 'Grid';
-              onToggle(e.target.value);
-            }}
-          >
-            <img
-              class="project-browser__grid-icon"
-              src="{FULL_MODULE_PATH}/images/grid-fill.svg"
-              alt=""
-            />
-            {Drupal.t('Grid')}
-          </button>
-        </div>
-      {/if}
-      {#if dataArray.length >= 2}
-        <nav aria-label={Drupal.t('Plugin tabs')}>
-          <div class="project-browser__plugin-tabs">
-            {#each dataArray as dataValue}
-              <button
-                class:project-browser__selected-tab={$activeTab ===
-                  dataValue.pluginId}
-                class="project-browser__toggle project-browser__plugin-tab"
-                value={dataValue.pluginId}
-                on:click={(e) => {
-                  toggleRows(e.target.value);
-                }}
-              >
-                {dataValue.pluginLabel}
-                {dataValue.totalResults}
+
+      <div class="search-results-wrapper">
+        <div class="search-results">
+          {#each dataArray as dataValue}
+            {#if $activeTab === dataValue.pluginId}
+              <span id="output">
+                {$rowsCount &&
+                  $rowsCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 {Drupal.t('Results')}
-              </button>
-            {/each}
+              </span>
+            {/if}
+          {/each}
+        </div>
+
+        {#if matches}
+          <div class="project-browser__toggle-buttons">
+            <button
+              class:project-browser__selected-tab={toggleView === 'List'}
+              class="project-browser__toggle project-browser__list-button"
+              value="List"
+              on:click={(e) => {
+                toggleView = 'List';
+                onToggle(e.target.value);
+              }}
+            >
+              <img
+                class="project-browser__list-icon"
+                src="{FULL_MODULE_PATH}/images/list.svg"
+                alt=""
+              />
+              {Drupal.t('List')}
+            </button>
+            <button
+              class:project-browser__selected-tab={toggleView === 'Grid'}
+              class="project-browser__toggle project-browser__grid-button"
+              value="Grid"
+              on:click={(e) => {
+                toggleView = 'Grid';
+                onToggle(e.target.value);
+              }}
+            >
+              <img
+                class="project-browser__grid-icon"
+                src="{FULL_MODULE_PATH}/images/grid-fill.svg"
+                alt=""
+              />
+              {Drupal.t('Grid')}
+            </button>
           </div>
-        </nav>
-      {/if}
-      <!-- If UI installs are enabled, but the site configuration does not them,
-           display a message informing the user what must be changed for UI
-           installs to work. -->
-      {#if PM_VALIDATION_ERROR && typeof PM_VALIDATION_ERROR === 'string' && MODULE_STATUS.package_manager && ALLOW_UI_INSTALL}
+        {/if}
+      </div>
+
+      <!-- If Package Manager is required and UI installs are enabled,but the
+           site configuration does not support them, display a message
+           informing the user what must be changed for UI installs to work. -->
+      {#if $isPackageManagerRequired && PM_VALIDATION_ERROR && typeof PM_VALIDATION_ERROR === 'string' && MODULE_STATUS.package_manager && ALLOW_UI_INSTALL}
         <div class="project-browser__install-warning">
           <p class="project-browser__warning-header">
             <strong>{Drupal.t('Unable to download modules via the UI')}</strong>
@@ -379,6 +423,7 @@
   .project-browser__toggle-buttons {
     display: flex;
     margin-inline-end: 25px;
+    font-weight: bold;
   }
   .project-browser__toggle:focus {
     box-shadow: 0 0 0 2px #fff, 0 0 0 5px #26a769;
@@ -396,19 +441,10 @@
   .project-browser__selected-tab {
     background-color: #adaeb3;
   }
-  .project-browser__plugin-tabs {
-    display: flex;
-  }
-  .project-browser__plugin-tab {
-    margin-right: 5px;
-    margin-left: 5px;
-    width: 33%;
-    height: auto;
-    min-height: 30px;
-    cursor: pointer;
-  }
-  .project-browser__plugin-tabs .project-browser__toggle {
-    margin-inline-start: 0;
+  .search-results {
+    font-weight: bold;
+    margin-inline-start: 10px;
+    margin-bottom: 5px;
   }
   .project-browser__install-warning {
     border: 1px solid red;
@@ -420,6 +456,21 @@
   .project-browser__warning-header {
     color: red;
   }
+  .search-results-wrapper {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #dee2e6;
+  }
+  #output {
+    display: inline-block;
+    font-family: sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 21px;
+    margin-left: 20px;
+  }
+
   @media (forced-colors: active) {
     .project-browser__toggle {
       border: 1px solid;

@@ -2,15 +2,18 @@
 
 namespace Drupal\Tests\project_browser\Kernel;
 
+use Drupal\fixture_manipulator\ActiveFixtureManipulator;
 use Drupal\package_manager\Event\PreApplyEvent;
+use Drupal\package_manager\Exception\ApplyFailedException;
+use Drupal\package_manager\Exception\StageEventException;
 use Drupal\package_manager\Exception\StageException;
 use Drupal\package_manager\ValidationResult;
-use Drupal\package_manager_bypass\Committer;
+use Drupal\package_manager_bypass\LoggingCommitter;
 use Drupal\package_manager_test_validation\EventSubscriber\TestSubscriber;
-use Drupal\project_browser\Exception\InstallException;
 use Drupal\Tests\package_manager\Kernel\PackageManagerKernelTestBase;
 use Drupal\Tests\user\Traits\UserCreationTrait;
-use PhpTuf\ComposerStager\Domain\Exception\InvalidArgumentException;
+use PhpTuf\ComposerStager\API\Exception\InvalidArgumentException;
+use PhpTuf\ComposerStager\Internal\Translation\Value\TranslatableMessage;
 
 /**
  * @coversDefaultClass \Drupal\project_browser\ComposerInstaller\Installer
@@ -36,6 +39,13 @@ class InstallerTest extends PackageManagerKernelTestBase {
   protected function setUp(): void {
     parent::setUp();
     $this->installEntitySchema('user');
+    (new ActiveFixtureManipulator())
+      ->addPackage([
+        'name' => 'org/package-name',
+        'version' => '9.8.3',
+        'type' => 'drupal-module',
+      ])
+      ->removePackage('org/package-name')->commitChanges();
   }
 
   /**
@@ -48,7 +58,7 @@ class InstallerTest extends PackageManagerKernelTestBase {
     return [
       'RuntimeException' => [
         'RuntimeException',
-        InstallException::class,
+        ApplyFailedException::class,
       ],
       'InvalidArgumentException' => [
         InvalidArgumentException::class,
@@ -56,7 +66,7 @@ class InstallerTest extends PackageManagerKernelTestBase {
       ],
       'Exception' => [
         'Exception',
-        InstallException::class,
+        ApplyFailedException::class,
       ],
     ];
   }
@@ -76,11 +86,11 @@ class InstallerTest extends PackageManagerKernelTestBase {
     $installer = $this->container->get('project_browser.installer');
     $installer->create();
     $installer->require(['org/package-name']);
-    $thrown_message = 'A very bad thing happened';
-    Committer::setException(new $thrown_class($thrown_message, 123));
+    $thrown_message = new TranslatableMessage('A very bad thing happened');
+    LoggingCommitter::setException(new $thrown_class($thrown_message, 123));
     $this->expectException($expected_class);
-    $expected_message = $expected_class === InstallException::class ?
-      'The install operation failed to apply. The install may have been partially applied. It is recommended that the site be restored from a code backup.'
+    $expected_message = $expected_class === ApplyFailedException::class ?
+      'Staged changes failed to apply, and the site is in an indeterminate state. It is strongly recommended to restore the code and database from a backup.'
       : $thrown_message;
     $this->expectExceptionMessage($expected_message);
     $this->expectExceptionCode(123);
@@ -101,7 +111,7 @@ class InstallerTest extends PackageManagerKernelTestBase {
       ValidationResult::createError([t('These are not the projects you are looking for.')]),
     ];
     TestSubscriber::setTestResult($results, PreApplyEvent::class);
-    $this->expectException(InstallException::class);
+    $this->expectException(StageEventException::class);
     $this->expectExceptionMessage('These are not the projects you are looking for.');
     $installer->apply();
   }

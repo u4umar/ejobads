@@ -182,14 +182,7 @@ p {
   box-shadow: 0 0 3px 1px var(--theme-color);
 }
 {% endif %}
-{% if scrolltotop_on and not scrolltotop_default %}
-.scrolltop {
-  {{ scrolltotop_position }}: 10px;
-  bottom: {{ scrolltotop_bottom }}px;
-  font-size: {{ scrolltotop_icon_size }}px;
-  border-radius: {{ scrolltotop_icon_radius }};
-}
-{% endif %}
+
 {% if not button_default %}
 a.button, .button, button, [type="button"], [type="reset"], [type="submit"] {
   padding: {{ button_padding }};

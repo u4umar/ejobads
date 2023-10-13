@@ -8,7 +8,7 @@ use Drupal\project_browser\ProjectBrowser\Project;
 /**
  * Tests 'Core (Experimental)' label change.
  *
- * @covers \Drupal\project_browser\Plugin\ProjectBrowserSource\DrupalCore::projectIsCovered
+ * @coversDefaultClass \Drupal\project_browser\Plugin\ProjectBrowserSource\DrupalCore
  *
  * @group project_browser
  */
@@ -30,6 +30,8 @@ class CoreExperimentalLabelTest extends KernelTestBase {
    * to another module that is currently experimental. If it's reason 3,
    * we need to update `DrupalCore::projectIsCovered` to look for the new
    * language that indicates a module is experimental.
+   *
+   * @covers ::getProjectData
    */
   public function testCoreExperimentalLabel(): void {
     /** @var \Drupal\project_browser\Plugin\ProjectBrowserSourceInterface $plugin_instance */

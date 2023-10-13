@@ -3,22 +3,20 @@
     "description": "A project browser embedded in the Drupal UI.",
     "type": "drupal-module",
     "license": "GPL-2.0-or-later",
-    "authors": [
-        {
-            "name": "Matthew Grasmick",
-            "email": "matt.grasmick@gmail.com"
-        }
-    ],
     "minimum-stability": "beta",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.1",
         "guzzlehttp/guzzle": "^6 || ^7",
         "composer/semver": "^3.2",
         "ext-simplexml": "*"
     },
     "require-dev": {
-        "drupal/automatic_updates": "^2.6"
+        "drupal/automatic_updates": "3.0.x-dev",
+        "colinodell/psr-testlogger": "^1.2"
+    },
+    "conflict": {
+        "drupal/automatic_updates": "<3.0"
     },
     "config": {
         "optimize-autoloader": true,

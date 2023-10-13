@@ -1,0 +1,14 @@
+{
+  "dictionaries": ["drupal", "companies", "fonts", "html", "php", "softwareTerms", "project_browser"],
+  "dictionaryDefinitions": [
+    { "name": "project_browser", "path": "./dictionary.txt"}
+  ],
+  "ignorePaths": [
+    "README.md",
+    "contributor.md",
+    "sveltejs/public/build",
+    "sveltejs/node_modules",
+    "tests/fixtures",
+    "fixtures"
+  ]
+}

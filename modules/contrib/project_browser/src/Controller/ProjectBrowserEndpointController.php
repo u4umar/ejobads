@@ -2,7 +2,10 @@
 
 namespace Drupal\project_browser\Controller;
 
+// cspell:ignore tabwise
+
 use Drupal\Component\Serialization\Json;
+use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\project_browser\EnabledSourceHandler;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -15,31 +18,11 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ProjectBrowserEndpointController extends ControllerBase {
 
-  /**
-   * The EnabledSourceHandler.
-   *
-   * @var \Drupal\project_browser\EnabledSourceHandler
-   */
-  protected $enabledSource;
-
-  /**
-   * ProjectBrowser cache bin.
-   *
-   * @var \Drupal\Core\Cache\CacheBackendInterface
-   */
-  protected $cacheBin;
-
-  /**
-   * ProjectBrowserEndpointController constructor.
-   *
-   * @param \Drupal\project_browser\EnabledSourceHandler $enabled_source
-   *   The enabled source.
-   */
-  public function __construct(EnabledSourceHandler $enabled_source) {
+  public function __construct(
+    private readonly EnabledSourceHandler $enabledSource,
+    private readonly CacheBackendInterface $cacheBin,
+  ) {
     $plugin_ids = [];
-    $this->enabledSource = $enabled_source;
-    $this->cacheBin = $this->cache('project_browser');
-
     $current_sources = $this->enabledSource->getCurrentSources();
     foreach ($current_sources as $source) {
       $plugin_ids[] = $source->getPluginId();
@@ -58,6 +41,7 @@ class ProjectBrowserEndpointController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('project_browser.enabled_source'),
+      $container->get('cache.project_browser'),
     );
   }
 

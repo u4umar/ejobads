@@ -1,11 +1,11 @@
 name: Project Browser Source Example
 type: module
-description: Example source plugin for Project Browser containing the bare minimum information to help people build their own source plugin.
+description: Provides an example Project Browser source plugin.
 core_version_requirement: ^10
 dependencies:
   - project_browser:project_browser
 
-# Information added by Drupal.org packaging script on 2023-02-14
-version: '1.0.0-beta4'
+# Information added by Drupal.org packaging script on 2023-09-04
+version: '1.0.0-beta5'
 project: 'project_browser'
-datestamp: 1676399550
+datestamp: 1693847837

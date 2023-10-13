@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { writable } from 'svelte/store';
 
 import {
@@ -80,3 +81,6 @@ preferredView.subscribe((val) => sessionStorage.setItem('preferredView', JSON.st
 const storedPageSize = JSON.parse(sessionStorage.getItem('pageSize')) || 12;
 export const pageSize = writable(storedPageSize);
 pageSize.subscribe((val) => sessionStorage.setItem('pageSize', JSON.stringify(val)));
+
+// Store the Package Manager requirement.
+export const isPackageManagerRequired = writable(false);

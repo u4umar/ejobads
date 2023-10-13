@@ -122,7 +122,7 @@ class ProjectBrowserSourceExample extends ProjectBrowserSourceBase {
 
     // Return one page of results. The first parameter is the total number of
     // results for the set, as filtered by $query.
-    return new ProjectsResultsPage(count($projects), $projects, (string) $this->getPluginDefinition()['label'], $this->getPluginId());
+    return new ProjectsResultsPage(count($projects), $projects, (string) $this->getPluginDefinition()['label'], $this->getPluginId(), TRUE);
   }
 
   /**

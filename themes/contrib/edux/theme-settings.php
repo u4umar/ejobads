@@ -12,7 +12,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
 	$form['#attached']['library'][] = 'edux/theme-settings';
   $form['edux'] = [
     '#type'       => 'vertical_tabs',
-    '#title'      => '<h3 class="settings-form-title">' . t('Edu X Theme Settings') . '</h3>',
+    '#title'      => '<h3 class="settings-form-title"></h3>',
     '#default_tab' => 'general',
   ];
   /**
@@ -21,7 +21,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['general'] = [
     '#type'  => 'details',
     '#title' => t('General'),
-    '#description' => t('<h3>Thank you for using EduX Theme</h3><strong>Edu X</strong> is a free Drupal 8, 9 theme designed and developed by <a href="https://www.drupar.com" target="_blank">Drupar.com</a>'),
+    '#description' => t('<h3>Thank you for using EduX Theme</h3><strong>Edu X</strong> is a free Drupal 8, 9 theme designed and developed by <a href="https://drupar.com" target="_blank">Drupar.com</a>'),
     '#group' => 'edux',
   ];
   $form['layout'] = [
@@ -103,12 +103,12 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['general']['general_info'] = [
     '#type'        => 'fieldset',
     '#title'       => t('Theme Info'),
-    '#description' => t('<a href="https://www.drupar.com/theme/edux" target="_blank">Theme Homepage</a> || <a href="https://demo2.drupar.com/edux/" target="_blank">Theme Demo</a> || <a href="https://www.drupar.com/doc/edux" target="_blank">Theme Documentation</a> || <a href="https://www.drupar.com/doc/edux/support" target="_blank">Theme Support</a>'),
+    '#description' => t('<a href="https://drupar.com/theme/edux" target="_blank">Theme Homepage</a> || <a href="https://demo2.drupar.com/edux/" target="_blank">Theme Demo</a> || <a href="https://drupar.com/doc/edux" target="_blank">Theme Documentation</a> || <a href="https://drupar.com/doc/edux/support" target="_blank">Theme Support</a>'),
   ];
   $form['general']['general_info_upgrade'] = [
     '#type'        => 'fieldset',
     '#title'       => t('Upgrade To Edu-X-Pro for $29 only'),
-    '#description' => t('<p><a href="https://www.drupar.com/theme/eduxpro" target="_blank">Purchase Edu-X-Pro</a> || <a href="https://demo2.drupar.com/eduxpro/" target="_blank">Edu-X-Pro Demo</a></p>') . $eduxpro,
+    '#description' => t('<p><a href="https://drupar.com/theme/eduxpro" target="_blank">Purchase Edu-X-Pro</a> || <a href="https://demo2.drupar.com/eduxpro/" target="_blank">Edu-X-Pro Demo</a></p>') . $eduxpro,
   ];
   /*
    * Layout
@@ -120,7 +120,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   ];
   $form['layout']['layout_container']['container_width'] = [
     '#type'          => 'number',
-    '#default_value' => theme_get_setting('container_width'),
+    '#default_value' => theme_get_setting('container_width', 'edux'),
     '#description'   => t('Set width of the container in px. Default width is 1170px.'),
   ];
   // Layout -> Header Layout
@@ -133,7 +133,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#options' => array(
     	'header_width_contained' => t('contained'),
     	'header_width_full' => t('Full Width'),),
-    '#default_value' => theme_get_setting('header_width'),
+    '#default_value' => theme_get_setting('header_width', 'edux'),
   ];
   // Layout -> Main Layout
   $form['layout']['layout_main'] = [
@@ -145,7 +145,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#options' => array(
     	'main_width_contained' => t('contained'),
     	'main_width_full' => t('Full Width'),),
-    '#default_value' => theme_get_setting('main_width'),
+    '#default_value' => theme_get_setting('main_width', 'edux'),
   ];
   // Layout -> Footer Layout
   $form['layout']['layout_footer'] = [
@@ -157,7 +157,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#options' => array(
     	'footer_width_contained' => t('contained'),
     	'footer_width_full' => t('Full Width'),),
-    '#default_value' => theme_get_setting('footer_width'),
+    '#default_value' => theme_get_setting('footer_width', 'edux'),
   ];
   /*
    * Homepage slider
@@ -170,7 +170,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['slider']['slider_enable_option']['slider_show'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Show Slider on Homepage'),
-    '#default_value' => theme_get_setting('slider_show'),
+    '#default_value' => theme_get_setting('slider_show', 'edux'),
     '#description'   => t("Check this option to show slider on homepage. Uncheck to disable slider."),
   ];
   // Slider -> Slider speed
@@ -182,7 +182,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['slider']['slider_speed_option']['slider_speed'] = [
     '#type'          => 'number',
     '#title'         => t('Interval time between two slides'),
-    '#default_value' => theme_get_setting('slider_speed'),
+    '#default_value' => theme_get_setting('slider_speed', 'edux'),
     '#description'   => t("Time interval between two slides. Default value is 5000, this means 5 seconds."),
   ];
   /* Slider Image upload */
@@ -204,13 +204,13 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     ),
     '#title'  => t('<p>Upload Slider Image</p>'),
     '#default_value'  => theme_get_setting('slider_image', 'edux'),
-    '#description'   => t('Edux theme has limitation of single image for slider. Separate image for each slide is available in EduxPro. <a href="https://www.drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
+    '#description'   => t('Edux theme has limitation of single image for slider. Separate image for each slide is available in EduxPro. <a href="https://drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
   ];
   $form['slider']['slider_code'] = [
     '#type'          => 'textarea',
     '#title'         => t('Slider Code'),
-    '#default_value' => theme_get_setting('slider_code'),
-    '#description'   => t('Please refer to this <a href="https://www.drupar.com/doc/edux/homepage-slider" target="_blank">documentation page</a> for slider code tutorial.'),
+    '#default_value' => theme_get_setting('slider_code', 'edux'),
+    '#description'   => t('Please refer to this <a href="https://drupar.com/doc/edux/homepage-slider" target="_blank">documentation page</a> for slider code tutorial.'),
   ];
   /*
    * Header
@@ -226,7 +226,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   ];
   $form['header']['header_links']['header_links_section'] = [
     '#type'        => 'fieldset',
-    '#description'   => t('<a href="https://www.drupar.com/doc/edux/how-manage-website-logo" target="_blank">Change Logo</a> || <a href="https://www.drupar.com/doc/edux/how-change-favicon-icon" target="_blank">Change Favicon Icon</a> || <a href="https://www.drupar.com/doc/edux/header-main-menu" target="_blank">Manage Main Menu</a> || <a href="https://www.drupar.com/doc/edux/sliding-search-form" target="_blank">Sliding Search Form</a>'),
+    '#description'   => t('<a href="https://drupar.com/doc/edux/how-manage-website-logo" target="_blank">Change Logo</a> || <a href="https://drupar.com/doc/edux/how-change-favicon-icon" target="_blank">Change Favicon Icon</a> || <a href="https://drupar.com/doc/edux/header-main-menu" target="_blank">Manage Main Menu</a> || <a href="https://drupar.com/doc/edux/sliding-search-form" target="_blank">Sliding Search Form</a>'),
   ];
   // Header -> Login Links
   $form['header']['header_login'] = [
@@ -237,14 +237,14 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['header']['header_login']['header_login_links'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Show login / logout links in header top region.'),
-    '#default_value' => theme_get_setting('header_login_links'),
+    '#default_value' => theme_get_setting('header_login_links', 'edux'),
     '#description'   => t('Check this option to show login links in header top region.<br />Guest will get links to <strong>login</strong> and <strong>register</strong> while authentic users will get link for <strong>my account</strong> and <strong>logout</strong>.'),
   ];
   // Header -> Sticky header.
   $form['header']['sticky_header'] = [
     '#type'        => 'details',
     '#title'       => t('Sticky Header'),
-    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://www.drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
+    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
     '#group' => 'header_tab',
   ];
   // Header -> Header Presets
@@ -279,7 +279,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['header']['header_main']['header_main_default_section']['header_main_default'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Use theme default header padding'),
-    '#default_value' => theme_get_setting('header_main_default'),
+    '#default_value' => theme_get_setting('header_main_default', 'edux'),
     '#description'   => t('Check this option to use theme default value of header padding. Uncheck this to set custom value below.'),
   ];
   $form['header']['header_main']['header_main_info_section'] = [
@@ -299,7 +299,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 10,
     '#step' => 0.1,
     '#title'  => t('Padding Top (rem)'),
-    '#default_value' => theme_get_setting('header_main_padding_top'),
+    '#default_value' => theme_get_setting('header_main_padding_top', 'edux'),
     '#description'   => t("Default padding top is <strong>1rem</strong> which is equivalent to 16px.<br /><br /><p><hr /></p><br />"),
   ];
   $form['header']['header_main']['header_main_section']['header_main_padding_bottom'] = [
@@ -308,7 +308,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 10,
     '#step' => 0.1,
     '#title'  => t('Padding Bottom (rem)'),
-    '#default_value' => theme_get_setting('header_main_padding_bottom'),
+    '#default_value' => theme_get_setting('header_main_padding_bottom', 'edux'),
     '#description'   => t("Default padding bottom is <strong>1rem</strong> which is equivalent to 16px."),
   ];
   // header-> page header
@@ -325,7 +325,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['header']['header_page']['header_page_default_section']['header_page_default'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Use theme default page header settings'),
-    '#default_value' => theme_get_setting('header_page_default'),
+    '#default_value' => theme_get_setting('header_page_default', 'edux'),
     '#description'   => t('Check this option to use theme default value of sidebar width. Uncheck this to set custom value below.'),
   ];
   $form['header']['header_page']['header_page_info_section'] = [
@@ -344,7 +344,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 10,
     '#step' => 0.1,
     '#title'  => t('Padding Top (rem)'),
-    '#default_value' => theme_get_setting('header_page_padding_top'),
+    '#default_value' => theme_get_setting('header_page_padding_top', 'edux'),
     '#description'   => t("Default padding top is <strong>5rem</strong><br /><br /><p><hr /></p>"),
   ];
   $form['header']['header_page']['header_page_section']['header_page_padding_bottom'] = [
@@ -353,7 +353,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 10,
     '#step' => 0.1,
     '#title'  => t('Padding Bottom (rem)'),
-    '#default_value' => theme_get_setting('header_page_padding_bottom'),
+    '#default_value' => theme_get_setting('header_page_padding_bottom', 'edux'),
     '#description'   => t("Default padding bottom is <strong>5rem</strong>."),
   ];
   $form['header']['header_page']['header_page_position_section'] = [
@@ -368,7 +368,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       'flex-end' => t('Right'),
       'center' => t('center'),
     ),
-    '#default_value' => theme_get_setting('header_page_content_position'),
+    '#default_value' => theme_get_setting('header_page_content_position', 'edux'),
     '#description'   => t("Default position is <strong>Center</strong>."),
   ];
   /*
@@ -389,7 +389,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['sidebar']['front_sidebars']['front_sidebar_section']['front_sidebar'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Show Sidebars On Homepage'),
-    '#default_value' => theme_get_setting('front_sidebar'),
+    '#default_value' => theme_get_setting('front_sidebar', 'edux'),
     '#description'   => t('<p>Check this option to enable left and right sidebar on homepage.</p><hr /><br /><strong>Homepage Content Top</strong> and <strong>Homepage Content Bottom</strong> block regions will always be full width.'),
   ];
   // Sidebar -> sidebar width
@@ -406,7 +406,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['sidebar']['sidebar_width']['sidebar_width_default_section']['sidebar_width_default'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Use theme default sidebar width'),
-    '#default_value' => theme_get_setting('sidebar_width_default'),
+    '#default_value' => theme_get_setting('sidebar_width_default', 'edux'),
     '#description'   => t('Check this option to use theme default sidebar width. Uncheck this to set custom width below.'),
   ];
   $form['sidebar']['sidebar_width']['sidebar_width_section'] = [
@@ -416,20 +416,20 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['sidebar']['sidebar_width']['sidebar_width_section']['sidebar_width_left'] = [
     '#type'          => 'number',
     '#title'         => t('Left Sidebar Width (in percentage)'),
-    '#default_value' => theme_get_setting('sidebar_width_left'),
+    '#default_value' => theme_get_setting('sidebar_width_left', 'edux'),
     '#description'   => t('Default width of left sidebar is 30%<br /><br /><p><hr /></p>'),
   ];
   $form['sidebar']['sidebar_width']['sidebar_width_section']['sidebar_width_right'] = [
     '#type'          => 'number',
     '#title'         => t('Right Sidebar Width (in percentage)'),
-    '#default_value' => theme_get_setting('sidebar_width_right'),
+    '#default_value' => theme_get_setting('sidebar_width_right', 'edux'),
     '#description'   => t('Default width of right sidebar is 30%'),
   ];
   // Sidebar -> Animated Sidebar
   $form['sidebar']['animated_sidebar'] = [
     '#type'        => 'details',
     '#title'       => t('Animated Sliding Sidebar'),
-    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://www.drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
+    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
     '#group' => 'sidebar_tab',
   ];
   // Sidebar -> Sidebar Block
@@ -446,7 +446,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['sidebar']['sidebar_block']['sidebar_block_default_section']['sidebar_block_default'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Use theme default sidebar block settings.'),
-    '#default_value' => theme_get_setting('sidebar_block_default'),
+    '#default_value' => theme_get_setting('sidebar_block_default', 'edux'),
     '#description'   => t('Check this option to use theme default value of sidebar block. Uncheck this to set custom value below.'),
   ];
   $form['sidebar']['sidebar_block']['sidebar_block_section'] = [
@@ -459,7 +459,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 50,
     '#step' => 1,
     '#title'  => t('Sidebar Block Padding (px)'),
-    '#default_value' => theme_get_setting('sidebar_padding'),
+    '#default_value' => theme_get_setting('sidebar_padding', 'edux'),
     '#description'   => t("Default is 20px.<br /><br /><p><hr /></p>"),
   ];
   $form['sidebar']['sidebar_block']['sidebar_block_section']['sidebar_radius'] = [
@@ -468,7 +468,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 50,
     '#step' => 1,
     '#title'  => t('Sidebar Block Border Radius (px)'),
-    '#default_value' => theme_get_setting('sidebar_radius'),
+    '#default_value' => theme_get_setting('sidebar_radius', 'edux'),
     '#description'   => t("Default is 6px.<br /><br /><p><hr /></p>"),
   ];
   $form['sidebar']['sidebar_block']['sidebar_block_section']['sidebar_margin'] = [
@@ -477,7 +477,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 50,
     '#step' => 1,
     '#title'  => t('Sidebar Block Margin Bottom (rem)'),
-    '#default_value' => theme_get_setting('sidebar_margin'),
+    '#default_value' => theme_get_setting('sidebar_margin', 'edux'),
     '#description'   => t("Default value is 2rem which is equivalent to 32px.<br />1rem = 16px"),
   ];
   $form['sidebar']['sidebar_block']['sidebar_title_section'] = [
@@ -490,7 +490,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 50,
     '#step' => 0.1,
     '#title'  => t('Font Size (rem)'),
-    '#default_value' => theme_get_setting('sidebar_title_font_size'),
+    '#default_value' => theme_get_setting('sidebar_title_font_size', 'edux'),
     '#description'   => t("Default value is 2.2rem<br />1rem = 16px<br /><br /><p><hr /></p>"),
   ];
   $form['sidebar']['sidebar_block']['sidebar_title_section']['sidebar_title_transform'] = [
@@ -502,13 +502,13 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       'uppercase' => t('Uppercase'),
       'lowercase' => t('Lowercase'),
     ),
-    '#default_value' => theme_get_setting('sidebar_title_transform'),
+    '#default_value' => theme_get_setting('sidebar_title_transform', 'edux'),
     '#description'   => t("Default value is <strong>None</strong>."),
   ];
   $form['sidebar']['sidebar_block']['sidebar_block_color'] = [
     '#type'          => 'details',
     '#title'         => t('Sidebar Block Background Color'),
-    '#description'   => t('Color option is available in the premium version of this theme. <a href="https://www.drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
+    '#description'   => t('Color option is available in the premium version of this theme. <a href="https://drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
     '#open' => TRUE,
   ];
   /*
@@ -521,7 +521,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['content']['shortcodes'] = [
     '#type'          => 'details',
     '#title'         => t('Shortcodes'),
-    '#description'   => t('<p>EduX theme has many custom shortcodes which you can use for creating contents.</p><p>Please visit this page for list of all available shortcodes and how to use these shortcodes.</p><ul><li><a href="https://www.drupar.com/node/1283/" target="_blank">Edu-X Shortcodes</a></li><li><a href="https://www.drupar.com/node/1211/" target="_blank">The-X Shortcodes</a></li></ul><p><hr /></p><h4>More Shortcodes</h4><p><a href="https://www.drupar.com/theme/eduxpro">Edu-X-Pro</a> has more custom shortcodes like Tab, Accordion, icon box, card, Model etc.'),
+    '#description'   => t('<p>EduX theme has many custom shortcodes which you can use for creating contents.</p><p>Please visit this page for list of all available shortcodes and how to use these shortcodes.</p><ul><li><a href="https://drupar.com/node/1283/" target="_blank">Edu-X Shortcodes</a></li><li><a href="https://drupar.com/node/1211/" target="_blank">The-X Shortcodes</a></li></ul><p><hr /></p><h4>More Shortcodes</h4><p><a href="https://drupar.com/theme/eduxpro">Edu-X-Pro</a> has more custom shortcodes like Tab, Accordion, icon box, card, Model etc.'),
     '#group' => 'content_tab',
   ];
   // content -> RTL
@@ -533,7 +533,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['content']['content_direction']['rtl'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Enable RTL (Experimental)'),
-    '#default_value' => theme_get_setting('rtl'),
+    '#default_value' => theme_get_setting('rtl', 'edux'),
     '#description'   => t('Currently not available.'),
     '#disabled'   => TRUE,
     //'#description'   => t('edux theme is Right-to-left (RTL) languages compatible. Check this option to enable RTL. This feature is currently under testing phase. So, this may not work perfectly.'),
@@ -548,7 +548,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['content']['animated_content']['animated_content_section'] = [
     '#type'        => 'fieldset',
     '#title'       => t('Animated Page Content - Edu-X-Pro Feature'),
-    '#description'   => t('<p>With animated page content shortcodes, you can create contents with animation effects. These contents will appear with some animation effect when it will come in browser view.</p><p>This feature is available in the premium version of this theme. <a href="https://www.drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a></p>'),
+    '#description'   => t('<p>With animated page content shortcodes, you can create contents with animation effects. These contents will appear with some animation effect when it will come in browser view.</p><p>This feature is available in the premium version of this theme. <a href="https://drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a></p>'),
   ];
 
   // Content-> Submitted Details
@@ -564,7 +564,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['content']['submitted_details']['node_author_pic_section']['node_author_pic'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Show Node Author Picture in Submitted Details.'),
-    '#default_value' => theme_get_setting('node_author_pic'),
+    '#default_value' => theme_get_setting('node_author_pic', 'edux'),
     '#description'   => t("Check this option to show node author picture in submitted details. Uncheck to hide."),
   ];
   // Show tags in node submitted.
@@ -575,7 +575,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['content']['submitted_details']['node_tags_section']['node_tags'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Show Node Tags in Submitted Details.'),
-    '#default_value' => theme_get_setting('node_tags'),
+    '#default_value' => theme_get_setting('node_tags', 'edux'),
     '#description'   => t("Check this option to show node tags (if any) in submitted details. Uncheck to hide."),
   ];
   // Node author picture.
@@ -616,15 +616,15 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['footer']['copyright']['copyright_text'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Show website copyright text in footer.'),
-    '#default_value' => theme_get_setting('copyright_text'),
-    '#description'   => t("Check this option to show website copyright text in footer. Uncheck to hide.<br />Read more: <a href='https://www.drupar.com/doc/edux/copyright-text-footer' target='_blank'>Copyright Text in Footer</a>"),
+    '#default_value' => theme_get_setting('copyright_text', 'edux'),
+    '#description'   => t("Check this option to show website copyright text in footer. Uncheck to hide.<br />Read more: <a href='https://drupar.com/doc/edux/copyright-text-footer' target='_blank'>Copyright Text in Footer</a>"),
   ];
 
   // Footer -> Copyright -> custom copyright text
   $form['footer']['copyright']['copyright_text_custom'] = [
     '#type'          => 'fieldset',
     '#title'         => t('Custom copyright text'),
-    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://www.drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
+    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
   ];
   /**
    * Settings under comment tab.
@@ -638,7 +638,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['comment']['comment_photo']['comment_user_pic'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Show User Picture in comments'),
-    '#default_value' => theme_get_setting('comment_user_pic'),
+    '#default_value' => theme_get_setting('comment_user_pic', 'edux'),
     '#description'   => t("Check this option to show user picture in comment. Uncheck to hide."),
   ];
   // Hightlight Node author comment.
@@ -650,13 +650,13 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['comment']['comment_author']['highlight_author_comment'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Highlight Author Comments'),
-    '#default_value' => theme_get_setting('highlight_author_comment'),
+    '#default_value' => theme_get_setting('highlight_author_comment', 'edux'),
     '#description'   => t("Check this option to highlight node author comments."),
   ];
   $form['comment']['comment_author']['highlight_author_color'] = [
     '#type'          => 'details',
     '#title'         => t('Highlight Color'),
-    '#description'   => t('Color option is available in the premium version of this theme. <a href="https://www.drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
+    '#description'   => t('Color option is available in the premium version of this theme. <a href="https://drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
     '#open' => TRUE,
   ];
 
@@ -684,7 +684,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 3,
     '#step' => 0.1,
     '#title'  => t('Font Size (rem)'),
-    '#default_value' => theme_get_setting('body_font_size'),
+    '#default_value' => theme_get_setting('body_font_size', 'edux'),
     '#description'   => t("Default size is 1rem which is equivalent to 16px."),
   ];
   $form['typography']['body']['body_line_height_section'] = [
@@ -697,7 +697,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#min'  => 1,
     '#max'  => 3,
     '#step' => 0.1,
-    '#default_value' => theme_get_setting('body_line_height'),
+    '#default_value' => theme_get_setting('body_line_height', 'edux'),
     '#description'   => t("Default value is 1.7"),
   ];
   // Typography -> Paragraph
@@ -717,7 +717,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#min'  => 0,
     '#max'  => 3,
     '#step' => 0.1,
-    '#default_value' => theme_get_setting('paragraph_bottom'),
+    '#default_value' => theme_get_setting('paragraph_bottom', 'edux'),
     '#description'   => t("Default size is <strong>1.2rem</strong>."),
   ];
   // Typography -> Headings
@@ -734,7 +734,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['typography']['headings']['headings_default_section']['headings_default'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Use theme default heading values.'),
-    '#default_value' => theme_get_setting('headings_default'),
+    '#default_value' => theme_get_setting('headings_default', 'edux'),
     '#description'   => t('Check this option to use theme default value for headings. Uncheck this to set custom value below.'),
   ];
   $form['typography']['headings']['headings_section_info'] = [
@@ -753,7 +753,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 5,
     '#step' => 0.1,
     '#title'  => t('Font Size (rem)'),
-    '#default_value' => theme_get_setting('h1_size'),
+    '#default_value' => theme_get_setting('h1_size', 'edux'),
     '#description'   => t("Value is in <strong>rem</strong> unit. 1 rem = 16px<br />Default size is 2.2rem.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h1']['h1_weight'] = [
@@ -763,7 +763,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       '400' => t('400'),
       '700' => t('700'),
     ),
-    '#default_value' => theme_get_setting('h1_weight'),
+    '#default_value' => theme_get_setting('h1_weight', 'edux'),
     '#description'   => t("Default value is <strong>700</strong>.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h1']['h1_transform'] = [
@@ -775,7 +775,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       'uppercase' => t('Uppercase'),
       'lowercase' => t('Lowercase'),
     ),
-    '#default_value' => theme_get_setting('h1_transform'),
+    '#default_value' => theme_get_setting('h1_transform', 'edux'),
     '#description'   => t("Default value is <strong>None</strong>.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h1']['h1_height'] = [
@@ -784,7 +784,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 3,
     '#step' => 0.1,
     '#title'  => t('Line Height'),
-    '#default_value' => theme_get_setting('h1_height'),
+    '#default_value' => theme_get_setting('h1_height', 'edux'),
     '#description'   => t("Default size is 1.7"),
   ];
   $form['typography']['headings']['h2'] = [
@@ -797,7 +797,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 5,
     '#step' => 0.1,
     '#title'  => t('Font Size (rem)'),
-    '#default_value' => theme_get_setting('h2_size'),
+    '#default_value' => theme_get_setting('h2_size', 'edux'),
     '#description'   => t("Value is in <strong>rem</strong> unit. 1 rem = 16px<br />Default size is 1.9rem.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h2']['h2_weight'] = [
@@ -807,7 +807,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       '400' => t('400'),
       '700' => t('700'),
     ),
-    '#default_value' => theme_get_setting('h2_weight'),
+    '#default_value' => theme_get_setting('h2_weight', 'edux'),
     '#description'   => t("Default value is <strong>700</strong>.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h2']['h2_transform'] = [
@@ -819,7 +819,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       'uppercase' => t('Uppercase'),
       'lowercase' => t('Lowercase'),
     ),
-    '#default_value' => theme_get_setting('h2_transform'),
+    '#default_value' => theme_get_setting('h2_transform', 'edux'),
     '#description'   => t("Default value is <strong>None</strong>.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h2']['h2_height'] = [
@@ -828,7 +828,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 3,
     '#step' => 0.1,
     '#title'  => t('Line Height'),
-    '#default_value' => theme_get_setting('h2_height'),
+    '#default_value' => theme_get_setting('h2_height', 'edux'),
     '#description'   => t("Default size is 1.7"),
   ];
   $form['typography']['headings']['h3'] = [
@@ -841,7 +841,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 5,
     '#step' => 0.1,
     '#title'  => t('Font Size (rem)'),
-    '#default_value' => theme_get_setting('h3_size'),
+    '#default_value' => theme_get_setting('h3_size', 'edux'),
     '#description'   => t("Value is in <strong>rem</strong> unit. 1 rem = 16px<br />Default size is 1.6rem.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h3']['h3_weight'] = [
@@ -851,7 +851,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       '400' => t('400'),
       '700' => t('700'),
     ),
-    '#default_value' => theme_get_setting('h3_weight'),
+    '#default_value' => theme_get_setting('h3_weight', 'edux'),
     '#description'   => t("Default value is <strong>700</strong>.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h3']['h3_transform'] = [
@@ -863,7 +863,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       'uppercase' => t('Uppercase'),
       'lowercase' => t('Lowercase'),
     ),
-    '#default_value' => theme_get_setting('h3_transform'),
+    '#default_value' => theme_get_setting('h3_transform', 'edux'),
     '#description'   => t("Default value is <strong>None</strong>.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h3']['h3_height'] = [
@@ -872,7 +872,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 3,
     '#step' => 0.1,
     '#title'  => t('Line Height'),
-    '#default_value' => theme_get_setting('h3_height'),
+    '#default_value' => theme_get_setting('h3_height', 'edux'),
     '#description'   => t("Default size is 1.7"),
   ];
   $form['typography']['headings']['h4'] = [
@@ -885,7 +885,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 5,
     '#step' => 0.1,
     '#title'  => t('Font Size (rem)'),
-    '#default_value' => theme_get_setting('h4_size'),
+    '#default_value' => theme_get_setting('h4_size', 'edux'),
     '#description'   => t("Value is in <strong>rem</strong> unit. 1 rem = 16px<br />Default size is 1.3rem.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h4']['h4_weight'] = [
@@ -895,7 +895,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       '400' => t('400'),
       '700' => t('700'),
     ),
-    '#default_value' => theme_get_setting('h4_weight'),
+    '#default_value' => theme_get_setting('h4_weight', 'edux'),
     '#description'   => t("Default value is <strong>700</strong>.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h4']['h4_transform'] = [
@@ -907,7 +907,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       'uppercase' => t('Uppercase'),
       'lowercase' => t('Lowercase'),
     ),
-    '#default_value' => theme_get_setting('h4_transform'),
+    '#default_value' => theme_get_setting('h4_transform', 'edux'),
     '#description'   => t("Default value is <strong>None</strong>.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h4']['h4_height'] = [
@@ -916,7 +916,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 3,
     '#step' => 0.1,
     '#title'  => t('Line Height'),
-    '#default_value' => theme_get_setting('h4_height'),
+    '#default_value' => theme_get_setting('h4_height', 'edux'),
     '#description'   => t("Default size is 1.7"),
   ];
   $form['typography']['headings']['h5'] = [
@@ -929,7 +929,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 5,
     '#step' => 0.1,
     '#title'  => t('Font Size (rem)'),
-    '#default_value' => theme_get_setting('h5_size'),
+    '#default_value' => theme_get_setting('h5_size', 'edux'),
     '#description'   => t("Value is in <strong>rem</strong> unit. 1 rem = 16px<br />Default size is 1.1rem.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h5']['h5_weight'] = [
@@ -939,7 +939,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       '400' => t('400'),
       '700' => t('700'),
     ),
-    '#default_value' => theme_get_setting('h5_weight'),
+    '#default_value' => theme_get_setting('h5_weight', 'edux'),
     '#description'   => t("Default value is <strong>700</strong>.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h5']['h5_transform'] = [
@@ -951,7 +951,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       'uppercase' => t('Uppercase'),
       'lowercase' => t('Lowercase'),
     ),
-    '#default_value' => theme_get_setting('h5_transform'),
+    '#default_value' => theme_get_setting('h5_transform', 'edux'),
     '#description'   => t("Default value is <strong>None</strong>.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h5']['h5_height'] = [
@@ -960,7 +960,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 3,
     '#step' => 0.1,
     '#title'  => t('Line Height'),
-    '#default_value' => theme_get_setting('h5_height'),
+    '#default_value' => theme_get_setting('h5_height', 'edux'),
     '#description'   => t("Default size is 1.7"),
   ];
   $form['typography']['headings']['h6'] = [
@@ -973,7 +973,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 5,
     '#step' => 0.1,
     '#title'  => t('Font Size (rem)'),
-    '#default_value' => theme_get_setting('h6_size'),
+    '#default_value' => theme_get_setting('h6_size', 'edux'),
     '#description'   => t("Value is in <strong>rem</strong> unit. 1 rem = 16px<br />Default size is 1.1rem.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h6']['h6_weight'] = [
@@ -983,7 +983,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       '400' => t('400'),
       '700' => t('700'),
     ),
-    '#default_value' => theme_get_setting('h6_weight'),
+    '#default_value' => theme_get_setting('h6_weight', 'edux'),
     '#description'   => t("Default value is <strong>700</strong>.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h6']['h6_transform'] = [
@@ -995,7 +995,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       'uppercase' => t('Uppercase'),
       'lowercase' => t('Lowercase'),
     ),
-    '#default_value' => theme_get_setting('h6_transform'),
+    '#default_value' => theme_get_setting('h6_transform', 'edux'),
     '#description'   => t("Default value is <strong>None</strong>.<br /><br /><p><hr /></p>"),
   ];
   $form['typography']['headings']['h6']['h6_height'] = [
@@ -1004,7 +1004,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 3,
     '#step' => 0.1,
     '#title'  => t('Line Height'),
-    '#default_value' => theme_get_setting('h6_height'),
+    '#default_value' => theme_get_setting('h6_height', 'edux'),
     '#description'   => t("Default size is 1.7"),
   ];
   /*
@@ -1027,7 +1027,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['elements']['logo']['logo_default_section']['logo_default'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Use Default Logo Settings'),
-    '#default_value' => theme_get_setting('logo_default'),
+    '#default_value' => theme_get_setting('logo_default', 'edux'),
     '#description'   => t('Check this option to use default values for sitename and site slogan. Uncheck this to set custom values below.'),
   ];
   $form['elements']['logo']['site_name'] = [
@@ -1041,7 +1041,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 3,
     '#step' => 0.1,
     '#title'  => t('Font Size (rem)'),
-    '#default_value' => theme_get_setting('site_name_size'),
+    '#default_value' => theme_get_setting('site_name_size', 'edux'),
     '#description'   => t("Default value is <strong>1rem</strong>.<br />1 rem = 16px<br /><br /><br /><p><hr /></p>"),
   ];
   $form['elements']['logo']['site_name']['site_name_weight'] = [
@@ -1051,7 +1051,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       '400' => t('400'),
       '700' => t('700'),
     ),
-    '#default_value' => theme_get_setting('site_name_weight'),
+    '#default_value' => theme_get_setting('site_name_weight', 'edux'),
     '#description'   => t("Default value is <strong>700</strong>.<br /><br /><p><hr /></p>"),
   ];
   $form['elements']['logo']['site_name']['site_name_transform'] = [
@@ -1063,7 +1063,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       'uppercase' => t('Uppercase'),
       'lowercase' => t('Lowercase'),
     ),
-    '#default_value' => theme_get_setting('site_name_transform'),
+    '#default_value' => theme_get_setting('site_name_transform', 'edux'),
     '#description'   => t("Default value is <strong>None</strong>.<br /><br /><p><hr /></p>"),
   ];
   $form['elements']['logo']['site_name']['site_name_height'] = [
@@ -1072,7 +1072,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 3,
     '#step' => 0.1,
     '#title'  => t('Line Height'),
-    '#default_value' => theme_get_setting('site_name_height'),
+    '#default_value' => theme_get_setting('site_name_height', 'edux'),
     '#description'   => t("Default size is 1.1"),
   ];
   $form['elements']['logo']['slogan'] = [
@@ -1086,7 +1086,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 5,
     '#step' => 0.1,
     '#title'  => t('Font Size (rem)'),
-    '#default_value' => theme_get_setting('slogan_size'),
+    '#default_value' => theme_get_setting('slogan_size', 'edux'),
     '#description'   => t("Value is in <strong>rem</strong> unit. 1 rem = 16px<br />Default size is 1rem.<br /><br /><p><hr /></p>"),
   ];
   $form['elements']['logo']['slogan']['slogan_transform'] = [
@@ -1098,7 +1098,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       'uppercase' => t('Uppercase'),
       'lowercase' => t('Lowercase'),
     ),
-    '#default_value' => theme_get_setting('slogan_transform'),
+    '#default_value' => theme_get_setting('slogan_transform', 'edux'),
     '#description'   => t("Default value is <strong>None</strong>.<br /><br /><p><hr /></p>"),
   ];
   $form['elements']['logo']['slogan']['slogan_height'] = [
@@ -1107,7 +1107,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 3,
     '#step' => 0.1,
     '#title'  => t('Line Height'),
-    '#default_value' => theme_get_setting('slogan_height'),
+    '#default_value' => theme_get_setting('slogan_height', 'edux'),
     '#description'   => t("Default size is 1.7"),
   ];
   $form['elements']['logo']['slogan']['slogan_style'] = [
@@ -1117,7 +1117,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     	'normal' => t('Normal'),
       'italic' => t('Italic'),
     ),
-    '#default_value' => theme_get_setting('slogan_style'),
+    '#default_value' => theme_get_setting('slogan_style', 'edux'),
     '#description'   => t("Default value is <strong>Normal</strong>."),
   ];
   // Elements -> Main menu
@@ -1134,7 +1134,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['elements']['main_menu']['main_menu_default_section']['main_menu_default'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Use Default Main Menu Settings'),
-    '#default_value' => theme_get_setting('main_menu_default'),
+    '#default_value' => theme_get_setting('main_menu_default', 'edux'),
     '#description'   => t('Check this option to use default main menu settings. Uncheck this to set custom values below.'),
   ];
   $form['elements']['main_menu']['main_menu_top'] = [
@@ -1148,7 +1148,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 3,
     '#step' => 0.1,
     '#title'  => t('Font Size (rem)'),
-    '#default_value' => theme_get_setting('main_menu_top_size'),
+    '#default_value' => theme_get_setting('main_menu_top_size', 'edux'),
     '#description'   => t("Default value is <strong>1rem</strong>.<br />1 rem = 16px<br /><p><hr /></p>"),
   ];
   $form['elements']['main_menu']['main_menu_top']['main_menu_top_weight'] = [
@@ -1158,7 +1158,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       '400' => t('400'),
       '700' => t('700'),
     ),
-    '#default_value' => theme_get_setting('main_menu_top_weight'),
+    '#default_value' => theme_get_setting('main_menu_top_weight', 'edux'),
     '#description'   => t("Default value is <strong>700</strong>.<br /><p><hr /></p>"),
   ];
   $form['elements']['main_menu']['main_menu_top']['main_menu_top_transform'] = [
@@ -1170,7 +1170,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       'uppercase' => t('Uppercase'),
       'lowercase' => t('Lowercase'),
     ),
-    '#default_value' => theme_get_setting('main_menu_top_transform'),
+    '#default_value' => theme_get_setting('main_menu_top_transform', 'edux'),
     '#description'   => t("Default value is <strong>None</strong>."),
   ];
   $form['elements']['main_menu']['main_menu_sub'] = [
@@ -1184,7 +1184,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 3,
     '#step' => 0.1,
     '#title'  => t('Font Size (rem)'),
-    '#default_value' => theme_get_setting('main_menu_sub_size'),
+    '#default_value' => theme_get_setting('main_menu_sub_size', 'edux'),
     '#description'   => t("Default value is <strong>1rem</strong>.<br />1 rem = 16px<br /><p><hr /></p>"),
   ];
   $form['elements']['main_menu']['main_menu_sub']['main_menu_sub_weight'] = [
@@ -1194,7 +1194,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       '400' => t('400'),
       '700' => t('700'),
     ),
-    '#default_value' => theme_get_setting('main_menu_sub_weight'),
+    '#default_value' => theme_get_setting('main_menu_sub_weight', 'edux'),
     '#description'   => t("Default value is <strong>700</strong>.<br /><p><hr /></p>"),
   ];
   $form['elements']['main_menu']['main_menu_sub']['main_menu_sub_transform'] = [
@@ -1206,13 +1206,13 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       'uppercase' => t('Uppercase'),
       'lowercase' => t('Lowercase'),
     ),
-    '#default_value' => theme_get_setting('main_menu_sub_transform'),
+    '#default_value' => theme_get_setting('main_menu_sub_transform', 'edux'),
     '#description'   => t("Default value is <strong>None</strong>."),
   ];
   $form['elements']['main_menu']['main_menu_color'] = [
     '#type'          => 'details',
     '#title'         => t('Main Menu Color'),
-    '#description'   => t('Color option is available in the premium version of this theme. <a href="https://www.drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
+    '#description'   => t('Color option is available in the premium version of this theme. <a href="https://drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
     '#open' => TRUE,
   ];
   // Elements -> Page Title
@@ -1229,7 +1229,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['elements']['page_title']['page_title_default_section']['page_title_default'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Use Default Page Title Settings'),
-    '#default_value' => theme_get_setting('page_title_default'),
+    '#default_value' => theme_get_setting('page_title_default', 'edux'),
     '#description'   => t('Check this option to use default values for page title. Uncheck this to set custom values below.'),
   ];
   $form['elements']['page_title']['page_title_size_section'] = [
@@ -1244,7 +1244,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 5,
     '#step' => 0.1,
     '#title'  => t('Desktop and Laptop (rem)'),
-    '#default_value' => theme_get_setting('page_title_size_desktop'),
+    '#default_value' => theme_get_setting('page_title_size_desktop', 'edux'),
     '#description'   => t("Default value is <strong>2.6rem</strong>.<br /><p><hr /></p>"),
   ];
   $form['elements']['page_title']['page_title_size_section']['page_title_size_mobile'] = [
@@ -1253,7 +1253,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#max'  => 5,
     '#step' => 0.1,
     '#title'  => t('Mobile and Tablet (rem)'),
-    '#default_value' => theme_get_setting('page_title_size_mobile'),
+    '#default_value' => theme_get_setting('page_title_size_mobile', 'edux'),
     '#description'   => t("Default value is <strong>2.2rem</strong>."),
   ];
   $form['elements']['page_title']['page_title_transform_section'] = [
@@ -1269,32 +1269,8 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       'uppercase' => t('Uppercase'),
       'lowercase' => t('Lowercase'),
     ),
-    '#default_value' => theme_get_setting('page_title_transform'),
+    '#default_value' => theme_get_setting('page_title_transform', 'edux'),
     '#description'   => t("Default value is <strong>None</strong>."),
-  ];
-  // Elements -> Breadcrumb.
-  $form['elements']['breadcrumb'] = [
-    '#type'  => 'details',
-    '#title' => t('Breadcrumb'),
-    '#group' => 'elements_tab',
-  ];
-  $form['elements']['breadcrumb']['breadcrumb_icon'] = [
-    '#type'        => 'details',
-    '#title'       => t('Breadcrumb Separator Icon'),
-    '#open' => TRUE,
-  ];
-  $form['elements']['breadcrumb']['breadcrumb_icon']['breadcrumb_icon_style'] = [
-    '#type'          => 'radios',
-    '#title'         => t('Select Breadcrumb Separator Icon<br /><br />'),
-    '#options' => array(
-      '&#x276F;' => t('<span style="font-size: 24px">&#x276F;</span><br /><br />'),
-      '&#x27F6;' => t('<span style="font-size: 24px">&#x27F6;</span><br /><br />'),
-      '&#x203A;' => t('<span style="font-size: 24px">&#x203A;</span><br /><br />'),
-      '&#x279D;' => t('<span style="font-size: 24px">&#x279D;</span><br /><br />'),
-      '/' => t('<span style="font-size: 24px">/</span><br /><br />'),
-      '/' => t('<span style="font-size: 2rem">\</span><br /><br />'),
-    ),
-    '#default_value' => theme_get_setting('breadcrumb_icon_style'),
   ];
   // Elements -> Button
   $form['elements']['button'] = [
@@ -1310,7 +1286,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['elements']['button']['button_default_section']['button_default'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Use Default Main Menu Settings'),
-    '#default_value' => theme_get_setting('button_default'),
+    '#default_value' => theme_get_setting('button_default', 'edux'),
     '#description'   => t('Check this option to use default main menu settings. Uncheck this to set custom values below.'),
   ];
   $form['elements']['button']['button_section'] = [
@@ -1321,7 +1297,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['elements']['button']['button_section']['button_padding'] = [
     '#type'   => 'textfield',
     '#title'  => t('Top Right Bottom Left'),
-    '#default_value' => theme_get_setting('button_padding'),
+    '#default_value' => theme_get_setting('button_padding', 'edux'),
     '#description'   => t("Padding of button. Example: <strong>5px 10px 5px 10px</strong><br />
     Default value is: 8px 10px 8px 10px<br /><p><hr /></p>"),
   ];
@@ -1330,7 +1306,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#min'  => 0,
     '#step' => 1,
     '#title'  => t('Border Radius (px)'),
-    '#default_value' => theme_get_setting('button_radius'),
+    '#default_value' => theme_get_setting('button_radius', 'edux'),
     '#description'   => t("Border radius of buttons. Default value is 8px."),
   ];
   /*
@@ -1355,7 +1331,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     	'local' => t('Local Self Hosted'),
       'googlecdn' => t('Google CDN Server')
     ),
-    '#default_value' => theme_get_setting('font_src'),
+    '#default_value' => theme_get_setting('font_src', 'edux'),
     '#description'   => t('EduX theme uses following Google fonts: Noto Sans.<br />You can serve these fonts locally or from Google server.'),
   ];
   // Components -> Social
@@ -1371,7 +1347,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['components']['social']['all_icons']['all_icons_show'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Show social icons in footer'),
-    '#default_value' => theme_get_setting('all_icons_show'),
+    '#default_value' => theme_get_setting('all_icons_show', 'edux'),
     '#description'   => t("Check this option to show social icons in footer. Uncheck to hide."),
   ];
   $form['components']['social']['social_profile'] = [
@@ -1388,7 +1364,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#type'          => 'textfield',
     '#title'         => t('Facebook Url'),
     '#description'   => t("Enter yours facebook profile or page url. Leave the url field blank to hide this icon."),
-    '#default_value' => theme_get_setting('facebook_url'),
+    '#default_value' => theme_get_setting('facebook_url', 'edux'),
   ];
 
   // Twitter.
@@ -1401,7 +1377,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#type'          => 'textfield',
     '#title'         => t('Twitter Url'),
     '#description'   => t("Enter yours twitter page url. Leave the url field blank to hide this icon."),
-    '#default_value' => theme_get_setting('twitter_url'),
+    '#default_value' => theme_get_setting('twitter_url', 'edux'),
   ];
 
   // Instagram.
@@ -1414,7 +1390,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#type'          => 'textfield',
     '#title'         => t('Instagram Url'),
     '#description'   => t("Enter yours instagram page url. Leave the url field blank to hide this icon."),
-    '#default_value' => theme_get_setting('instagram_url'),
+    '#default_value' => theme_get_setting('instagram_url', 'edux'),
   ];
 
   // Linkedin.
@@ -1427,7 +1403,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#type'          => 'textfield',
     '#title'         => t('Linkedin Url'),
     '#description'   => t("Enter yours linkedin page url. Leave the url field blank to hide this icon."),
-    '#default_value' => theme_get_setting('linkedin_url'),
+    '#default_value' => theme_get_setting('linkedin_url', 'edux'),
   ];
 
   // YouTube.
@@ -1440,7 +1416,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#type'          => 'textfield',
     '#title'         => t('YouTube Url'),
     '#description'   => t("Enter yours youtube.com page url. Leave the url field blank to hide this icon."),
-    '#default_value' => theme_get_setting('youtube_url'),
+    '#default_value' => theme_get_setting('youtube_url', 'edux'),
   ];
 
   // YouTube.
@@ -1453,7 +1429,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#type'          => 'textfield',
     '#title'         => t('vimeo Url'),
     '#description'   => t("Enter yours vimeo.com page url. Leave the url field blank to hide this icon."),
-    '#default_value' => theme_get_setting('vimeo_url'),
+    '#default_value' => theme_get_setting('vimeo_url', 'edux'),
   ];
 
   // telegram.
@@ -1466,7 +1442,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#type'          => 'textfield',
     '#title'         => t('Telegram Url'),
     '#description'   => t("Enter yours Telegram profile or page url. Leave the url field blank to hide this icon."),
-    '#default_value' => theme_get_setting('telegram_url'),
+    '#default_value' => theme_get_setting('telegram_url', 'edux'),
   ];
 
   // WhatsApp.
@@ -1479,7 +1455,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#type'          => 'textfield',
     '#title'         => t('WhatsApp Url'),
     '#description'   => t("Enter yours whatsapp message url. Leave the url field blank to hide this icon."),
-    '#default_value' => theme_get_setting('whatsapp_url'),
+    '#default_value' => theme_get_setting('whatsapp_url', 'edux'),
   ];
 
   // Github.
@@ -1492,7 +1468,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#type'          => 'textfield',
     '#title'         => t('GitHub Url'),
     '#description'   => t("Enter yours github page url. Leave the url field blank to hide this icon."),
-    '#default_value' => theme_get_setting('github_url'),
+    '#default_value' => theme_get_setting('github_url', 'edux'),
   ];
 
   // Social -> vk.com url.
@@ -1504,12 +1480,12 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
       '#type'          => 'textfield',
       '#title'         => t('vk.com'),
       '#description'   => t("Enter yours vk.com page url. Leave the url field blank to hide this icon."),
-      '#default_value' => theme_get_setting('vk_url'),
+      '#default_value' => theme_get_setting('vk_url', 'edux'),
   ];
   $form['components']['social']['node_share'] = [
     '#type'        => 'details',
     '#title'       => t('Share Page'),
-    '#description'   => t('<h3>Share Page On Social networking websites</h3><p>This feature is available in the premium version of this theme. <a href="https://www.drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a></p>'),
+    '#description'   => t('<h3>Share Page On Social networking websites</h3><p>This feature is available in the premium version of this theme. <a href="https://drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a></p>'),
     '#group' => 'components_tab',
   ];
   // Components -> Font icons
@@ -1525,7 +1501,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['components']['font_icons']['fontawesome4']['fontawesome_four'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Enable FontAwesome 4 Font Icons'),
-    '#default_value' => theme_get_setting('fontawesome_four'),
+    '#default_value' => theme_get_setting('fontawesome_four', 'edux'),
     '#description'   => t('Check this option to enable fontawesome version 4 font icons.'),
   ];
   $form['components']['font_icons']['fontawesome5'] = [
@@ -1535,7 +1511,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['components']['font_icons']['fontawesome5']['fontawesome_five'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Enable FontAwesome 5 Font Icons'),
-    '#default_value' => theme_get_setting('fontawesome_five'),
+    '#default_value' => theme_get_setting('fontawesome_five', 'edux'),
     '#description'   => t('Check this option to enable fontawesome version 5 font icons.'),
   ];
 	$form['components']['font_icons']['bootstrap_icons'] = [
@@ -1545,26 +1521,26 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['components']['font_icons']['bootstrap_icons']['bootstrapicons'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Enable Bootstrap Icons'),
-    '#default_value' => theme_get_setting('bootstrapicons'),
+    '#default_value' => theme_get_setting('bootstrapicons', 'edux'),
     '#description'   => t('Check this option to enable Bootstrap Font Icons. Read more about <a href="https://icons.getbootstrap.com/" target="_blank">Bootstrap Icons</a>'),
   ];
   $form['components']['font_icons']['materialicons'] = [
     '#type'          => 'fieldset',
     '#title'         => t('Google Material Font Icons'),
-    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://www.drupar.com/theme/eduxpro" target="_blank">Purchase Edu-X-Pro for $29 only.</a>'),
+    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://drupar.com/theme/eduxpro" target="_blank">Purchase Edu-X-Pro for $29 only.</a>'),
   ];
   // Components -> Page loader.
   $form['components']['preloader'] = [
     '#type'        => 'details',
     '#title'       => t('Pre Page Loader'),
-    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://www.drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
+    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
     '#group' => 'components_tab',
   ];
   // Components -> Cookie message.
   $form['components']['cookie'] = [
     '#type'        => 'details',
     '#title'       => t('Cookie Consent message'),
-    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://www.drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
+    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
     '#group' => 'components_tab',
   ];
 
@@ -1579,92 +1555,21 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
     '#title' => t('Scroll To Top'),
     '#group' => 'components_tab',
   ];
-  $form['components']['scrolltotop']['scrolltotop_enable'] = [
-    '#type'        => 'fieldset',
-    '#title'       => t('Enable Scroll To Top'),
-  ];
-
-  $form['components']['scrolltotop']['scrolltotop_enable']['scrolltotop_on'] = [
+  $form['components']['scrolltotop']['scrolltotop_on'] = [
     '#type'          => 'checkbox',
-    '#title'         => t('Enable scroll to top feature.'),
-    '#default_value' => theme_get_setting('scrolltotop_on'),
+    '#title'         => t('Enable Scroll To Top'),
+    '#default_value' => theme_get_setting('scrolltotop_on', 'edux'),
     '#description'   => t("Check this option to enable scroll to top feature. Uncheck to disable this fearure and hide scroll to top icon."),
   ];
-  $form['components']['scrolltotop']['scrolltotop_default_section'] = [
-    '#type'        => 'fieldset',
-    '#title'       => t('Use Default Settings'),
-    '#attributes' => array('class' => array('set-default-fieldset')),
-  ];
-  $form['components']['scrolltotop']['scrolltotop_default_section']['scrolltotop_default'] = [
-    '#type'          => 'checkbox',
-    '#title'         => t('Use theme default settings of Scroll To Top.'),
-    '#default_value' => theme_get_setting('scrolltotop_default'),
-    '#description'   => t('Check this option to use theme default settings of scroll to top. Uncheck this to set custom value below.'),
-  ];
-  $form['components']['scrolltotop']['scrolltotop_icon'] = [
-    '#type'        => 'details',
-    '#title'       => t('Scroll To Top Icon'),
-    '#open' => TRUE,
-  ];
-  $form['components']['scrolltotop']['scrolltotop_icon']['scrolltotop_icon_style'] = [
-    '#type'          => 'radios',
-    '#title'         => t('<p>Select Arrow Icon</p>'),
-    '#options' => array(
-      '&#129121;' => t('<span style="font-size: 2rem">&#129121;</span><br /><br />'),
-      '&#x21e1;' => t('<span style="font-size: 2rem; font-weight: 700">&#x21e1;</span><br /><br />'),
-      '&#11165;' => t('<span style="font-size: 2rem">&#11165;</span><br /><br />'),
-      '&#129041;' => t('<span style="font-size: 2rem">&#129041;</span><br /><br />'),
-      '&#9650;' => t('<span style="font-size: 2rem">&#9650;</span><br /><br />'),
-    ),
-    '#default_value' => theme_get_setting('scrolltotop_icon_style'),
-  ];
-  $form['components']['scrolltotop']['scrolltotop_shape_section'] = [
-    '#type'        => 'details',
-    '#title'       => t('Icon Shape'),
-    '#open' => TRUE,
-  ];
-  $form['components']['scrolltotop']['scrolltotop_shape_section']['scrolltotop_icon_size'] = [
-    '#type'   => 'number',
-    '#title'  => t('Icon Size (px)'),
-    '#default_value' => theme_get_setting('scrolltotop_icon_size'),
-    '#description' => t('Default value is 20px.<p><hr /></p>'),
-  ];
-  $form['components']['scrolltotop']['scrolltotop_shape_section']['scrolltotop_icon_radius'] = [
-    '#type'   => 'textfield',
-    '#title'  => t('Background Border Radius'),
-    '#default_value' => theme_get_setting('scrolltotop_icon_radius'),
-    '#description' => t('Default value is 50%.<br />You can use <strong>px</strong> (example 10px) or <strong>percentage</strong> (example 50%) unit.<p><hr /></p>'),
-  ];
-  $form['components']['scrolltotop']['scrolltotop_position_section'] = [
-    '#type'        => 'details',
-    '#title'       => t('Icon Position'),
-    '#open' => TRUE,
-  ];
-  $form['components']['scrolltotop']['scrolltotop_position_section']['scrolltotop_position'] = [
-    '#type'          => 'radios',
-    '#title'       => t('Left or Right Position'),
-    '#options' => array(
-    	'left' => t('<span style="' . $button . '">LEFT</span>'),
-      'right' => t('<span style="' . $button . '">RIGHT</span>'),
-    ),
-    '#default_value' => theme_get_setting('scrolltotop_position'),
-    '#description' => t('Default value is Right.<br /><p><hr /></p>'),
-  ];
-  $form['components']['scrolltotop']['scrolltotop_position_section']['scrolltotop_bottom'] = [
-    '#type'   => 'number',
-    '#min'  => 0,
-    '#step' => 1,
-    '#title'  => t('Bottom Position (px)'),
-    '#default_value' => theme_get_setting('scrolltotop_bottom'),
-    '#description' => t('Default value is 10px'),
-  ];
+
+
   /**
    * Color Options
    */
   $form['color']['theme_color'] = [
     '#type'        => 'details',
     '#title'       => t('Theme Color'),
-    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://www.drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
+    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
     '#open' => TRUE,
   ];
   /**
@@ -1677,7 +1582,7 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['insert_codes']['head'] = [
     '#type'        => 'details',
     '#title'       => t('Head'),
-    '#description' => t('<h3>Insert Codes Before &lt;/HEAD&gt;</h3><p><hr /></p>This feature is available in the premium version of this theme. <a href="https://www.drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
+    '#description' => t('<h3>Insert Codes Before &lt;/HEAD&gt;</h3><p><hr /></p>This feature is available in the premium version of this theme. <a href="https://drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
     '#group' => 'insert_codes_tab',
   ];
   // Insert Codes -> Body
@@ -1696,13 +1601,13 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['insert_codes']['body']['insert_body_start_section'] = [
     '#type'        => 'fieldset',
     '#title'       => t('Insert code after &lt;BODY&gt; tag'),
-    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://www.drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
+    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
   ];
   // Insert Codes -> Body -> Body end codes
   $form['insert_codes']['body']['insert_body_end_section'] = [
     '#type'        => 'fieldset',
     '#title'       => t('Insert code before &lt;/BODY&gt; tag'),
-    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://www.drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
+    '#description'   => t('This feature is available in the premium version of this theme. <a href="https://drupar.com/theme/eduxpro" target="_blank">Buy Edu-X-Pro for $29 only.</a>'),
   ];
   // Insert Codes -> css
   $form['insert_codes']['css']['css_section'] = [
@@ -1713,37 +1618,37 @@ function edux_form_system_theme_settings_alter(&$form, FormStateInterface $form_
   $form['insert_codes']['css']['css_section']['styling'] = [
     '#type'          => 'checkbox',
     '#title'         => t('Enable Additional CSS'),
-    '#default_value' => theme_get_setting('styling'),
-    '#description'   => t("Check this option to enable custom styling. Uncheck to disable this feature.<br />Please refer to this tutorial page. <a href='https://www.drupar.com/doc/edux/custom-css' target='_blank'>How To Use Custom Styling</a>"),
+    '#default_value' => theme_get_setting('styling', 'edux'),
+    '#description'   => t("Check this option to enable custom styling. Uncheck to disable this feature.<br />Please refer to this tutorial page. <a href='https://drupar.com/doc/edux/custom-css' target='_blank'>How To Use Custom Styling</a>"),
   ];
 
   $form['insert_codes']['css']['css_section']['styling_code'] = [
     '#type'          => 'textarea',
     '#rows'          => 20,
     '#title'         => t('Custom CSS Codes'),
-    '#default_value' => theme_get_setting('styling_code'),
-    '#description'   => t('Please enter your custom css codes in this text box. You can use it to customize the appearance of your site.<br />Please refer to this tutorial for detail: <a href="https://www.drupar.com/doc/edux/custom-css" target="_blank">Custom CSS</a>'),
+    '#default_value' => theme_get_setting('styling_code', 'edux'),
+    '#description'   => t('Please enter your custom css codes in this text box. You can use it to customize the appearance of your site.<br />Please refer to this tutorial for detail: <a href="https://drupar.com/doc/edux/custom-css" target="_blank">Custom CSS</a>'),
   ];
   // Settings under support tab.
   $form['support']['info'] = [
     '#type'        => 'fieldset',
     '#title'       => t('Documentation'),
     '#description' => t('<h4>Edu-X Documentation</h4>
-    <p>Please check our documentation for detailed information on how to use Edu-X theme.<br /><a href="https://www.drupar.com/doc/edux" target="_blank">Edu X Documentation</a>.</p>
+    <p>Please check our documentation for detailed information on how to use Edu-X theme.<br /><a href="https://drupar.com/doc/edux" target="_blank">Edu X Documentation</a>.</p>
     <h4>The-X Documentation</h4>
-    <p>Edu-X theme uses The-X theme as the base theme. So, many things are covered in <a href="https://www.drupar.com/doc/thex" target="_blank">The X Documentation</a>.</p>
+    <p>Edu-X theme uses The-X theme as the base theme. So, many things are covered in <a href="https://drupar.com/doc/thex" target="_blank">The X Documentation</a>.</p>
     <hr />
     <h4>Create Issue</h4>
     <p>If you need support that is beyond our theme documentation, please <a href="https://www.drupal.org/project/issues/edux?status=All&categories=All" target="_blank">Create an issue</a> at project page.</p>
     <hr />
     <h4>Contact Us</h4>
-    <p>If you need some specific customizations in this theme or need custom Drupal theme development, please contact us<br><a href="https://www.drupar.com/contact" target="_blank">Drupar.com/contact</a></p>'),
+    <p>If you need some specific customizations in this theme or need custom Drupal theme development, please contact us<br><a href="https://drupar.com/contact" target="_blank">Drupar.com/contact</a></p>'),
   ];
 
   // Settings under upgrade tab.
   $form['upgrade']['info'] = [
     '#type'        => 'fieldset',
-    '#title'       => t('<p><a href="https://demo2.drupar.com/eduxpro/" target="_blank">eduxPro Demo</a> | <a href="https://www.drupar.com/theme/eduxpro" target="_blank">Purchase eduxPro for $29 only</a></p>'),
+    '#title'       => t('<p><a href="https://demo2.drupar.com/eduxpro/" target="_blank">eduxPro Demo</a> | <a href="https://drupar.com/theme/eduxpro" target="_blank">Purchase eduxPro for $29 only</a></p>'),
     '#description' => t("$eduxpro"),
   ];
 // End form.

@@ -97,7 +97,7 @@
     // the associate process should begin.
     // The loadingStatus checks are for when project browser is loaded and one
     // of the listed projects has a download or install in progress, so the UI
-    // conveys this even if the process was initated in another tab or by a
+    // conveys this even if the process was initiated in another tab or by a
     // different user.
     if (initiate || (loadingStatus && loadingStatus.status !== 0)) {
       loading = true;

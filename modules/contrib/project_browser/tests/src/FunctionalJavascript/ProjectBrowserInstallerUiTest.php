@@ -8,6 +8,8 @@ use Drupal\Tests\project_browser\Traits\PackageManagerFixtureUtilityTrait;
 /**
  * Provides tests for the Project Browser Installer UI.
  *
+ * @coversDefaultClass \Drupal\project_browser\Controller\InstallerController
+ *
  * @group project_browser
  */
 class ProjectBrowserInstallerUiTest extends WebDriverTestBase {
@@ -25,8 +27,6 @@ class ProjectBrowserInstallerUiTest extends WebDriverTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'package_manager',
-    'package_manager_bypass',
     'project_browser',
     'project_browser_test',
   ];
@@ -41,9 +41,10 @@ class ProjectBrowserInstallerUiTest extends WebDriverTestBase {
    */
   protected function setUp(): void {
     parent::setUp();
+
+    $this->initPackageManager();
+
     $this->sharedTempStore = $this->container->get('tempstore.shared');
-    $pm_path = $this->container->get('extension.list.module')->getPath('package_manager');
-    $this->useFixtureDirectoryAsActive($pm_path . '/tests/fixtures/fake_site');
 
     $this->config('project_browser.admin_settings')->set('enabled_sources', ['drupalorg_mockapi'])->save(TRUE);
     $this->config('project_browser.admin_settings')->set('allow_ui_install', TRUE)->save();
@@ -134,7 +135,7 @@ class ProjectBrowserInstallerUiTest extends WebDriverTestBase {
   /**
    * Confirms stage can be unlocked despite a missing Project Browser lock.
    *
-   * @covers::unlock
+   * @covers ::unlock
    */
   public function testCanBreakStageWithMissingProjectBrowserLock() {
     $assert_session = $this->assertSession();
@@ -170,7 +171,7 @@ class ProjectBrowserInstallerUiTest extends WebDriverTestBase {
    *
    * The break lock link is not available once the stage is applying.
    *
-   * @covers::unlock
+   * @covers ::unlock
    */
   public function testCanBreakLock() {
     $assert_session = $this->assertSession();

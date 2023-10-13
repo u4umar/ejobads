@@ -52,68 +52,17 @@ class MockDrupalDotOrg extends ProjectBrowserSourceBase implements ContainerFact
    */
   const MAINTAINED_VALUES = [13028, 19370, 9990];
 
-  /**
-   * A logger instance.
-   *
-   * @var \Psr\Log\LoggerInterface
-   */
-  protected $logger;
-
-  /**
-   * The database connection.
-   *
-   * @var \Drupal\Core\Database\Connection
-   */
-  protected $database;
-
-  /**
-   * The HTTP client.
-   *
-   * @var \GuzzleHttp\ClientInterface
-   */
-  protected $httpClient;
-
-  /**
-   * The state object.
-   *
-   * @var \Drupal\Core\State\StateInterface
-   */
-  protected $state;
-
-  /**
-   * ProjectBrowser cache bin.
-   *
-   * @var \Drupal\Core\Cache\CacheBackendInterface
-   */
-  protected $cacheBin;
-
-  /**
-   * Constructs a MockDrupalDotOrg object.
-   *
-   * @param array $configuration
-   *   A configuration array containing information about the plugin instance.
-   * @param string $plugin_id
-   *   The plugin ID for the plugin instance.
-   * @param mixed $plugin_definition
-   *   The plugin implementation definition.
-   * @param \Psr\Log\LoggerInterface $logger
-   *   A logger instance.
-   * @param \Drupal\Core\Database\Connection $database
-   *   The database connection to be used.
-   * @param \GuzzleHttp\ClientInterface $http_client
-   *   A Guzzle client object.
-   * @param \Drupal\Core\State\StateInterface $state
-   *   The state object.
-   * @param \Drupal\Core\Cache\CacheBackendInterface $cache_bin
-   *   The cache bin.
-   */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, LoggerInterface $logger, Connection $database, ClientInterface $http_client, StateInterface $state, CacheBackendInterface $cache_bin) {
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    private readonly LoggerInterface $logger,
+    private readonly Connection $database,
+    private readonly ClientInterface $httpClient,
+    private readonly StateInterface $state,
+    private readonly CacheBackendInterface $cacheBin,
+   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->logger = $logger;
-    $this->database = $database;
-    $this->httpClient = $http_client;
-    $this->state = $state;
-    $this->cacheBin = $cache_bin;
   }
 
   /**
@@ -384,6 +333,15 @@ class MockDrupalDotOrg extends ProjectBrowserSourceBase implements ContainerFact
     $returned_list = [];
     if ($api_response) {
       foreach ($api_response['list'] as $project_data) {
+        $avatar_url = 'https://git.drupalcode.org/project/' . $project_data['field_project_machine_name'] . '/-/avatar';
+        $logo = [
+          'file' => [
+            'uri' => $avatar_url,
+            'resource' => 'image',
+          ],
+          'alt' => 'Project logo',
+        ];
+
         $returned_list[] = (new Project())
           ->setId($project_data['nid'])
           ->setProjectTitle($project_data['title'])
@@ -398,7 +356,7 @@ class MockDrupalDotOrg extends ProjectBrowserSourceBase implements ContainerFact
           // before we even put them in the database.
           ->setIsCompatible(TRUE)
           ->setProjectUsageTotal(array_reduce($project_data['project_data']['project_usage'] ?? [], fn($total, $project_usage) => $total + $project_usage) ?: 0)
-          ->setLogo(!empty($project_data['project_data']['field_project_images']) ? array_shift($project_data['project_data']['field_project_images']) : [])
+          ->setLogo($logo)
           ->setImages($project_data['project_data']['field_project_images'] ?? [])
           ->setSummary($this->relativeToAbsoluteUrls($project_data['project_data']['body'], 'https://www.drupal.org'))
           ->setIsCovered(in_array($project_data['field_security_advisory_coverage'], self::COVERED_VALUES))
@@ -411,7 +369,7 @@ class MockDrupalDotOrg extends ProjectBrowserSourceBase implements ContainerFact
       }
     }
 
-    return new ProjectsResultsPage($api_response['total_results'] ?? 0, $returned_list, (string) $this->getPluginDefinition()['label'], $this->getPluginId());
+    return new ProjectsResultsPage($api_response['total_results'] ?? 0, $returned_list, (string) $this->getPluginDefinition()['label'], $this->getPluginId(), TRUE);
   }
 
   /**
@@ -466,8 +424,8 @@ class MockDrupalDotOrg extends ProjectBrowserSourceBase implements ContainerFact
 
       // Filter by search term.
       if (array_key_exists('search', $query)) {
-        $title = $query['search'];
-        $db_query->condition('pbp.title', "%$title%", 'LIKE');
+        $search = $query['search'];
+        $db_query->condition('pbp.project_data', "%$search%", 'LIKE');
       }
       $db_query->groupBy('pbp.nid');
 
@@ -564,6 +522,7 @@ class MockDrupalDotOrg extends ProjectBrowserSourceBase implements ContainerFact
     try {
       $response = $this->httpClient->request('GET', "https://www.drupal.org/api-d7/node.json", [
         'on_stats' => static function (TransferStats $stats) use (&$url) {
+          // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UnusedVariable
           $url = $stats->getEffectiveUri();
         },
         'query' => ['field_project_machine_name' => $project_id],
@@ -573,6 +532,7 @@ class MockDrupalDotOrg extends ProjectBrowserSourceBase implements ContainerFact
       // Try a second time because sometimes d.o times out the request.
       $response = $this->httpClient->request('GET', "https://www.drupal.org/api-d7/node.json", [
         'on_stats' => static function (TransferStats $stats) use (&$url) {
+          // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UnusedVariable
           $url = $stats->getEffectiveUri();
         },
         'query' => ['field_project_machine_name' => $project_id],

@@ -8,64 +8,12 @@ build:
       # Run code quality checks.
       container_command.commit-checks:
         commands:
-          # Copy core's checking script into this contrib module.
-          - "cp /var/www/html/core/scripts/dev/commit-code-check.sh modules/contrib/project_browser/"
-          # Comply with core's checking script file permissions expectations.
-          - chmod 644 modules/contrib/project_browser/
-          # DEBUG: BEFORE
-          # - cat modules/contrib/project_browser/commit-code-check.sh
-          # Rewrite $TOP_LEVEL/core since $TOP_LEVEL now refers to the contrib module.
-          - sed -i "s/\$TOP_LEVEL\/core/\/var\/www\/html\/core/" modules/contrib/project_browser/commit-code-check.sh
-          # Ensure the remainder of the script runs from the script's directory and not the current working directory.
-          - sed -i "s/# Gets list of files to check./cd \"\$\(dirname \"\$0\"\)\";/" modules/contrib/project_browser/commit-code-check.sh
-          # When constructing $FILES, ignore the `commit-code-check.sh` file we just copied.
-          - sed -i "s/--exclude=vendor/--exclude=vendor --exclude=commit-code-check.sh/" modules/contrib/project_browser/commit-code-check.sh
-          # Exclude our files from es6 checking.
-          - sed -i "s/layercake.js \]\]/\0 \&\& ! [[ \"\$FILE\" =~ sveltejs ]]/" modules/contrib/project_browser/commit-code-check.sh
-          # vendor/bin now needs to be prefixed. And $TOP_LEVEL/vendor needs to be rewritten.
-          - sed -i "s/vendor\/bin/\/var\/www\/html\/vendor\/bin/" modules/contrib/project_browser/commit-code-check.sh
-          - sed -i "s/\$TOP_LEVEL\/vendor/\/var\/www\/html\/vendor/" modules/contrib/project_browser/commit-code-check.sh
-          # Ignore our compiled files when ensuring ES6 equivalents.
-          - sed -i "s/core\/assets\/vendor/sveltejs\/public\/build/" modules/contrib/project_browser/commit-code-check.sh
-          # Stop not requiring ES6 files for core's Nightwatch tests, instead don't for *our* Nightwatch tests.
-          - sed -i "s/\^core\/tests\/Drupal\/Nightwatch/\^tests\/src\/Nightwatch/" modules/contrib/project_browser/commit-code-check.sh
-          # Remove check for changed .js files to avoid running core eslint. There is svelte specific
-          # linting run instead.
-          - sed -i "s/FILE =~.*\.js\$ ]]; then/FILE =~ \\.noopjs$ ]]; then/" modules/contrib/project_browser/commit-code-check.sh
-          # Disable default JS compile checks, PB will be doing a hacky version
-          - sed -i "s/COMPILE_CHECK=1/COMPILE_CHECK=0/" modules/contrib/project_browser/commit-code-check.sh
-          - sed -i "s/core\/scripts\/js/\(js|scripts|modules|project_browser_plugin_starter_template\)/" modules/contrib/project_browser/commit-code-check.sh
-          - sed -i "s/\^core\/scripts\/css/config.js\$/" modules/contrib/project_browser/commit-code-check.sh
-          # Run eslint on .svelte files.
-          - sed -i '/.*FINAL_STATUS" == "1".*/i cd "$TOP_LEVEL\/sveltejs"' modules/contrib/project_browser/commit-code-check.sh
-          - sed -i '/.*FINAL_STATUS" == "1".*/i yarn install' modules/contrib/project_browser/commit-code-check.sh
-          - sed -i '/.*FINAL_STATUS" == "1".*/i yarn lint:svelte' modules/contrib/project_browser/commit-code-check.sh
-          - sed -i '/.*FINAL_STATUS" == "1".*/i CORRECTJS=$?' modules/contrib/project_browser/commit-code-check.sh
-          - sed -i '/.*FINAL_STATUS" == "1".*/i if [ "$CORRECTJS" -ne "0" ]; then' modules/contrib/project_browser/commit-code-check.sh
-          - sed -i '/.*FINAL_STATUS" == "1".*/i FINAL_STATUS=1' modules/contrib/project_browser/commit-code-check.sh
-          - sed -i '/.*FINAL_STATUS" == "1".*/i printf "\nSvelte eslint ${red}failed${reset}\n"' modules/contrib/project_browser/commit-code-check.sh
-          - sed -i '/.*FINAL_STATUS" == "1".*/i else' modules/contrib/project_browser/commit-code-check.sh
-          - sed -i '/.*FINAL_STATUS" == "1".*/i printf "\nSvelte eslint ${green}passed${reset}\n"' modules/contrib/project_browser/commit-code-check.sh
-          - sed -i '/.*FINAL_STATUS" == "1".*/i fi' modules/contrib/project_browser/commit-code-check.sh
-          # Svelte compile check.
-          - sed -i '/.*FINAL_STATUS" == "1".*/i yarn run rollup -c' modules/contrib/project_browser/commit-code-check.sh
-          - sed -i '/.*FINAL_STATUS" == "1".*/i git diff --quiet; NOCHANGES=$?' modules/contrib/project_browser/commit-code-check.sh
-          - sed -i '/.*FINAL_STATUS" == "1".*/i if [ "$NOCHANGES" -ne 0 ]; then' modules/contrib/project_browser/commit-code-check.sh
-          - sed -i '/.*FINAL_STATUS" == "1".*/i FINAL_STATUS=1' modules/contrib/project_browser/commit-code-check.sh
-          - sed -i '/.*FINAL_STATUS" == "1".*/i printf "\nSvelte ${red}compiled files do not match${reset}. Running yarn build and commiting the changs should fix this. \n"' modules/contrib/project_browser/commit-code-check.sh
-          - sed -i '/.*FINAL_STATUS" == "1".*/i else' modules/contrib/project_browser/commit-code-check.sh
-          - sed -i '/.*FINAL_STATUS" == "1".*/i printf "\nSvelte compiling ${green}successful${reset}\n"' modules/contrib/project_browser/commit-code-check.sh
-          - sed -i '/.*FINAL_STATUS" == "1".*/i fi' modules/contrib/project_browser/commit-code-check.sh
-
-          - sed -i '/.*FINAL_STATUS" == "1".*/i cd $TOP_LEVEL' modules/contrib/project_browser/commit-code-check.sh
-          - sed -i '/.*FINAL_STATUS" == "1".*/i printf "\n"' modules/contrib/project_browser/commit-code-check.sh
-
-          # DEBUG: AFTER
-          # - cat modules/contrib/project_browser/commit-code-check.sh
-          # After all of the shenanigans above, we're finally ready to run core's `commit-code-check.sh`! :)
-          - "modules/contrib/project_browser/commit-code-check.sh --drupalci"
-          # Restore the original permissions.
-          - chmod 777 modules/contrib/project_browser/
+          # Install rsync.
+          - DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y rsync
+          # Update to latest Composer.
+          - composer self-update
+          # @todo Replace in favor of commit-code-check.sh once https://www.drupal.org/project/drupal/issues/3314100 lands.
+          - modules/contrib/project_browser/scripts/commit-code-check.sh --drupalci
         halt-on-fail: true
       # run_tests task is executed several times in order of performance speeds.
       # halt-on-fail can be set on the run_tests tasks in order to fail fast.

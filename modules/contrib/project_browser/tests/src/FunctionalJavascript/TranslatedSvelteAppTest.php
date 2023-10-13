@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\project_browser\FunctionalJavascript;
 
+// cspell:ignore soorch foor moodools
+
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 

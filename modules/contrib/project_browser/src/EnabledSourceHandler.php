@@ -11,42 +11,11 @@ use Psr\Log\LoggerInterface;
  */
 class EnabledSourceHandler {
 
-  /**
-   * A logger instance.
-   *
-   * @var \Psr\Log\LoggerInterface
-   */
-  protected $logger;
-
-  /**
-   * The config factory interface.
-   *
-   * @var \Drupal\Core\Config\ConfigFactoryInterface
-   */
-  protected $configFactory;
-
-  /**
-   * The ProjectBrowserSourceManager.
-   *
-   * @var \Drupal\project_browser\plugin\ProjectBrowserSourceManager
-   */
-  private $pluginManager;
-
-  /**
-   * EnabledSourceHandler constructor.
-   *
-   * @param \Psr\Log\LoggerInterface $logger
-   *   A logger instance.
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   The config factory.
-   * @param \Drupal\project_browser\plugin\ProjectBrowserSourceManager $plugin_manager
-   *   The plugin manager.
-   */
-  public function __construct(LoggerInterface $logger, ConfigFactoryInterface $config_factory, ProjectBrowserSourceManager $plugin_manager) {
-    $this->logger = $logger;
-    $this->configFactory = $config_factory;
-    $this->pluginManager = $plugin_manager;
-  }
+  public function __construct(
+    private readonly LoggerInterface $logger,
+    private readonly ConfigFactoryInterface $configFactory,
+    private readonly ProjectBrowserSourceManager $pluginManager,
+  ) {}
 
   /**
    * Returns all plugin instances corresponding to the enabled_source config.

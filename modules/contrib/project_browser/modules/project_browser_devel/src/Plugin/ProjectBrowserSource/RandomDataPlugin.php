@@ -135,7 +135,7 @@ class RandomDataPlugin extends ProjectBrowserSourceBase implements ContainerFact
       $projects = array_filter($projects, fn(Project $project) => stripos($project->getTitle(), $query['search']) !== FALSE);
     }
 
-    return new ProjectsResultsPage(count($projects), array_values($projects), (string) $this->getPluginDefinition()['label'], $this->getPluginId());
+    return new ProjectsResultsPage(count($projects), array_values($projects), (string) $this->getPluginDefinition()['label'], $this->getPluginId(), TRUE);
   }
 
   /**

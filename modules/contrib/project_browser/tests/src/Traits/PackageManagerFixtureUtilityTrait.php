@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\project_browser\Traits;
 
-use Drupal\package_manager_bypass\Beginner;
+use Drupal\Core\Extension\MissingDependencyException;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -17,6 +17,29 @@ use Symfony\Component\Filesystem\Filesystem;
 trait PackageManagerFixtureUtilityTrait {
 
   /**
+   * Initializes Package Manager.
+   */
+  protected function initPackageManager(): void {
+    // @todo Move back to static::$modules in https://www.drupal.org/i/3349193.
+    $modules = [
+      'package_manager_bypass',
+      'package_manager',
+      'package_manager_test_validation',
+    ];
+    try {
+      $this->container->get('module_installer')->install($modules);
+      // The container was rebuilt by the ModuleInstaller.
+      $this->container = \Drupal::getContainer();
+    }
+    catch (MissingDependencyException $e) {
+      $this->markTestSkipped($e->getMessage());
+    }
+
+    $pm_path = $this->container->get('extension.list.module')->getPath('package_manager');
+    $this->useFixtureDirectoryAsActive($pm_path . '/tests/fixtures/fake_site');
+  }
+
+  /**
    * Sets a fixture directory to use as the active directory.
    *
    * @param string $fixture_directory
@@ -27,7 +50,6 @@ trait PackageManagerFixtureUtilityTrait {
     // unique for each test run. This will enable changing files in the
     // directory and not affect other tests.
     $active_dir = $this->copyFixtureToTempDirectory($fixture_directory);
-    Beginner::setFixturePath($active_dir);
     $this->container->get('package_manager.path_locator')
       ->setPaths($active_dir, $active_dir . '/vendor', '', NULL);
   }
